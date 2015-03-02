@@ -27,7 +27,7 @@ class ServiceManager : public Singleton< ServiceManager >
 	typedef std::list< ServiceData * >	ServicesType;
 	ServicesType	_services;
 
-	// service manager is also works in Service states.
+	// service manager also works in Service states.
 	Service::State	_state;
 
 	float _elapsedTime;

@@ -25,6 +25,7 @@ public:
     void InjectKeyEvent( const gameplay::Keyboard::KeyEvent& ev, int key );
     void InjectTouchEvent( const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex );
     bool InjectMouseEvent( const gameplay::Mouse::MouseEvent& ev, int x, int y, int wheelDelta );
+    void InjectGesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 };
 
 

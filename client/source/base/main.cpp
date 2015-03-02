@@ -34,14 +34,14 @@ DfgGame::DfgGame()
 
 void DfgGame::initialize()
 {
-	// create services
+    // create services
 
     _inputService = ServiceManager::Instance( ).RegisterService< InputService >( NULL );
 
     Service * render_dep[] = { _inputService, NULL };
-	_renderService = ServiceManager::Instance( ).RegisterService< RenderService >( render_dep );
+    _renderService = ServiceManager::Instance( ).RegisterService< RenderService >( render_dep );
 
-	setVsync( false );
+    setVsync( false );
     
     _userFolder = Game::getAppPrivateFolderPath( );
 #ifdef WIN32
@@ -81,7 +81,7 @@ void DfgGame::initialize()
 
     jclass android_content_Context = env->FindClass("android/content/Context");
     jmethodID midGetPackageName = env->GetMethodID(android_content_Context, "getPackageName", "()Ljava/lang/String;");
-    jstring packageName = (jstring)env->CallObjectMethod(app->activity->clazz, midGetPackageName);
+    jstring packageName = (jstring) env->CallObjectMethod(app->activity->clazz, midGetPackageName);
     jmethodID midGetResources = env->GetMethodID(android_content_Context, "getResources", "()Landroid/content/res/Resources;");
     jobject jResource = env->CallObjectMethod(app->activity->clazz, midGetResources);
 
@@ -102,7 +102,7 @@ void DfgGame::initialize()
     vm->DetachCurrentThread();
 #endif
 
-    std::string aliasesName("aliases_");
+    std::string aliasesName( "aliases_" );
     if( getConfig( )->getNamespace( ( aliasesName + newLocale ).c_str( ), true ) )
         _gameLocale = newLocale;
 
@@ -111,7 +111,7 @@ void DfgGame::initialize()
 
 void DfgGame::finalize()
 {
-	ServiceManager::Instance( ).Shutdown( );
+    ServiceManager::Instance( ).Shutdown( );
     Caches::Instance( ).FlushAll( );
 
     u_cleanup( );
@@ -119,18 +119,19 @@ void DfgGame::finalize()
 
 void DfgGame::update(float elapsedTime)
 {
-	ServiceManager::Instance( ).Update( elapsedTime );
+    ServiceManager::Instance( ).Update( elapsedTime );
 }
 
 void DfgGame::render(float /*elapsedTime*/)
 {
-	if( ServiceManager::Instance( ).GetState( ) == Service::ES_RUNNING )
-		_renderService->RenderFrame( );
+    if( ServiceManager::Instance( ).GetState( ) == Service::ES_RUNNING )
+        _renderService->RenderFrame( );
 }
 
 void DfgGame::keyEvent(gameplay::Keyboard::KeyEvent evt, int key)
 {
-    _inputService->InjectKeyEvent( evt, key );
+    if (_inputService)
+        _inputService->InjectKeyEvent( evt, key );
     
     if( key == gameplay::Keyboard::KEY_HYPER )
         _hyperKeyPressed = evt == gameplay::Keyboard::KEY_PRESS;
@@ -143,12 +144,21 @@ void DfgGame::keyEvent(gameplay::Keyboard::KeyEvent evt, int key)
 
 void DfgGame::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex)
 {
-    _inputService->InjectTouchEvent( evt, x, y, contactIndex );
+    if (_inputService)
+        _inputService->InjectTouchEvent( evt, x, y, contactIndex );
 }
 
 bool DfgGame::mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta )
 {
-    return _inputService->InjectMouseEvent( evt, x, y, wheelDelta );
+    if (_inputService)
+        return _inputService->InjectMouseEvent( evt, x, y, wheelDelta );
+    return false;
+}
+
+void DfgGame::gesturePinchEvent(int x, int y, float scale, int numberOfTouches)
+{
+    if (_inputService)
+        _inputService->InjectGesturePinchEvent(x, y, scale, numberOfTouches);
 }
 
 void DfgGame::pause()
@@ -200,6 +210,12 @@ void DfgGame::ScheduleLocalNotification( time_t datetime, const char * utf8Body,
 {
 #ifdef __APPLE__
 #if TARGET_OS_IPHONE
+    
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)])
+    {
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
+    }
+    
     UILocalNotification *localNotif = [[UILocalNotification alloc] init];
     if (localNotif == nil)
         return;

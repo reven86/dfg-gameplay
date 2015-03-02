@@ -53,5 +53,8 @@ const wchar_t * Format( const wchar_t * fmt, ... );
 const wchar_t * ClipTextToBounds( const wchar_t * text, float width, const gameplay::Font * font, float fontSize );
 
 
+void serializeString(gameplay::Stream * stream, const std::string& str);
+void deserializeString(gameplay::Stream * stream, std::string& str);
+
 
 #endif // __DFG_UTILS__

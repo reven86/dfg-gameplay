@@ -155,3 +155,25 @@ const wchar_t * ClipTextToBounds( const wchar_t * text, float width, const gamep
     return result.c_str( );
 }
 
+
+void serializeString(gameplay::Stream * stream, const std::string& str)
+{
+    int32_t size = static_cast<int32_t>(str.size());
+    stream->write(&size, sizeof(size), 1);
+    stream->write(str.c_str(), sizeof(char), size);
+}
+
+void deserializeString(gameplay::Stream * stream, std::string& str)
+{
+    str.clear();
+    int32_t size = 0;
+    stream->read(&size, sizeof(size), 1);
+
+    char * buf = reinterpret_cast<char *>(alloca(sizeof(char)* (size + 1)));
+    if (buf)
+    {
+        stream->read(buf, sizeof(char), size);
+        buf[size] = '\0';
+        str = buf;
+    }
+}

@@ -25,6 +25,9 @@ ZipPackage * ZipPackage::create(const char * zipFile)
 
 gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
 {
+    if (streamMode != gameplay::FileSystem::READ)
+        return NULL;
+
     std::string fullPath = gameplay::FileSystem::resolvePath(path);
 
     //Search for the file of given name
@@ -33,7 +36,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     if (zip_stat(_zipFile.get(), fullPath.c_str(), 0, &st) != 0)
     {
         GP_WARN("Can't open file %s", path);
-        return false;
+        return NULL;
     }
 
     //Alloc memory for its uncompressed contents
@@ -45,7 +48,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     if (!f)
     {
         GP_WARN("Can't open file %s", path);
-        return false;
+        return NULL;
     }
     zip_fread(f, contents.get(), fileSize);
     zip_fclose(f);

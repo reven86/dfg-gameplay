@@ -16,10 +16,6 @@ protected:
 public:
     DfgGame();
 
-	void keyEvent(gameplay::Keyboard::KeyEvent evt, int key);
-    void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex);
-    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta);
-
     const char * GetUserDataFolder( ) const { return _userFolder.c_str( ); };
     const char * GetGameLocale( ) const { return _gameLocale.c_str( ); };
 
@@ -44,7 +40,12 @@ protected:
     void pause();
     void resume();
 
-    void reportError( bool isFatal, const char * errorMessage, ... );
+    void keyEvent(gameplay::Keyboard::KeyEvent evt, int key);
+    void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex);
+    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta);
+    void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
+
+    void reportError(bool isFatal, const char * errorMessage, ...);
 };
 
 #endif

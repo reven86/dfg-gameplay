@@ -6,7 +6,7 @@
 
 
 
-/*! \brief Storefront service that controls IAPs.
+/*! \brief Storefront service controls IAPs.
  */
 
 class StorefrontService : public Service, public gameplay::StoreListener
