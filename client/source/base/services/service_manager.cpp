@@ -6,124 +6,124 @@
 
 
 
-ServiceManager::ServiceManager( )
-	: _state( Service::ES_PRE_INIT )
-	, _elapsedTime( 0.0f )
+ServiceManager::ServiceManager()
+    : _state(Service::PRE_INIT)
+    , _elapsedTime(0.0f)
 {
 }
 
-ServiceManager::~ServiceManager( )
+ServiceManager::~ServiceManager()
 {
 }
 
-void ServiceManager::Cleanup( )
+void ServiceManager::cleanup()
 {
-	for( ServicesType::iterator it = _services.begin( ), end_it = _services.end( ); it != end_it; it++ )
-		delete ( *it );
+    for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
+        delete (*it);
 
-	_services.clear( );
+    _services.clear();
 }
 
-void ServiceManager::RegisterService( const char * name, Service * service, Service ** dependencies )
+void ServiceManager::registerService(const char * name, Service * service, Service ** dependencies)
 {
-	ServiceData * new_data = new ServiceData( );
-	new_data->name = name;
-	new_data->service = RefPtr< Service >( service );
+    ServiceData * newData = new ServiceData();
+    newData->name = name;
+    newData->service.reset(service);
 
-	if( !dependencies )
-	{
-		_services.push_front( new_data );
-		return;
-	}
+    if (!dependencies)
+    {
+        _services.push_front(newData);
+        return;
+    }
 
-	int dependencies_count = 0;
-	Service ** temp = dependencies;
-	while( *temp )
-	{
-		dependencies_count++;
-		temp++;
-	}
+    int dependenciesCount = 0;
+    Service ** temp = dependencies;
+    while (*temp)
+    {
+        dependenciesCount++;
+        temp++;
+    }
 
-	ServicesType::iterator it = _services.begin( ), end_it = _services.end( );
-	while( it != end_it && dependencies_count > 0 )
-	{
-		temp = dependencies;
-		while( *temp )
-		{
-			if( ( *it )->service.get( ) == *temp )
-			{
-				dependencies_count--;
-				break;
-			}
+    ServicesType::iterator it = _services.begin(), end_it = _services.end();
+    while (it != end_it && dependenciesCount> 0)
+    {
+        temp = dependencies;
+        while (*temp)
+        {
+            if ((*it)->service.get() == *temp)
+            {
+                dependenciesCount--;
+                break;
+            }
 
-			temp++;
-		}
+            temp++;
+        }
 
-		it++;
-	}
+        it++;
+    }
 
-	if( it != end_it )
-		it++;
+    if (it != end_it)
+        it++;
 
-	if( dependencies_count > 0 )
-	{
-		GP_ERROR( "Trying to register service %s which have dependency on unregistered service", name );
-		return;
-	}
+    if (dependenciesCount > 0)
+    {
+        GP_ERROR("Trying to register service %s which has dependency on unregistered service", name);
+        return;
+    }
 
-	_services.insert( it, new_data );
+    _services.insert(it, newData);
 }
 
-Service * ServiceManager::FindService( const char * name ) const
+Service * ServiceManager::findService(const char * name) const
 {
-	for( ServicesType::const_iterator it = _services.begin( ), end_it = _services.end( ); it != end_it; it++ )
-		if( ( *it )->name == name )
-			return ( *it )->service.get( );
-	return NULL;
+    for (ServicesType::const_iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
+        if ((*it)->name == name)
+            return (*it)->service.get();
+    return NULL;
 }
 
-void ServiceManager::Shutdown( )
+void ServiceManager::shutdown()
 {
-	for( ServicesType::iterator it = _services.begin( ), end_it = _services.end( ); it != end_it; it++ )
-		if( ( *it )->service->GetState( ) != Service::ES_COMPLETE )
-			( *it )->service->SetState( Service::ES_SHUTTING_DOWN );
+    for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
+        if ((*it)->service->getState() != Service::COMPLETE)
+            (*it)->service->setState(Service::SHUTTING_DOWN);
 
-	_state = Service::ES_SHUTTING_DOWN;
-	while( _state != Service::ES_COMPLETE )
-		Update( _elapsedTime );
+    _state = Service::SHUTTING_DOWN;
+    while (_state != Service::COMPLETE)
+        update(_elapsedTime);
 
-	Cleanup( );
+    cleanup();
 }
 
-void ServiceManager::Update( float elapsedTime )
+void ServiceManager::update(float elapsedTime)
 {
-	_elapsedTime = elapsedTime;
-	if( _state == Service::ES_COMPLETE )
-		return;
+    _elapsedTime = elapsedTime;
+    if (_state == Service::COMPLETE)
+        return;
 
-	static bool ( Service::* state_funcs[] ) ( ) =
-	{
-		&Service::OnPreInit,
-		&Service::OnInit,
-		&Service::OnTick,
-		&Service::OnShutdown
-	};
+    static bool (Service::* state_funcs[]) () =
+    {
+        &Service::onPreInit,
+        &Service::onInit,
+        &Service::onTick,
+        &Service::onShutdown
+    };
 
-	bool all_completed = true;
-	for( ServicesType::iterator it = _services.begin( ), end_it = _services.end( ); it != end_it; it++ )
-	{
-		const Service::State& service_state = ( *it )->service->GetState( );
-		if( service_state <= _state )
-		{
-			bool res = (( *it )->service.get( )->*state_funcs[ service_state ])( );
-			if( service_state == _state )
-				all_completed &= res;
+    bool allCompleted = true;
+    for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
+    {
+        const Service::State& serviceState = (*it)->service->getState();
+        if (serviceState <= _state)
+        {
+            bool res = ((*it)->service.get()->*state_funcs[serviceState])();
+            if (serviceState == _state)
+                allCompleted &= res;
 
-			if( res )
-				( *it )->service->SetState( static_cast< Service::State >( service_state + 1 ) );
-		}
-	}
+            if (res)
+                (*it)->service->setState(static_cast<Service::State>(serviceState + 1));
+        }
+    }
 
-	if( all_completed )
-		_state = static_cast< Service::State >( _state + 1 );
+    if (allCompleted)
+        _state = static_cast<Service::State>(_state + 1);
 }

@@ -19,8 +19,8 @@ class TrackerService : public Service
 
     enum{ MAX_CUSTOM_DIMENSIONS = 20 };
     enum{ MAX_CUSTOM_METRICS = 20 };
-    std::string _customDimensions[ MAX_CUSTOM_DIMENSIONS ];
-    int _customMetrics[ MAX_CUSTOM_METRICS ];
+    std::string _customDimensions[MAX_CUSTOM_DIMENSIONS];
+    int _customMetrics[MAX_CUSTOM_METRICS];
 
     struct PayloadInfo
     {
@@ -31,18 +31,18 @@ class TrackerService : public Service
     std::deque< PayloadInfo > _payloadsQueue;
 
     void * _curl;
-    
+
     std::string _appName;       // cached app name
     std::string _appVersion;    // cached app version
     std::string _currentView;
 
     static std::auto_ptr< std::thread > _dispatchThread;
-	std::mutex _payloadQueueMutex;
-	std::mutex _dispatchMutex;
+    std::mutex _payloadQueueMutex;
+    std::mutex _dispatchMutex;
     static bool _threadForceQuit;
     static int _dispatchPeriod;  // in ms
     static int _dispatchRate;  // in ms
-    
+
     bool _allowDispatch;
     time_t _trackerStartTime;
     float _sessionStartTime;
@@ -53,38 +53,38 @@ public:
      *
      *  \param[in]  manager     ServiceManager.
      */
-	TrackerService( const ServiceManager * manager );
-	virtual ~TrackerService( );
+    TrackerService(const ServiceManager * manager);
+    virtual ~TrackerService();
 
     /*! Setup app tracking
      *
      *  \param[in]  gaAppId     Google Analytics Tracking ID (UA-123456-1).
-     *  \param[in]  clientId    Client UUID (http://www.ietf.org/rfc/rfc4122.txt). 
+     *  \param[in]  clientId    Client UUID (http://www.ietf.org/rfc/rfc4122.txt).
      *  \param[in]  startScreen Initial screen name.
      */
-    void SetupTracking( const char * gaAppId, const char * clientId, const char * startScreen );
+    void setupTracking(const char * gaAppId, const char * clientId, const char * startScreen);
 
-    void SetTrackerEnabled( bool enabled ) { _allowDispatch = enabled; };
-    const bool& GetTrackerEnabled( ) const { return _allowDispatch; };
+    void setTrackerEnabled(bool enabled) { _allowDispatch = enabled; };
+    const bool& getTrackerEnabled() const { return _allowDispatch; };
 
-	static const char * GetName( ) { return "TrackerService"; }
+    static const char * getTypeName() { return "TrackerService"; }
 
-	virtual bool OnInit( );
-	virtual bool OnShutdown( );
-    virtual bool OnTick( );
+    virtual bool onInit();
+    virtual bool onShutdown();
+    virtual bool onTick();
 
-    const char * GetView() const { return _currentView.c_str(); };
+    const char * getView() const { return _currentView.c_str(); };
 
-    void SendView( const char * screenName );
-    void SendEvent( const char * category, const char * action, const char * label, const int& value = 0, bool interactive = true );
-    void SendSocialEvent( const char * network, const char * action, const char * target );
-    void SendTiming( const char * category, const int& timeMs, const char * name = NULL, const char * label = NULL );
-    void SendException( const char * type, bool isFatal );
-    void SendTransaction( const char * transactionID, const char * store, float totalRevenue, float shippingCost, float tax, const char * currencyCode );
-    void SendItem( const char * transactionID, const char * name, float price, int quantity, const char * sku, const char * category, const char * currencyCode );
-    
-    void SetCustomDimension( const int& id, const char * dimension );
-    void SetCustomMetric( const int& id, const int& metric );
+    void sendView(const char * screenName);
+    void sendEvent(const char * category, const char * action, const char * label, const int& value = 0, bool interactive = true);
+    void sendSocialEvent(const char * network, const char * action, const char * target);
+    void sendTiming(const char * category, const int& timeMs, const char * name = NULL, const char * label = NULL);
+    void sendException(const char * type, bool isFatal);
+    void sendTransaction(const char * transactionID, const char * store, float totalRevenue, float shippingCost, float tax, const char * currencyCode);
+    void sendItem(const char * transactionID, const char * name, float price, int quantity, const char * sku, const char * category, const char * currencyCode);
+
+    void setCustomDimension(const int& id, const char * dimension);
+    void setCustomMetric(const int& id, const int& metric);
 
     /*! Immediately send all payloads to analytics server
      *
@@ -93,19 +93,19 @@ public:
      *
      *  \param[in]  dispatchCount   Amount of payloads to be sent. 0 to send all.
      */
-    void ForceDispatch( int dispatchCount );
-    void EndSession( );
-    
+    void forceDispatch(int dispatchCount);
+    void endSession();
+
     //! Flush all payloads immediately to disk.
-    void FlushPayloads( );
+    void flushPayloads();
 
 private:
-    void SendData( const char * format, ... );
-    bool Dispatch( const PayloadInfo& payload );
+    void sendData(const char * format, ...);
+    bool dispatch(const PayloadInfo& payload);
 
-    const char * UrlEncode( const char * str );
+    const char * urlEncode(const char * str);
 
-    static void DispatchThreadProc( void * arg );
+    static void dispatchThreadProc(void * arg);
 };
 
 

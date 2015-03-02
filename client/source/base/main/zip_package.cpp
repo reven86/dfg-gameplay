@@ -40,8 +40,8 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     }
 
     //Alloc memory for its uncompressed contents
-    size_t fileSize = static_cast< size_t >(st.size);
-    std::unique_ptr< uint8_t[] >contents (new uint8_t[fileSize]);
+    size_t fileSize = static_cast<size_t>(st.size);
+    std::unique_ptr< uint8_t[] >contents(new uint8_t[fileSize]);
 
     //Read the compressed file
     zip_file *f = zip_fopen(_zipFile.get(), fullPath.c_str(), 0);

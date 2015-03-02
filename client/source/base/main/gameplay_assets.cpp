@@ -10,125 +10,95 @@
 // PropertiesAsset
 //
 
-Cache< PropertiesAsset > PropertiesAsset::_sCache;
+Cache< PropertiesAsset > PropertiesAsset::_cache;
 
-PropertiesAsset::PropertiesAsset( )
-    : Asset( "Properties" )
-    , _properties( NULL )
+PropertiesAsset::PropertiesAsset()
+    : _properties(NULL)
 {
 }
 
-PropertiesAsset::~PropertiesAsset( )
+PropertiesAsset::~PropertiesAsset()
 {
-    SAFE_DELETE( _properties );
+    SAFE_DELETE(_properties);
 }
 
-bool PropertiesAsset::LoadFromFile( const char * filename )
+PropertiesAsset * PropertiesAsset::create(const char * url)
 {
-    SAFE_DELETE( _properties );
-    _properties = gameplay::Properties::create( filename );
+    gameplay::Properties * props = gameplay::Properties::create(url);
+    if (!props)
+        return NULL;
 
-    return _properties != NULL;
+    PropertiesAsset * res = new PropertiesAsset();
+    res->_properties = props;
+    res->setURL(url);
+
+    return res;
 }
 
-bool PropertiesAsset::LoadFromStream( gameplay::Stream * /*stream*/ )
+bool PropertiesAsset::reload()
 {
-    GP_ASSERT( !"PropertiesAsset::LoadFromStream is not yet implemented!");
+    gameplay::Properties * props = gameplay::Properties::create(getURL());
+    if (!props)
+        return false;
 
-    return false;
-}
+    SAFE_DELETE(_properties);
+    _properties = props;
 
-
-
-//
-// MaterialAsset
-//
-
-Cache< MaterialAsset > MaterialAsset::_sCache;
-
-MaterialAsset::MaterialAsset( )
-    : Asset( "Material" )
-{
-}
-
-MaterialAsset::~MaterialAsset( )
-{
-}
-
-bool MaterialAsset::LoadFromFile( const char * filename )
-{
-    _material.reset( gameplay::Material::create( filename ) );
-
-    return _material.get( ) != NULL;
-}
-
-bool MaterialAsset::LoadFromStream( gameplay::Stream * /*stream*/ )
-{
-    GP_ASSERT( !"MaterialAsset::LoadFromStream is not yet implemented!");
-
-    return false;
+    return true;
 }
 
 
 
 //
-// AudioSourceAsset
+// SpriteBatchAsset
 //
 
-Cache< AudioSourceAsset > AudioSourceAsset::_sCache;
+Cache< SpriteBatchAsset > SpriteBatchAsset::_cache;
 
-AudioSourceAsset::AudioSourceAsset( )
-    : Asset( "AudioSource" )
+SpriteBatchAsset::SpriteBatchAsset()
+    : _spriteBatch(NULL)
 {
 }
 
-AudioSourceAsset::~AudioSourceAsset( )
+SpriteBatchAsset::~SpriteBatchAsset()
 {
+    SAFE_DELETE(_spriteBatch);
 }
 
-bool AudioSourceAsset::LoadFromFile( const char * filename )
+SpriteBatchAsset * SpriteBatchAsset::create(const char * url)
 {
-    _audioSource.reset( gameplay::AudioSource::create( filename ) );
+    gameplay::Properties * properties = gameplay::Properties::create(url);
+    if (!properties)
+        return NULL;
 
-    return _audioSource.get( ) != NULL;
+    gameplay::Material * material = gameplay::Material::create((strlen(properties->getNamespace()) > 0) ? properties : properties->getNextNamespace());
+    if (!material)
+        return NULL;
+
+    SpriteBatchAsset * res = new SpriteBatchAsset();
+    res->_spriteBatch = gameplay::SpriteBatch::create(material);
+    res->setURL(url);
+
+    SAFE_RELEASE(material);
+
+    return res;
 }
 
-bool AudioSourceAsset::LoadFromStream( gameplay::Stream * /*stream*/ )
+bool SpriteBatchAsset::reload()
 {
-    GP_ASSERT( !"AudioSourceAsset::LoadFromStream is not yet implemented!");
+    gameplay::Properties * properties = gameplay::Properties::create(getURL());
+    if (!properties)
+        return NULL;
 
-    return false;
+    gameplay::Material * material = gameplay::Material::create((strlen(properties->getNamespace()) > 0) ? properties : properties->getNextNamespace());
+    SAFE_DELETE(properties);
+    if (!material)
+        return false;
+
+    SAFE_DELETE(_spriteBatch);
+    _spriteBatch = gameplay::SpriteBatch::create(material);
+    SAFE_RELEASE(material);
+
+    return true;
 }
 
-
-
-
-//
-// FontAsset
-//
-
-Cache< FontAsset > FontAsset::_sCache;
-
-FontAsset::FontAsset( )
-    : Asset( "Font" )
-{
-}
-
-FontAsset::~FontAsset( )
-{
-}
-
-bool FontAsset::LoadFromFile( const char * filename )
-{
-    _font.reset( gameplay::Font::create( filename ) );
-
-    return _font.get( ) != NULL;
-}
-
-bool FontAsset::LoadFromStream( gameplay::Stream * stream )
-{
-    stream;
-    GP_ASSERT( !"FontAsset::LoadFromStream is not yet implemented!");
-
-    return false;
-}

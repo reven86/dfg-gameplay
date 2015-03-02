@@ -12,7 +12,8 @@ struct interruptable_accumulator
     result_type operator()(T_iterator first, T_iterator last) const
     {
         for (; first != last; ++first)
-            if (!*first) return false;
+            if (!*first)
+                return false;
         return true;
     }
 };
@@ -32,13 +33,13 @@ struct Signals : Noncopyable
     //
     // SocialService
     //
-    
+
     sigc::signal< void, gameplay::SocialSessionListener::ResponseCode > socialAuthenticatedEvent;
 
     //
     // InputService
     //
-    
+
     priority_signal< sigc::signal< bool, gameplay::Keyboard::KeyEvent, int > > inputKeyEvent;
     priority_signal< sigc::signal< bool, gameplay::Touch::TouchEvent, int, int, unsigned > > inputTouchEvent;
     priority_signal< sigc::signal< bool, gameplay::Mouse::MouseEvent, int, int, int > > inputMouseEvent;

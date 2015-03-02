@@ -9,11 +9,10 @@
 // Asset
 //
 
-bool Asset::LoadFromFile( const char * file )
+Asset::Asset()
 {
-	_filename = file;
+}
 
-    std::auto_ptr< gameplay::Stream > stream( gameplay::FileSystem::open(file) );
-
-	return LoadFromStream( stream.get( ) );
+Asset::~Asset()
+{
 }

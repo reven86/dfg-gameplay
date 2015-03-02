@@ -5,56 +5,64 @@
 
 
 
+struct Utils
+{
 
-/*! \brief Simple lerp functor.
+    
+/** \brief Simple lerp functor.
  *
  *	\author Andrew "RevEn" Karpushin
  */
 
 template< class _Type >
-struct SimpleLerpFn
+struct LinearInterpolator
 {
-	_Type lerp( const _Type& a, const _Type& b, const float& t ) { return static_cast< _Type >( a + ( b - a ) * t ); };
+	_Type interpolate( const _Type& a, const _Type& b, const float& t ) { return static_cast< _Type >( a + ( b - a ) * t ); };
 };
 
 
 //! Hermite spline interpolation.
 template< class _Type >
-_Type HermiteSpline( const _Type& v0, const _Type& t0, const _Type& v1, const _Type& t1, float t )
+static _Type hermiteSpline( const _Type& v0, const _Type& t0, const _Type& v1, const _Type& t1, float t )
 {
     float t2 = t * t;
     float t3 = t * t2;
-
     return ( 2.0f * t3 - 3.0f * t2 + 1 ) * v0 + ( t3 - 2.0f * t2 + t ) * t0 + ( 3.0f * t2 - 2.0f * t3 ) * v1 + ( t3 - t2 ) * t1;
 };
 
 
 //! Generates new UUID.
-std::string GenerateUUID( );
+static std::string generateUUID();
 
 
 //! Helper function that converts wchar_t string to UChar one. Max 2048 chars.
-const UChar * WCSToUString( const wchar_t * str );
+static const UChar * WCSToUString(const wchar_t * str);
 
 
 //! Convert UTF8 string to wchar_t one.
-const wchar_t * UTF8ToWCS( const char * str );
+static const wchar_t * UTF8ToWCS(const char * str);
 
 
 //! Function to map char * string to wchar_t * one. Works ONLY for ANSI characters. Max 2048 chars.
-const wchar_t * ANSIToWCS( const char * str );
+static const wchar_t * ANSIToWCS(const char * str);
 
 
 //! Portable swprintf version. Nested calls are not allowed. Max 2048 chars.
-const wchar_t * Format( const wchar_t * fmt, ... );
+static const wchar_t * format(const wchar_t * fmt, ...);
 
 
 //! Clip text to bounds inserting '...' if text is too long.
-const wchar_t * ClipTextToBounds( const wchar_t * text, float width, const gameplay::Font * font, float fontSize );
+static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize);
 
 
-void serializeString(gameplay::Stream * stream, const std::string& str);
-void deserializeString(gameplay::Stream * stream, std::string& str);
+/// Serialize string to stream.
+static void serializeString(gameplay::Stream * stream, const std::string& str);
+
+/// Deserialize string from stream.
+static void deserializeString(gameplay::Stream * stream, std::string& str);
+
+
+};
 
 
 #endif // __DFG_UTILS__

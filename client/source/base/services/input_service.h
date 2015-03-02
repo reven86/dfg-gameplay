@@ -13,19 +13,19 @@
 class InputService : public Service
 {
 public:
-	InputService( const ServiceManager * manager );
-	virtual ~InputService( );
+    InputService(const ServiceManager * manager);
+    virtual ~InputService();
 
-	static const char * GetName( ) { return "InputService"; }
+    static const char * getTypeName() { return "InputService"; }
 
-	virtual bool OnInit( );
-	virtual bool OnShutdown( );
-    virtual bool OnTick( ) { return true; };
+    virtual bool onInit();
+    virtual bool onShutdown();
+    virtual bool onTick() { return true; };
 
-    void InjectKeyEvent( const gameplay::Keyboard::KeyEvent& ev, int key );
-    void InjectTouchEvent( const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex );
-    bool InjectMouseEvent( const gameplay::Mouse::MouseEvent& ev, int x, int y, int wheelDelta );
-    void InjectGesturePinchEvent(int x, int y, float scale, int numberOfTouches);
+    void injectKeyEvent(const gameplay::Keyboard::KeyEvent& ev, int key);
+    void injectTouchEvent(const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex);
+    bool injectMouseEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, int wheelDelta);
+    void injectGesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 };
 
 

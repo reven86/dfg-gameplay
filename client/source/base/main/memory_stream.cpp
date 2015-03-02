@@ -132,7 +132,7 @@ bool MemoryStream::seek(long int offset, int origin)
         _cursor = static_cast<size_t>(position() + offset);
         break;
     case SEEK_END:
-        _cursor = static_cast<size_t>(static_cast< long int >(_bufferSize) + offset);
+        _cursor = static_cast<size_t>(static_cast<long int>(_bufferSize)+offset);
         break;
     }
 

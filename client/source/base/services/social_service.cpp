@@ -5,35 +5,35 @@
 
 
 
-SocialService::SocialService( const ServiceManager * manager )
-    : Service( manager )
-    , _session( NULL )
+SocialService::SocialService(const ServiceManager * manager)
+    : Service(manager)
+    , _session(NULL)
 {
 }
 
-SocialService::~SocialService( )
+SocialService::~SocialService()
 {
 }
 
-bool SocialService::OnPreInit( )
+bool SocialService::onPreInit()
 {
     return true;
 }
 
-bool SocialService::OnTick( )
+bool SocialService::onTick()
 {
-    return false;
+    return true;
 }
 
-bool SocialService::OnInit( )
+bool SocialService::onInit()
 {
-    if( gameplay::Game::getInstance()->getSocialController() )
+    if (gameplay::Game::getInstance()->getSocialController())
         gameplay::Game::getInstance()->getSocialController()->authenticate(this);
-    
+
     return true;
 }
 
-bool SocialService::OnShutdown( )
+bool SocialService::onShutdown()
 {
     _session = NULL;
     return true;
@@ -43,13 +43,13 @@ void SocialService::authenticateEvent(ResponseCode code, gameplay::SocialSession
 {
     _session = session;
 
-	if (code == SUCCESS)
-	{
-	}
-	else
+    if (code == SUCCESS)
     {
-        GP_WARN( "Error authenticating the social session %d", code );
     }
-    
-    _manager->signals.socialAuthenticatedEvent( code );
+    else
+    {
+        GP_WARN("Error authenticating the social session %d", code);
+    }
+
+    _manager->signals.socialAuthenticatedEvent(code);
 }

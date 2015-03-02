@@ -6,94 +6,94 @@
 
 
 
-StorefrontService::StorefrontService( const ServiceManager * manager )
-    : Service( manager )
+StorefrontService::StorefrontService(const ServiceManager * manager)
+    : Service(manager)
 {
-    gameplay::Game::getInstance( )->getStoreController( )->getStoreFront( )->setListener( this );
+    gameplay::Game::getInstance()->getStoreController()->getStoreFront()->setListener(this);
 }
 
-StorefrontService::~StorefrontService( )
+StorefrontService::~StorefrontService()
 {
 }
 
-bool StorefrontService::OnPreInit( )
+bool StorefrontService::onPreInit()
 {
     return true;
 }
 
-bool StorefrontService::OnTick( )
+bool StorefrontService::onTick()
 {
     return false;
 }
 
-bool StorefrontService::OnInit( )
+bool StorefrontService::onInit()
 {
     return true;
 }
 
-bool StorefrontService::OnShutdown( )
+bool StorefrontService::onShutdown()
 {
     return true;
 }
 
-void StorefrontService::RefreshProducts( const char ** productsToHandle )
+void StorefrontService::refreshProducts(const char ** productsToHandle)
 {
-    gameplay::Game::getInstance( )->getStoreController( )->getStoreFront( )->getProducts( productsToHandle );
+    gameplay::Game::getInstance()->getStoreController()->getStoreFront()->getProducts(productsToHandle);
 }
 
-void StorefrontService::getProductsEvent( const std::vector< gameplay::StoreProduct >& products, const std::vector< std::string >& invalidProducts )
+void StorefrontService::getProductsEvent(const std::vector< gameplay::StoreProduct >& products, const std::vector< std::string >& invalidProducts)
 {
     _products = products;
     _invalidProducts = invalidProducts;
 
 #ifdef _DEBUG
-    if( strcmp( gameplay::Game::getInstance( )->getStoreController( )->getStoreFront( )->getName( ), "Null" ) )
-        for( unsigned int i = 0; i < invalidProducts.size( ); i++ )
-            GP_WARN( "Invalid product: %s", invalidProducts[ i ].c_str( ) );
+    if (strcmp(gameplay::Game::getInstance()->getStoreController()->getStoreFront()->getName(), "Null"))
+        for (unsigned int i = 0; i < invalidProducts.size(); i++)
+            GP_WARN("Invalid product: %s", invalidProducts[i].c_str());
 #endif
 
-    _manager->signals.storefrontGetProductsSucceededEvent( );
+    _manager->signals.storefrontGetProductsSucceededEvent();
 }
 
-void StorefrontService::getProductsFailedEvent( int errorCode, const char * error )
+void StorefrontService::getProductsFailedEvent(int errorCode, const char * error)
 {
-    GP_WARN( "Can't get products information: %d", errorCode );
-    _manager->signals.storefrontGetProductsFailedEvent( errorCode, error );
+    GP_WARN("Can't get products information: %d", errorCode);
+    _manager->signals.storefrontGetProductsFailedEvent(errorCode, error);
 }
 
-bool StorefrontService::IsProductValid( const char * product ) const
+bool StorefrontService::isProductValid(const char * product) const
 {
-    return std::find( _invalidProducts.begin( ), _invalidProducts.end( ), product ) == _invalidProducts.end( );
+    return std::find(_invalidProducts.begin(), _invalidProducts.end(), product) == _invalidProducts.end();
 }
 
-const gameplay::StoreProduct * StorefrontService::GetProduct( const char * product ) const
+const gameplay::StoreProduct * StorefrontService::getProduct(const char * product) const
 {
-    for( std::vector< gameplay::StoreProduct >::const_iterator it = _products.begin( ), end_it = _products.end( ); it != end_it; it++ )
-        if( ( *it ).id == product )
-            return &( *it );
+    for (std::vector< gameplay::StoreProduct >::const_iterator it = _products.begin(), end_it = _products.end(); it != end_it; it++)
+        if ((*it).id == product)
+            return &(*it);
 
     return NULL;
 }
 
-void StorefrontService::paymentTransactionInProcessEvent( const char * productID, int quantity )
+void StorefrontService::paymentTransactionInProcessEvent(const char * productID, int quantity)
 {
-    _manager->signals.storefrontTransactionInProcessEvent( productID, quantity );
+    _manager->signals.storefrontTransactionInProcessEvent(productID, quantity);
 }
 
-bool StorefrontService::paymentTransactionSucceededEvent( const char * productID, int quantity, double timestamp, const char * transactionID )
-{    
-    return _manager->signals.storefrontTransactionSucceededEvent( productID, quantity, timestamp, transactionID );
+bool StorefrontService::paymentTransactionSucceededEvent(const char * productID, int quantity, double timestamp, const char * transactionID)
+{
+    return _manager->signals.storefrontTransactionSucceededEvent(productID, quantity, timestamp, transactionID);
 }
 
-void StorefrontService::paymentTransactionFailedEvent( const char * productID, int quantity, int errorCode, const char * error )
+void StorefrontService::paymentTransactionFailedEvent(const char * productID, int quantity, int errorCode, const char * error)
 {
-    GP_WARN( "Transaction failed: %d", errorCode );
-    _manager->signals.storefrontTransactionFailedEvent( productID, quantity, errorCode, error );
+    GP_WARN("Transaction failed: %d", errorCode);
+    _manager->signals.storefrontTransactionFailedEvent(productID, quantity, errorCode, error);
 }
 
-bool StorefrontService::paymentTransactionRestoredEvent( const char * productID, int quantity, double timestamp, const char * transactionID )
+bool StorefrontService::paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID)
 {
-    return _manager->signals.storefrontTransactionRestoredEvent( productID, quantity, timestamp, transactionID );
+    return _manager->signals.storefrontTransactionRestoredEvent(productID, quantity, timestamp, transactionID);
 }
 
 bool StorefrontService::isProductConsumable(const char * productID)

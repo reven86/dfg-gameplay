@@ -1,5 +1,5 @@
-#ifndef DfgGame_H_
-#define DfgGame_H_
+#ifndef __DFG_GAME_H__
+#define __DFG_GAME_H__
 
 
 
@@ -10,14 +10,14 @@ class DfgGame : public gameplay::Game
     bool _hyperKeyPressed;  // WinKey (win), Command (osx)
 
 protected:
-	class RenderService * _renderService;
+    class RenderService * _renderService;
     class InputService * _inputService;
 
 public:
     DfgGame();
 
-    const char * GetUserDataFolder( ) const { return _userFolder.c_str( ); };
-    const char * GetGameLocale( ) const { return _gameLocale.c_str( ); };
+    const char * getUserDataFolder() const { return _userFolder.c_str(); };
+    const char * getGameLocale() const { return _gameLocale.c_str(); };
 
     /** Schedule local notification.
      *
@@ -26,11 +26,11 @@ public:
      *  \param[in]  utf8ActionButton    Action button's name (UTF8).
      *  \param[in]  badgeNumber         App icon badge number.
      */
-    virtual void ScheduleLocalNotification( time_t datetime, const char * utf8Body, const char * utf8ActionButton, int badgeNumber = 1, const std::unordered_map< std::string, std::string >& userDictionary = std::unordered_map< std::string, std::string >( ) );
+    virtual void scheduleLocalNotification(time_t datetime, const char * utf8Body, const char * utf8ActionButton, int badgeNumber = 1, const std::unordered_map< std::string, std::string >& userDictionary = std::unordered_map< std::string, std::string >());
 
     /** Cancel all local notification.
      */
-    virtual void CancelAllLocalNotifications( );
+    virtual void cancelAllLocalNotifications();
 
 protected:
     void initialize();
@@ -48,4 +48,5 @@ protected:
     void reportError(bool isFatal, const char * errorMessage, ...);
 };
 
-#endif
+
+#endif // __DFG_GAME_H__

@@ -13,7 +13,7 @@
 
 
 
-std::string GenerateUUID( )
+std::string Utils::generateUUID( )
 {
     std::string s;
 
@@ -41,7 +41,7 @@ std::string GenerateUUID( )
 
 
 
-const UChar * WCSToUString( const wchar_t * str )
+const UChar * Utils::WCSToUString(const wchar_t * str)
 {
     static UChar result[ 2048 ];
     
@@ -58,7 +58,7 @@ const UChar * WCSToUString( const wchar_t * str )
 
 
 
-const wchar_t * UTF8ToWCS( const char * str )
+const wchar_t * Utils::UTF8ToWCS(const char * str)
 {
     UChar valueUni[ 1024 ];
     int32_t length = 0;
@@ -75,7 +75,7 @@ const wchar_t * UTF8ToWCS( const char * str )
 
 
 
-const wchar_t * ANSIToWCS( const char * str )
+const wchar_t * Utils::ANSIToWCS(const char * str)
 {
     static wchar_t result[ 2048 ];
 
@@ -90,7 +90,7 @@ const wchar_t * ANSIToWCS( const char * str )
 
 
 
-const wchar_t * Format( const wchar_t * fmt, ... )
+const wchar_t * Utils::format(const wchar_t * fmt, ...)
 {
     static wchar_t result[ 2048 ];
 
@@ -127,7 +127,7 @@ const wchar_t * Format( const wchar_t * fmt, ... )
 
 
 
-const wchar_t * ClipTextToBounds( const wchar_t * text, float width, const gameplay::Font * font, float fontSize )
+const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize)
 {
     static std::wstring result;
     
@@ -156,14 +156,14 @@ const wchar_t * ClipTextToBounds( const wchar_t * text, float width, const gamep
 }
 
 
-void serializeString(gameplay::Stream * stream, const std::string& str)
+void Utils::serializeString(gameplay::Stream * stream, const std::string& str)
 {
     int32_t size = static_cast<int32_t>(str.size());
     stream->write(&size, sizeof(size), 1);
     stream->write(str.c_str(), sizeof(char), size);
 }
 
-void deserializeString(gameplay::Stream * stream, std::string& str)
+void Utils::deserializeString(gameplay::Stream * stream, std::string& str)
 {
     str.clear();
     int32_t size = 0;

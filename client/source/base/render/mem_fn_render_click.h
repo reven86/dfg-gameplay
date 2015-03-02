@@ -21,10 +21,10 @@ public:
 	virtual ~MemFnRenderClick( ) {};
 
 	//! Render click name.
-	virtual const char * GetName( ) const { return _name.c_str( ); };
+	virtual const char * getName( ) const { return _name.c_str( ); };
 
 	//! Rendering.
-	virtual void Render ( ) const { ( _instance->*_renderFn )( ); };
+	virtual void render ( ) const { ( _instance->*_renderFn )( ); };
 };
 
 

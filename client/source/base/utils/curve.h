@@ -17,7 +17,7 @@
 *	\author Andrew "RevEn" Karpushin
 */
 
-template< class T, class _KT = unsigned char, class _LerpFn = SimpleLerpFn< T > >
+template< class T, class _KT = unsigned char, class _Interpolator = Utils::LinearInterpolator< T > >
 class Curve
 {
     typedef std::pair< _KT, T > KeyType;
@@ -37,7 +37,7 @@ public:
     *	\param[in] t		Key.
     *	\param[in] key		Value.
     */
-    void AddKey ( const _KT& t, const T& key )
+    void addKey ( const _KT& t, const T& key )
     {
         GP_ASSERT( _keys.empty () || ( t > _keys.back( ).first ) );
         if( _keys.empty( ) || ( t > _keys.back( ).first ) )
@@ -45,7 +45,7 @@ public:
     };
 
     //! Gets a value, associated with key.
-    T Key ( const _KT& t ) const
+    T key ( const _KT& t ) const
     {
         if( _keys.empty( ) )
             return _emptyKey;
@@ -75,14 +75,14 @@ public:
 
             float lerp_frac = static_cast< float >( t - ( *it ).first ) / ( ( *it2 ).first - ( *it ).first );
 
-            return _LerpFn( ).lerp( ( *it ).second, ( *it2 ).second, lerp_frac );
+            return _Interpolator().interpolate((*it).second, (*it2).second, lerp_frac);
         }
 
         return _keys.back( ).second;
     };
 
     //! Makes an envelope empty.
-    void Clear ( ) { KeysType( ).swap( _keys ); };
+    void clear ( ) { KeysType( ).swap( _keys ); };
 };
 
 

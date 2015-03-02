@@ -15,75 +15,75 @@
 
 class ServiceManager : public Singleton< ServiceManager >
 {
-	friend class Singleton< ServiceManager >;
+    friend class Singleton< ServiceManager >;
 
-	struct ServiceData
-	{
-		RefPtr< Service > service;
-		std::string name;
-	};
+    struct ServiceData
+    {
+        std::unique_ptr< Service > service;
+        std::string name;
+    };
 
-	// services, sorted by priority.
-	typedef std::list< ServiceData * >	ServicesType;
-	ServicesType	_services;
+    // services, sorted by priority.
+    typedef std::list< ServiceData * > ServicesType;
+    ServicesType _services;
 
-	// service manager also works in Service states.
-	Service::State	_state;
+    // service manager also works in Service states.
+    Service::State	_state;
 
-	float _elapsedTime;
+    float _elapsedTime;
 
 protected:
-	ServiceManager			( );
-	virtual ~ServiceManager	( );
+    ServiceManager();
+    virtual ~ServiceManager();
 
 public:
-	// signals registry
-	mutable Signals signals;
+    // signals registry
+    mutable Signals signals;
 
-	/*! \brief Service registration.
-	 *
-	 *	Registers service by its typename.
-	 *
-	 *	\param[in]	dependencies	A NULL terminated array of service dependencies, or NULL.
-	 *	\return New service instance.
-	 */
-	template< class _Service >
-	_Service * RegisterService	( Service ** dependencies )
-	{ 
-		_Service * new_service = new _Service( this );
-		RegisterService( _Service::GetName( ), new_service, dependencies ); 
-		return new_service;
-	}
+    /*! \brief Service registration.
+     *
+     *	Registers service by its typename.
+     *
+     *	\param[in]	dependencies	A NULL terminated array of service dependencies, or NULL.
+     *	\return New service instance.
+     */
+    template< class _Service >
+    _Service * registerService(Service ** dependencies)
+    {
+        _Service * newService = new _Service(this);
+        registerService(_Service::getTypeName(), newService, dependencies);
+        return newService;
+    }
 
-	//! Helper function to find service, assuming it was registered by its class name.
-	template< class _Service >
-	_Service * FindService	( ) const { return static_cast< _Service * >( FindService( _Service::GetName( ) ) ); }
+    //! Helper function to find service, assuming it was registered by its class name.
+    template< class _Service >
+    _Service * findService() const { return static_cast<_Service *>(findService(_Service::getTypeName())); }
 
-	//! Get frame time.
-	float GetElapsedTime( ) const { return _elapsedTime; };
+    //! Get frame time in seconds.
+    float getFrameTime() const { return _elapsedTime; };
 
-	//! Shutdown all services.
-	void Shutdown ( );
+    //! Shutdown all services.
+    void shutdown();
 
-	//! Update all services.
-	void Update( float elapsedTime );
+    //! Update all services.
+    void update(float elapsedTime);
 
     //! Get current state.
-    const Service::State& GetState( ) const { return _state; }
+    const Service::State& getState() const { return _state; }
 
 private:
-	//! Find service by name.
-	Service * FindService	( const char * name ) const;
+    //! Find service by name.
+    Service * findService(const char * name) const;
 
-	/*! \brief Service registration.
-	 *
-	 *	\param[in]	name			Name of the service, typically class name.
-	 *	\param[in]	service			Service instance.
-	 *	\param[in]	dependencies	A NULL terminated array of service dependencies, or NULL.
-	 */
-	void RegisterService	( const char * name, Service * service, Service ** dependencies );
+    /*! \brief Service registration.
+     *
+     *	\param[in]	name			Name of the service, typically class name.
+     *	\param[in]	service			Service instance.
+     *	\param[in]	dependencies	A NULL terminated array of service dependencies, or NULL.
+     */
+    void registerService(const char * name, Service * service, Service ** dependencies);
 
-	void Cleanup( );
+    void cleanup();
 };
 
 

@@ -151,20 +151,20 @@ struct ParticleSubSystem
     float aspect;                                       //!< Sprite aspect ration, calculated on load.
 
 public:
-    ParticleSubSystem ( );
+    ParticleSubSystem();
 
     //! Update particle by small amount of time.
-    void UpdateParticle ( Particle& p, float dt ) const;
+    void updateParticle(Particle& p, float dt) const;
 
     //! Spawn new particle.
-    void SpawnParticle ( Particle& p, const gameplay::Matrix& transform ) const;
+    void spawnParticle(Particle& p, const gameplay::Matrix& transform) const;
 
     //! Load subsystem from Properties.
-    bool LoadFromProperties( gameplay::Properties * properties );
+    bool loadFromProperties(gameplay::Properties * properties);
 
 protected:
-    bool LoadFloatCurveFromProperties( gameplay::Properties * properties, Curve< float > * curve ) const;
-    bool LoadColorCurveFromProperties( gameplay::Properties * properties, Curve< gameplay::Vector4 > * curve ) const;
+    bool loadFloatCurveFromProperties(gameplay::Properties * properties, Curve< float > * curve) const;
+    bool loadColorCurveFromProperties(gameplay::Properties * properties, Curve< gameplay::Vector4 > * curve) const;
 };
 
 
@@ -177,7 +177,7 @@ protected:
  *	\author Andrew "RevEn" Karpushin
  */
 
-class BaseParticleSystem : public Transformable3D
+class BaseParticleSystem
 {
 protected:
     unsigned            _maxParticles;						//!< Total particles count.
@@ -186,55 +186,51 @@ protected:
     bool                _isStopped;							//!< Is spawn stopped?
     unsigned			_aliveCount;						//!< Alive particles count.
     float				_maxParticleSize;					//!< Max particle size.
-    float				_scaler;							//!< Particle system scale factor.
+    float				_scaleFactor;					    //!< Particle system scale factor.
 
     //Primitives::AABB	_aabb;								//!< Closest AABB.
 
 public:
-    BaseParticleSystem ( );
-    virtual ~BaseParticleSystem ( ) { };
+    BaseParticleSystem();
+    virtual ~BaseParticleSystem() { };
 
     // compiler-generated copy constructor and assignment operator are fine
 
     //! Get/Set emitter transformation.
-    gameplay::Matrix& EmitterTransformation ( ) { return _emitterTransformation; };
+    gameplay::Matrix& emitterTransformation() { return _emitterTransformation; };
 
     //! Get emitter transformation.
-    const gameplay::Matrix& EmitterTransformation ( ) const { return _emitterTransformation; };
+    const gameplay::Matrix& emitterTransformation() const { return _emitterTransformation; };
 
     //! Render particle system.
-    virtual void Render ( const gameplay::Vector4& col ) const = 0;
+    virtual void render(const gameplay::Vector4& col) const = 0;
 
     //! Update particle system.
-    virtual void Update ( float dt ) = 0;
+    virtual void update(float dt) = 0;
 
     //! Stop spawn particles.
-    void StopSpawn ( ) { _isStopped = true; };
+    void stopSpawn() { _isStopped = true; };
 
     //! Get max particles count.
-    unsigned GetMaxParticlesCount ( ) const { return _maxParticles; };
+    unsigned getMaxParticlesCount() const { return _maxParticles; };
 
     //! Get particles alive count.
-    unsigned AliveCount ( ) const { return _aliveCount; };
+    unsigned aliveCount() const { return _aliveCount; };
 
     //! Is any particle alive?
-    bool IsAlive ( ) const { return _aliveCount != 0; };
+    bool isAlive() const { return _aliveCount != 0; };
 
     //! Is emitter stopped?
-    bool IsStopped ( ) const { return _isStopped ;};
+    bool isStopped() const { return _isStopped; };
 
     //! Get a local closest AABB.
     //const Primitives::AABB& AABB ( ) const { return _aabb; };
 
     //! Get scale factor.
-    const float& GetScaler ( ) const { return _scaler; };
+    const float& getScaleFactor() const { return _scaleFactor; };
 
     //! Set scale factor.
-    void SetScaler ( const float& scale ) { _scaler = scale; };
-
-protected:
-    //! Test frustum culling.
-    //bool TestFrustumCulling	 ( const class Viewer * viewer, const Mat4& transform ) const;
+    void setScaleFactor(const float& scale) { _scaleFactor = scale; };
 };
 
 
@@ -250,14 +246,14 @@ protected:
 *	Example:
 *
 *	\verbatim
-particle_system:
-  update_period: 0.025
-  hi_percision_update: true
+  particle_system:
+    update_period: 0.025
+    hi_percision_update: true
 
-  subsystem:
-    < subsystem parameters >
+    subsystem:
+      < subsystem parameters >
 
-  < more subsystems >
+    < more subsystems >
 \endverbatim
 *	
 *	Description:
@@ -284,7 +280,7 @@ class ParticleSystem : public BaseParticleSystem, public Asset
 
     enum EFlags
     {
-        EFL_HIGH_PRECISION			= ( 1 << 0 )
+        EFL_HIGH_PRECISION = (1 << 0)
     };
 
     int _flags;
@@ -292,33 +288,37 @@ class ParticleSystem : public BaseParticleSystem, public Asset
     float _updatePeriod;
     float _updateTimer;
 
-    static Cache< ParticleSystem > _sCache;
+    static Cache< ParticleSystem > _cache;
 
     class RenderService * _renderService;
 
+private:
+    ParticleSystem();
+
 public:
-    ParticleSystem ( );
-    virtual ~ParticleSystem ( );
+    virtual ~ParticleSystem();
 
     // copy constructor and assignment operator are fine.
 
-    static Cache< ParticleSystem >& Cache( ) { return _sCache; };
+    static Cache< ParticleSystem >& getCache() { return _cache; };
 
-    //! Clone asset.
-    ParticleSystem * Clone( ) const;
-
+    static ParticleSystem * create(const char * url);
 
     //
     // Inherited from Asset
     //
 
-    //! Load resource from stream.
-    virtual bool LoadFromFile ( const char * filename );
+    //! Get resource name.
+    virtual const char * getTypeName() const { return "ParticleSystem"; };
 
-    //! Load resource from stream.
-    virtual bool LoadFromStream ( gameplay::Stream * stream );
+    /** Reload asset.
+     *
+     * \return true when asset was reloaded successfully.
+     * \see Asset::reload
+     */
+    virtual bool reload();
 
-    bool LoadFromProperties( gameplay::Properties * properties );
+    bool loadFromProperties(gameplay::Properties * properties);
 
 
     //
@@ -326,25 +326,25 @@ public:
     //
 
     //! Get subsystems count.
-    size_t GetSubSystemsCount ( ) const { return _systems.size( ); };
+    size_t getSubSystemsCount() const { return _systems.size(); };
 
     //! Add new subsystem to particle system (add as last subsystem).
-    void AddSubSystem ( const ParticleSubSystem& ps );
+    void addSubSystem(const ParticleSubSystem& ps);
 
     /*! \brief Get subsystem (const version).
     *
     *	\return NULL if index is invalid.
     */
-    const ParticleSubSystem * GetSubSystem ( unsigned index ) const;
+    const ParticleSubSystem * getSubSystem(unsigned index) const;
 
     //! Remove subsystem by index.
-    void RemoveSubSystem ( unsigned index );
+    void removeSubSystem(unsigned index);
 
     //! Get particle (nonconst version).
-    Particle * GetParticle ( unsigned particle_index );
+    Particle * getParticle(unsigned particle_index);
 
     //! Get particle (const version).
-    const Particle * GetParticle ( unsigned particle_index ) const;
+    const Particle * getParticle(unsigned particle_index) const;
 
 
     //
@@ -352,16 +352,16 @@ public:
     //
 
     //! Is high precision update used?
-    bool IsHighPrecisionUpdate ( ) const { return ( _flags & EFL_HIGH_PRECISION ) != 0; };
+    bool isHighPrecisionUpdate() const { return (_flags & EFL_HIGH_PRECISION) != 0; };
 
     //! Set high precision update.
-    void SetHighPrecisionUpdate	( bool hi_prec ) { if( hi_prec ) _flags |= EFL_HIGH_PRECISION; else _flags &= ~EFL_HIGH_PRECISION; };
+    void setHighPrecisionUpdate(bool hi_prec) { if (hi_prec) _flags |= EFL_HIGH_PRECISION; else _flags &= ~EFL_HIGH_PRECISION; };
 
     //! Get update period.
-    float GetUpdatePeriod ( ) const { return _updatePeriod; };
+    float getUpdatePeriod() const { return _updatePeriod; };
 
     //! Set update period.
-    void SetUpdatePeriod ( float period ) { _updatePeriod = period; };
+    void setUpdatePeriod(float period) { _updatePeriod = period; };
 
 
 
@@ -370,16 +370,16 @@ public:
     //
 
     //! Kill all particles.
-    void Reset ( );
+    void reset();
 
     //! Render particle system.
-    virtual void Render ( const gameplay::Vector4& modulator = gameplay::Vector4::one( ) ) const;
+    virtual void render(const gameplay::Vector4& modulator = gameplay::Vector4::one()) const;
 
     //! Update particle system.
-    virtual void Update ( float dt );
+    virtual void update(float dt);
 
 private:
-    void PureUpdate ( float dt );
+    void rawUpdate(float dt);
 };
 
 

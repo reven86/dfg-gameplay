@@ -64,7 +64,6 @@
     <ClCompile Include="..\base\main\gameplay_assets.cpp" />
     <ClCompile Include="..\base\main\memory_stream.cpp" />
     <ClCompile Include="..\base\main\zip_package.cpp" />
-    <ClCompile Include="..\base\math\transformable.cpp" />
     <ClCompile Include="..\base\render\particle_system.cpp" />
     <ClCompile Include="..\base\services\debug_service.cpp" />
     <ClCompile Include="..\base\services\input_service.cpp" />
@@ -90,7 +89,6 @@
     <ClInclude Include="..\base\main\gameplay_assets.h" />
     <ClInclude Include="..\base\main\memory_stream.h" />
     <ClInclude Include="..\base\main\zip_package.h" />
-    <ClInclude Include="..\base\math\transformable.h" />
     <ClInclude Include="..\base\render\mem_fn_render_click.h" />
     <ClInclude Include="..\base\render\particle_system.h" />
     <ClInclude Include="..\base\services\debug_service.h" />

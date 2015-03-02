@@ -7,8 +7,8 @@
 
 
 /*! \brief %Caches holder.
- *	
- *	Holds all caches and control for clearing them.
+ *
+ *	Holds all caches and manages them.
  *
  *	\author Andrew "RevEn" Karpushin
  */
@@ -25,19 +25,16 @@ private:
     ClearCallbacksType _clearCallbacks;
 
 private:
-    Caches ( ) { };
-    ~Caches ( ) { };
+    Caches() { };
+    ~Caches() { };
 
 public:
     //! Get/Set clear callbacks.
-    ClearCallbacksType& ClearCallbacks ( ) { return _clearCallbacks; };
-
-    //! Get clear callbacks.
-    const ClearCallbacksType& ClearCallbacks ( ) const { return _clearCallbacks; };
+    ClearCallbacksType& clearCallbacks() { return _clearCallbacks; };
 
 public:
-    //! Flush all caches by invoking registered clear callbacks.
-    void FlushAll ( ) { _clearCallbacks( ); };
+    //! Flush all caches.
+    void flushAll() { _clearCallbacks(); };
 };
 
 
@@ -45,8 +42,8 @@ public:
 
 
 /*! \brief %Cache class.
- *	
- *	Holds registered resources in one instance and provides access to newly loaded resources.
+ *
+ *	Caches assets loaded from disk.
  *
  *	\author Andrew "RevEn" Karpushin
  */
@@ -61,66 +58,65 @@ class Cache : Noncopyable
 
 public:
     //! Constructs empty cache.
-    Cache ( ) { };
+    Cache() {};
 
     //! Destructs cache object and unloads all loaded resources.
-    ~Cache ( ) { Clear( ); _cachesConnection.disconnect( ); };
+    ~Cache() { clear(); _cachesConnection.disconnect(); };
 
-    /*!	\brief Register new resource.
-     *	
-     *	Register new resource from file or get existing one.
+    /*!	\brief Register new asset.
+     *
+     *	Register new asset from file or get existing one.
      *  Assets loaded by this function are constant by default.
      *  If you need to alter asset, make a copy from this one.
      *
-     *	\param	filename	Resource filename.
+     *	\param	url Asset's URL.
      *	\return	Returns shared pointer to resource.
      */
-    RefPtr< const T > Register ( const char * filename )
+    RefPtr< const T > load(const char * url)
     {
-        if( !_cachesConnection.connected( ) )
-            _cachesConnection = Caches::Instance( ).ClearCallbacks( ).connect(
-                sigc::mem_fun( this, &Cache< T >::Clear ) );
+        if (!_cachesConnection.connected())
+            _cachesConnection = Caches::getInstance()->clearCallbacks().connect(
+            sigc::mem_fun(this, &Cache< T >::clear));
 
-        std::string lowerName( filename );
-        std::transform( lowerName.begin( ), lowerName.end( ), lowerName.begin( ),
-            std::bind2nd( std::ptr_fun( &std::tolower< char > ), std::locale( "" ) ) );
-        typename ResourcesType::iterator it = _resources.find( lowerName );
+        std::string lowerName(url);
+        std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+            std::bind2nd(std::ptr_fun(&std::tolower< char >), std::locale("")));
+        typename ResourcesType::iterator it = _resources.find(lowerName);
 
         RefPtr< const T > res;
-        if( it == _resources.end( ) )
+        if (it == _resources.end())
         {
-            T * r = new T( );
-            res.reset( r );
+            T * r = T::create(url);
+            res.reset(r);
 
-            if( !r->LoadFromFile( lowerName.c_str( ) ) )
+            if (!r)
             {
-                GP_WARN( "Can't load resource: %s", lowerName.c_str( ) );
-                return RefPtr< const T >( );
+                GP_WARN("Can't load asset: %s", lowerName.c_str());
+                return RefPtr< const T >();
             }
 
-            _resources.insert( std::make_pair( lowerName, res ) );
+            _resources.insert(std::make_pair(lowerName, res));
             return res;
         }
 
-        return ( *it ).second;
+        return (*it).second;
     };
 
-    /*!	\brief Unregister resource.
-    *	
-    *	Unregister previously registered resource.
+    /*!	\brief Unregister asset.
     *
-    *	\param	object	Resource pointer object.
+    *	Removes asset from cache.
+    *
+    *	\param	object	Asset object.
     */
-    void Unregister ( RefPtr< T >& object )
+    void remove(RefPtr< T >& object)
     {
         // Linear search used due to rarely function using.
-        typename ResourcesType::iterator it = _resources.begin( );
-
-        while( it != _resources.end( ) )
+        typename ResourcesType::iterator it = _resources.begin();
+        while (it != _resources.end())
         {
-            if( ( *it ).second == object )
+            if ((*it).second == object)
             {
-                _resources.erase( it );
+                _resources.erase(it);
                 break;
             }
 
@@ -128,17 +124,17 @@ public:
         }
     };
 
-    //! Unregister all registered resources.
-    void Clear ( )
+    //! Remove all assets.
+    void clear()
     {
-        _resources.clear( );
+        _resources.clear();
     };
 
-    //! Reload all resources.
-    void ReloadAll ( )
+    //! Reload all asset.
+    void reloadAll()
     {
-        for( typename ResourcesType::iterator it = _resources.begin( ), end_it = _resources.end( ); it != end_it; it++ )
-            const_cast< T * >( ( *it ).second.get( ) )->LoadFromFile( ( *it ).first.c_str( ) );
+        for (typename ResourcesType::iterator it = _resources.begin(), end_it = _resources.end(); it != end_it; it++)
+            const_cast<T *>((*it).second.get())->reload();
     }
 };
 

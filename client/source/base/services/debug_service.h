@@ -15,35 +15,34 @@ class RenderClick;
 
 class DebugService : public Service
 {
-	RefPtr< gameplay::Font > _systemFont;
+    RefPtr< gameplay::Font > _systemFont;
     gameplay::SpriteBatch * _whiteSprite;
     float _fontSize;
 
-	RefPtr< RenderStep > _debugRenderStep;
-	RefPtr< RenderClick > _fpsRenderClick;
+    std::unique_ptr< RenderStep > _debugRenderStep;
+    std::unique_ptr< RenderClick > _fpsRenderClick;
 
     bool _showProfiler;
 
 public:
-	DebugService ( const ServiceManager * manager );
-	virtual ~DebugService ( );
+    DebugService(const ServiceManager * manager);
+    virtual ~DebugService();
 
-	static const char * GetName( ) { return "DebugService"; }
+    static const char * getTypeName() { return "DebugService"; }
 
-    void Setup( gameplay::SpriteBatch * whiteSprite, gameplay::Font * font, float scale = 1.0f );
+    void setup(gameplay::SpriteBatch * whiteSprite, gameplay::Font * font, float scale = 1.0f);
 
-    void ShowProfiler( bool show ) { _showProfiler = show; };
-    bool IsProfilerShown( ) const { return _showProfiler; };
+    void showProfiler(bool show) { _showProfiler = show; };
+    bool isProfilerVisible() const { return _showProfiler; };
 
-    virtual bool OnPreInit( );
-	virtual bool OnInit( );
-    virtual bool OnTick( );
-	virtual bool OnShutdown( );
+    virtual bool onPreInit();
+    virtual bool onInit();
+    virtual bool onTick();
+    virtual bool onShutdown();
 
 private:
-    void DrawTextOutline ( float x, float y, const gameplay::Vector4& color, const wchar_t * text ) const;
-
-	void DrawFPS ( ) const;
+    void drawTextOutline(float x, float y, const gameplay::Vector4& color, const wchar_t * text) const;
+    void drawFPS() const;
 };
 
 
