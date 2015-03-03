@@ -155,3 +155,4 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 /third_party
+/client/source/_android/libs
