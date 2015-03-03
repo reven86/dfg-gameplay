@@ -96,7 +96,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libdfg-gameplay
 LOCAL_SRC_FILES := \
-    $(GAMEPLAY_LOCAL_PATH)gameplay/src/gameplay-main-android.cpp \
     pch.cpp \
     uuidlib/clear.c \
     uuidlib/compare.c \
