@@ -1,5 +1,5 @@
-#ifndef __DFG_PCH__
-#define __DFG_PCH__
+#ifndef __DFG_GAMEPLAY_PCH__
+#define __DFG_GAMEPLAY_PCH__
 
 /*!	\file pch.h 
  *	\brief Precompiled header.
@@ -24,13 +24,11 @@
 #include <random>
 
 
+#pragma warning( disable: 4100 )	// unreferenced formal parameter
 #pragma warning( disable: 4127 )	// conditional expression is constant
+#pragma warning( disable: 4201 )	// nameless struct/union
 
-#pragma warning( push )
-#pragma warning( disable: 4100 )
 #include "gameplay.h"
-#include "mathutil.h"
-#pragma warning( pop )
 
 #pragma warning( push )
 #pragma warning( disable: 4512 )
@@ -60,4 +58,4 @@ extern Dictionary gameDictionary;       // global dictionary.
 
 
 
-#endif // __DFG_PCH__
+#endif // __DFG_GAMEPLAY_PCH__

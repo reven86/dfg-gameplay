@@ -38,8 +38,8 @@ bool DebugService::onTick()
 {
 #ifndef __DISABLE_PROFILER__
     unsigned framesCount = gameplay::Game::getInstance( )->getFrameRate( );
-    Profiler::Instance( ).saveProfilerResults( );
-    Profiler::Instance( ).setFrameTime( _manager->getFrameTime() );
+    Profiler::getInstance()->saveProfilerResults( );
+    Profiler::getInstance()->setFrameTime( _manager->getFrameTime() );
 #endif
     return false;
 }
@@ -81,6 +81,6 @@ void DebugService::drawFPS() const
 
 #ifndef __DISABLE_PROFILER__
     if( _showProfiler )
-        Profiler::Instance( ).drawPerformanceInfo( _systemFont, _whiteSprite, _fontSize * 0.5f );
+        Profiler::getInstance()->drawPerformanceInfo( _systemFont, _whiteSprite, _fontSize * 0.5f );
 #endif
 }

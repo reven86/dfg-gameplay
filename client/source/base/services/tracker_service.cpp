@@ -150,7 +150,7 @@ void TrackerService::flushPayloads()
         stream->write(&version, sizeof(version), 1);
         stream->write(&_trackerStartTime, sizeof(_trackerStartTime), 1);
 
-        int maxPayloadsToStore = std::min< int >(1024, _payloadsQueue.size());
+        int maxPayloadsToStore = std::min< int >(1024, static_cast<int>(_payloadsQueue.size()));
         stream->write(&maxPayloadsToStore, sizeof(maxPayloadsToStore), 1);
         _payloadQueueMutex.lock();
         std::deque< PayloadInfo >::iterator it = _payloadsQueue.begin();
