@@ -16,19 +16,21 @@
 class RenderClick : public gameplay::Ref, Noncopyable
 {
     bool _active;
+    std::function<void()> _renderFn;
+    std::string _name;
 
 public:
-    RenderClick();
+    RenderClick(const char * name, std::function<void()> fn);
     virtual ~RenderClick();
 
     const bool& isActive() const { return _active; };
     void setActive(bool active) { _active = active; };
 
     //! Render click name.
-    virtual const char * getName() const = 0;
+    const char * getName() const { return _name.c_str(); };
 
     //! Rendering.
-    virtual void render() const = 0;
+    void render() const { _renderFn(); };
 };
 
 

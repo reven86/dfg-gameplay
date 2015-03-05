@@ -93,7 +93,6 @@
     <ClInclude Include="..\base\main\zip_package.h" />
     <ClInclude Include="..\base\main\zip_packages.h" />
     <ClInclude Include="..\base\main\zip_stream.h" />
-    <ClInclude Include="..\base\render\mem_fn_render_click.h" />
     <ClInclude Include="..\base\render\particle_system.h" />
     <ClInclude Include="..\base\services\debug_service.h" />
     <ClInclude Include="..\base\services\input_service.h" />

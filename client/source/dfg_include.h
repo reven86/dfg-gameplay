@@ -17,7 +17,6 @@
 #include "main/zip_package.h"
 #include "main/zip_packages.h"
 #include "main/zip_stream.h"
-#include "render/mem_fn_render_click.h"
 #include "render/particle_system.h"
 #include "services/debug_service.h"
 #include "services/input_service.h"

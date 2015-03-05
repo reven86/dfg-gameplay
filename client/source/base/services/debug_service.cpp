@@ -2,7 +2,6 @@
 #include "debug_service.h"
 #include "services/service_manager.h"
 #include "services/render_service.h"
-#include "render/mem_fn_render_click.h"
 
 
 
@@ -50,7 +49,7 @@ bool DebugService::onInit()
 
     _debugRenderStep.reset(rs->createRenderStep("DebugRenderStep"));
 
-    _fpsRenderClick.reset(new MemFnRenderClick< DebugService >(this, &DebugService::drawFPS, "FPSRenderClick"));
+    _fpsRenderClick.reset(new RenderClick("FPSRenderClick", std::bind(&DebugService::drawFPS, this)));
     _debugRenderStep->addRenderClick(_fpsRenderClick.get());
 
     return true;

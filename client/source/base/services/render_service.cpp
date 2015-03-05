@@ -9,7 +9,7 @@
 
 
 RenderService::RenderService(const ServiceManager * manager)
-: Service(manager)
+    : Service(manager)
 {
 }
 
@@ -64,8 +64,10 @@ void RenderService::renderFrame()
 // RenderClick
 //
 
-RenderClick::RenderClick()
+RenderClick::RenderClick(const char * name, std::function<void()> fn)
     : _active(true)
+    , _name(name)
+    , _renderFn(fn)
 {
 }
 

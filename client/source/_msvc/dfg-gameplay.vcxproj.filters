@@ -116,9 +116,6 @@
     <ClInclude Include="..\base\utils\utils.h">
       <Filter>base\utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\base\render\mem_fn_render_click.h">
-      <Filter>base\render</Filter>
-    </ClInclude>
     <ClInclude Include="..\base\render\particle_system.h">
       <Filter>base\render</Filter>
     </ClInclude>
