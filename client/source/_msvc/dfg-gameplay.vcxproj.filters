@@ -56,6 +56,12 @@
     <ClCompile Include="..\base\main\zip_package.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\main\zip_packages.cpp">
+      <Filter>base\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\main\zip_stream.cpp">
+      <Filter>base\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -135,6 +141,12 @@
       <Filter>base\main</Filter>
     </ClInclude>
     <ClInclude Include="..\dfg_include.h" />
+    <ClInclude Include="..\base\main\zip_packages.h">
+      <Filter>base\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\main\zip_stream.h">
+      <Filter>base\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">

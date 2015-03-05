@@ -35,6 +35,7 @@
 #include "sigc++.h"
 #pragma warning( pop )
 
+#include <zip.h>
 
 
 #include "utils/ref_ptr.h"

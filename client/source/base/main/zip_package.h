@@ -4,8 +4,10 @@
 
 
 
-
-class ZipPackage : public gameplay::Package
+/** An extension to gameplay::FileSystem to be able
+ *  to stream resources from zip packages
+ */
+class ZipPackage : public gameplay::Package, Noncopyable
 {
     std::shared_ptr< struct zip > _zipFile;
 
