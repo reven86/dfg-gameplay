@@ -62,7 +62,7 @@ protected:
 public:
     virtual ~SpriteBatchAsset();
 
-    static Cache< SpriteBatchAsset>& getCache() { return _cache; };
+    static Cache<SpriteBatchAsset>& getCache() { return _cache; };
 
     /** Load SpriteBatch from url.
     */
@@ -78,6 +78,47 @@ public:
     virtual bool reload();
 
     operator gameplay::SpriteBatch * () const { return _spriteBatch; };
+};
+
+
+
+
+
+/** Asset wrapper for gameplay::Font.
+ *
+ *  URL for Font creation is URL to font file.
+ *
+ *	\author Andrew "RevEn" Karpushin
+ */
+
+class FontAsset : public Asset
+{
+    RefPtr< gameplay::Font > _font;
+
+    static Cache< FontAsset > _cache;
+
+protected:
+    FontAsset();
+
+public:
+    virtual ~FontAsset();
+
+    static Cache<FontAsset>& getCache() { return _cache; };
+
+    /** Load FontAsset from url.
+    */
+    static FontAsset * create(const char * url);
+
+    //! Get resource name.
+    virtual const char * getTypeName() const { return "FontAsset"; };
+
+    /** Reload asset.
+    *
+    * \return true when asset was reloaded successfully.
+    */
+    virtual bool reload();
+
+    operator gameplay::Font * () const { return const_cast<gameplay::Font *>(_font.get()); };
 };
 
 

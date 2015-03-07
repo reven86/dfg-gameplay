@@ -25,6 +25,7 @@ void DebugService::setup(gameplay::SpriteBatch * whiteSprite, gameplay::Font * f
 {
     _whiteSprite = whiteSprite;
     _systemFont.reset(font);
+    font->addRef();
     _fontSize = font->getSize() * scale;
 }
 

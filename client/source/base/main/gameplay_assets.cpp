@@ -72,6 +72,7 @@ SpriteBatchAsset * SpriteBatchAsset::create(const char * url)
         return NULL;
 
     gameplay::Material * material = gameplay::Material::create((strlen(properties->getNamespace()) > 0) ? properties : properties->getNextNamespace());
+    SAFE_DELETE(properties);
     if (!material)
         return NULL;
 
@@ -100,5 +101,41 @@ bool SpriteBatchAsset::reload()
     SAFE_RELEASE(material);
 
     return true;
+}
+
+
+
+
+//
+// FontAsset
+//
+
+Cache<FontAsset> FontAsset::_cache;
+
+FontAsset::FontAsset()
+{
+}
+
+FontAsset::~FontAsset()
+{
+}
+
+FontAsset * FontAsset::create(const char * url)
+{
+    gameplay::Font * font = gameplay::Font::create(url);
+    if (!font)
+        return NULL;
+
+    FontAsset * res = new FontAsset();
+    res->_font.reset(font);
+    res->setURL(url);
+
+    return res;
+}
+
+bool FontAsset::reload()
+{
+    _font.reset(gameplay::Font::create(getURL()));
+    return _font.get() != NULL;
 }
 
