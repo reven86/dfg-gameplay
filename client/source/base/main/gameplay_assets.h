@@ -32,12 +32,13 @@ public:
     virtual const char * getTypeName() const { return "PropertiesAsset"; };
 
     /** Reload asset.
-    *
-    * \return true when asset was reloaded successfully.
-    */
+     *
+     * \return true when asset was reloaded successfully.
+     */
     virtual bool reload();
 
-    operator gameplay::Properties * () const { return _properties; };
+    /// Return underlying asset.
+    gameplay::Properties * get () const { return _properties; };
 };
 
 
@@ -77,50 +78,70 @@ public:
     */
     virtual bool reload();
 
-    operator gameplay::SpriteBatch * () const { return _spriteBatch; };
+    /// Return underlying asset.
+    gameplay::SpriteBatch * get () const { return _spriteBatch; };
 };
 
 
 
 
 
-/** Asset wrapper for gameplay::Font.
+/** Asset wrapper for Ref-based gameplay assets (Font, AudioSource, etc).
  *
- *  URL for Font creation is URL to font file.
+ *  URL for Asset creation is URL to asset's file.
  *
  *	\author Andrew "RevEn" Karpushin
  */
 
-class FontAsset : public Asset
+template<class _Type>
+class GameplayRefAsset : public Asset
 {
-    RefPtr< gameplay::Font > _font;
+    RefPtr< _Type > _asset;
 
-    static Cache< FontAsset > _cache;
+    static Cache< GameplayRefAsset< _Type > > _cache;
 
 protected:
-    FontAsset();
+    GameplayRefAsset() {};
 
 public:
-    virtual ~FontAsset();
+    virtual ~GameplayRefAsset() {};
 
-    static Cache<FontAsset>& getCache() { return _cache; };
+    static Cache< GameplayRefAsset< _Type > >& getCache() { return _cache; };
 
     /** Load FontAsset from url.
     */
-    static FontAsset * create(const char * url);
+    static GameplayRefAsset< _Type > * create(const char * url)
+    {
+        _Type * asset = _Type::create(url);
+        if (!asset)
+            return NULL;
+
+        GameplayRefAsset< _Type > * res = new GameplayRefAsset< _Type >();
+        res->_asset.reset(asset);
+        res->setURL(url);
+
+        return res;
+    }
 
     //! Get resource name.
-    virtual const char * getTypeName() const { return "FontAsset"; };
+    virtual const char * getTypeName() const { return "GameplayRefAsset"; };
 
     /** Reload asset.
     *
     * \return true when asset was reloaded successfully.
     */
-    virtual bool reload();
+    virtual bool reload()
+    {
+        _asset.reset(_Type::create(getURL()));
+        return _asset.get() != NULL;
+    }
 
-    operator gameplay::Font * () const { return const_cast<gameplay::Font *>(_font.get()); };
+    /// Return underlying asset and increment ref counter.
+    _Type * share() const { const_cast<_Type *>(_asset.get())->addRef(); return const_cast<_Type *>(_asset.get()); };
+
+    /// Return underlying asset.
+    _Type * get() const { return const_cast<_Type *>(_asset.get()); };
 };
-
 
 
 
