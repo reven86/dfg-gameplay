@@ -127,7 +127,7 @@ struct ParticleSubSystem
     float               spin;							//!< Base particle spin.
     float				motionrand;						//!< Base particle motion randomness.
     float               particleangle;					//!< Base particle angle.
-    bool				align_to_motion;				//!< Will particle be aligned to motion?
+    bool				align_to_motion;				//!< Are particles aligned to motion?
 
     float               life_variation;					//!< Particle lifetime variation.
     float				size_variation;					//!< Particle size variation.
@@ -177,7 +177,7 @@ protected:
  *	\author Andrew "RevEn" Karpushin
  */
 
-class BaseParticleSystem
+class BaseParticleSystem : public gameplay::Drawable
 {
 protected:
     unsigned            _maxParticles;						//!< Total particles count.
@@ -186,7 +186,6 @@ protected:
     bool                _isStopped;							//!< Is spawn stopped?
     unsigned			_aliveCount;						//!< Alive particles count.
     float				_maxParticleSize;					//!< Max particle size.
-    float				_scaleFactor;					    //!< Particle system scale factor.
 
     //Primitives::AABB	_aabb;								//!< Closest AABB.
 
@@ -201,9 +200,6 @@ public:
 
     //! Get emitter transformation.
     const gameplay::Matrix& emitterTransformation() const { return _emitterTransformation; };
-
-    //! Render particle system.
-    virtual void render(const gameplay::Vector4& col) const = 0;
 
     //! Update particle system.
     virtual void update(float dt) = 0;
@@ -225,12 +221,6 @@ public:
 
     //! Get a local closest AABB.
     //const Primitives::AABB& AABB ( ) const { return _aabb; };
-
-    //! Get scale factor.
-    const float& getScaleFactor() const { return _scaleFactor; };
-
-    //! Set scale factor.
-    void setScaleFactor(const float& scale) { _scaleFactor = scale; };
 };
 
 
@@ -287,6 +277,7 @@ class ParticleSystem : public BaseParticleSystem, public Asset
 
     float _updatePeriod;
     float _updateTimer;
+    gameplay::Vector4 _colorModulator;
 
     static Cache< ParticleSystem > _cache;
 
@@ -317,6 +308,16 @@ public:
      * \see Asset::reload
      */
     virtual bool reload();
+
+    /** Clone asset.
+     *
+     * \param[in] deepCopy Perform a deep copy (copy every underlying assets as well).
+     *
+     * \return Newly created asset, a copy of current one.
+     */
+    ParticleSystem * clone(bool deepCopy = false) const;
+
+    gameplay::Drawable * clone(gameplay::NodeCloneContext& context) { return clone(); };
 
     bool loadFromProperties(gameplay::Properties * properties);
 
@@ -372,8 +373,14 @@ public:
     //! Kill all particles.
     void reset();
 
+    /// Get color modulator
+    const gameplay::Vector4& getColorModulator() const { return _colorModulator; };
+
+    /// Set color modulator
+    void setColorModulator(const gameplay::Vector4& col) { _colorModulator = col; };
+
     //! Render particle system.
-    virtual void render(const gameplay::Vector4& modulator = gameplay::Vector4::one()) const;
+    virtual unsigned int draw(bool wireframe = false) const;
 
     //! Update particle system.
     virtual void update(float dt);

@@ -14,7 +14,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WarningLevel>Level4</WarningLevel>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalDependencies>xinput.lib;libcurl.lib;libsigc++.lib;libyaml.lib;zipstatic.lib;OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;rpcrt4.lib;urlmon.lib;Ws2_32.lib;Wldap32.lib;%(AdditionalDependencies)</AdditionalDependencies>

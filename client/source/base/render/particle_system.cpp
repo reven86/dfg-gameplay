@@ -175,7 +175,7 @@ bool ParticleSubSystem::loadFromProperties(gameplay::Properties * properties)
     }
 
     RefPtr<const SpriteBatchAsset> spriteBatchAsset = SpriteBatchAsset::getCache().load(properties->getString("material"));
-    spriteBatch = spriteBatchAsset ? *spriteBatchAsset : (gameplay::SpriteBatch *) NULL;
+    spriteBatch = spriteBatchAsset ? spriteBatchAsset->get() : (gameplay::SpriteBatch *) NULL;
 
     GP_ASSERT(spriteBatch && spriteBatch->getSampler() && spriteBatch->getSampler()->getTexture());
 
@@ -241,7 +241,6 @@ BaseParticleSystem::BaseParticleSystem()
     , _maxParticles(0)
     , _emitterTransformation(gameplay::Matrix::identity())
     , _maxParticleSize(0.0f)
-    , _scaleFactor(1.0f)
 {
 }
 
@@ -260,6 +259,7 @@ ParticleSystem::ParticleSystem()
     , _flags(0)
     , _updatePeriod(0.025f)
     , _updateTimer(0)
+    , _colorModulator(gameplay::Vector4::one())
 {
     _renderService = ServiceManager::getInstance()->findService< RenderService >();
 }
@@ -347,20 +347,16 @@ void ParticleSystem::reset()
     _isStopped = false;
 }
 
-void ParticleSystem::render(const gameplay::Vector4& modulator) const
+unsigned int ParticleSystem::draw(bool wireframe) const
 {
-    PROFILE("ParticleSystem::Render", "Render");
+    PROFILE("ParticleSystem::draw", "Render");
 
-#pragma message ("FIXME: associate ParticleSystem with gameplay::Node")
-    //const gameplay::Matrix * transform(&GetTransformation());
     static gameplay::Matrix identityTransform;
-    const gameplay::Matrix * transform(&identityTransform);
+    const gameplay::Matrix * transform(getNode() ? &getNode()->getWorldViewMatrix() : &identityTransform);
 
     _invisibleTimer = 0;
 
-    float scale_kw = getScaleFactor();
-    float scale_kh = getScaleFactor();
-    bool modulateColor = modulator != gameplay::Vector4::one();
+    bool modulateColor = _colorModulator != gameplay::Vector4::one();
 
     ParticlesType::const_iterator pit = _particles.begin();
     for (SystemsType::const_iterator it = _systems.begin(), end_it = _systems.end(); it != end_it; it++)
@@ -368,8 +364,10 @@ void ParticleSystem::render(const gameplay::Vector4& modulator) const
         const ParticleSubSystem& subSystem = *it;
 
         GP_ASSERT(subSystem.spriteBatch && "Material is absent!");
-
         unsigned max_particles = subSystem.max_particles;
+
+        if (_node)
+            subSystem.spriteBatch->setProjectionMatrix(_node->getProjectionMatrix());
         subSystem.spriteBatch->start();
 
         const float& aspect = subSystem.aspect;
@@ -382,19 +380,26 @@ void ParticleSystem::render(const gameplay::Vector4& modulator) const
             {
                 gameplay::Vector3 pos;
                 transform->transformPoint(par.position, &pos);
+                
+                gameplay::Vector3 sizeVector;
+                transform->transformVector(gameplay::Vector3(par.size, par.size, par.size), &sizeVector);
+                float size = sizeVector.length() * 0.707106f;   // we need to ignore stretching in one axis because 
+                                                                // particles are always faced to camera, so use sqrt(0.5f) instead sqrt(0.3333f)
 
                 if (par.color.w != 0)
                     subSystem.spriteBatch->draw(
                     pos.x, pos.y, pos.z,
-                    par.size * scale_kw * aspect, par.size * scale_kh,
+                    size * aspect, size,
                     subSystem.sourceRect.left(), 1.0f - subSystem.sourceRect.bottom(), subSystem.sourceRect.right(), 1.0f - subSystem.sourceRect.top(),
-                    modulateColor ? gameplay::Vector4(modulator.x * par.color.x, modulator.y * par.color.y, modulator.z * par.color.z, modulator.w * par.color.w) : par.color,
+                    modulateColor ? gameplay::Vector4(_colorModulator.x * par.color.x, _colorModulator.y * par.color.y, _colorModulator.z * par.color.z, _colorModulator.w * par.color.w) : par.color,
                     gameplay::Vector2(0.5f, 0.5f), par.angle, true);
             }
         }
 
         subSystem.spriteBatch->finish();
     }
+
+    return static_cast<unsigned int>(_systems.size());
 }
 
 void ParticleSystem::update(float dt)
@@ -535,6 +540,24 @@ bool ParticleSystem::reload()
 
     bool res = loadFromProperties((strlen(properties->getNamespace()) > 0) ? properties : properties->getNextNamespace());
     SAFE_DELETE(properties);
+
+    return res;
+}
+
+ParticleSystem * ParticleSystem::clone(bool deepClone) const
+{
+    ParticleSystem * res = new ParticleSystem();
+    *((BaseParticleSystem *)res) = *this;
+    res->setURL(getURL());
+    res->_systems = _systems;
+    res->_particles = _particles;
+    res->_invisibleTimer = _invisibleTimer;
+    res->_framesToUpdate = _framesToUpdate;
+    res->_flags = _flags;
+    res->_updatePeriod = _updatePeriod;
+    res->_updateTimer = _updateTimer;
+    res->_renderService = _renderService;
+    res->_colorModulator = _colorModulator;
 
     return res;
 }
