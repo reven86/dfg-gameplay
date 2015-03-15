@@ -112,6 +112,8 @@ LOCAL_SRC_FILES := \
     base/main/gameplay_assets.cpp \
     base/main/memory_stream.cpp \
     base/main/zip_package.cpp \
+    base/main/zip_packages.cpp \
+    base/main/zip_stream.cpp \
     base/render/particle_system.cpp \
     base/services/debug_service.cpp \
     base/services/input_service.cpp \
