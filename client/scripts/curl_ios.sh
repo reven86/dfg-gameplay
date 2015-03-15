@@ -1,13 +1,11 @@
-export CC="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2"
-export CFLAGS="-arch armv7 -arch armv7s -pipe -Os -gdwarf-2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
-export LDFLAGS="-arch armv7 -arch armv7s -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
-curl -O http://curl.haxx.se/download/curl-7.30.0.tar.gz
-tar -xzf curl-7.30.0.tar.gz
+#curl -O http://curl.haxx.se/download/curl-7.30.0.tar.gz
+#tar -xzf curl-7.30.0.tar.gz
 cd curl-7.30.0
-export CFLAGS="-arch armv7 -arch armv7s -arch i386 -pipe -Os -gdwarf-2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
-export LDFLAGS="-arch armv7 -arch armv7s -arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
-./configure --disable-shared --enable-static --disable-dependency-tracking --host=armv7-apple-darwin
-export CC="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/llvm-gcc-4.2"
-export CFLAGS="-arch armv7 -arch armv7s -arch i386 -pipe -Os -gdwarf-2 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
-export LDFLAGS="-arch armv7 -arch armv7s -arch i386 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS6.1.sdk"
-./configure --disable-shared --enable-static --disable-dependency-tracking --host=armv7-apple-darwin
+DEVROOT=/Applications/Xcode.app/Contents/Developer
+SDKROOT=$DEVROOT/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk
+export IPHONEOS_DEPLOYMENT_TARGET="4.3"
+export CC="$DEVROOT/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+export CFLAGS="-arch arm64 -pipe -Os -gdwarf-2 -isysroot $SDKROOT"
+export LDFLAGS="-arch arm64 -isysroot $SDKROOT"
+./configure --disable-shared --enable-static --host=armv7-apple-darwin
+make -j4
