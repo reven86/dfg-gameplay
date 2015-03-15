@@ -30,7 +30,7 @@ public:
 
     static const char * getTypeName() { return "DebugService"; }
 
-    void setup(gameplay::SpriteBatch * whiteSprite, gameplay::Font * font, float scale = 1.0f);
+    void setup(gameplay::SpriteBatch * whiteSprite, gameplay::Font * font, float fontSize);
 
     void showProfiler(bool show) { _showProfiler = show; };
     bool isProfilerVisible() const { return _showProfiler; };

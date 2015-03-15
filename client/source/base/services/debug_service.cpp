@@ -21,12 +21,12 @@ DebugService::~DebugService()
 {
 }
 
-void DebugService::setup(gameplay::SpriteBatch * whiteSprite, gameplay::Font * font, float scale)
+void DebugService::setup(gameplay::SpriteBatch * whiteSprite, gameplay::Font * font, float fontSize)
 {
     _whiteSprite = whiteSprite;
     _systemFont.reset(font);
     font->addRef();
-    _fontSize = font->getSize() * scale;
+    _fontSize = fontSize;
 }
 
 bool DebugService::onPreInit()
@@ -81,6 +81,6 @@ void DebugService::drawFPS() const
 
 #ifndef __DISABLE_PROFILER__
     if( _showProfiler )
-        Profiler::getInstance()->drawPerformanceInfo( _systemFont, _whiteSprite, _fontSize * 0.5f );
+        Profiler::getInstance()->drawPerformanceInfo( _systemFont, _whiteSprite, _fontSize );
 #endif
 }
