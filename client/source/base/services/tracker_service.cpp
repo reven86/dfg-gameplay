@@ -297,10 +297,11 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
 
 void TrackerService::sendView(const char * screenName)
 {
-    if (_currentView == screenName)
+    std::string newView(urlEncode(screenName));
+    if (_currentView == newView)
         return;
 
-    _currentView = urlEncode(screenName);
+    _currentView = newView;
     sendData("t=appview&cd=%s", _currentView.c_str());
 }
 
