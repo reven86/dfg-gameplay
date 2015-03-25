@@ -47,8 +47,8 @@ static const wchar_t * UTF8ToWCS(const char * str);
 static const wchar_t * ANSIToWCS(const char * str);
 
 
-//! Portable swprintf version. Nested calls are not allowed. Max 2048 chars.
-static const wchar_t * format(const wchar_t * fmt, ...);
+//! Wrapper around sprintf. Nested calls are not allowed. Max 2048 chars.
+static const char * format(const char * fmt, ...);
 
 
 //! Clip text to bounds inserting '...' if text is too long.

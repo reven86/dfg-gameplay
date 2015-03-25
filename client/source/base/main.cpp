@@ -28,7 +28,7 @@ extern struct android_app* __state;
 
 
 DfgGame::DfgGame()
-: _hyperKeyPressed(false)
+    : _hyperKeyPressed(false)
 {
 }
 

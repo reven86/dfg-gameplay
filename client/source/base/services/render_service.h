@@ -13,7 +13,7 @@
  *  Render clicks are gathered into RenderStep.
  */
 
-class RenderClick : public gameplay::Ref, Noncopyable
+class RenderClick : Noncopyable
 {
     bool _active;
     std::function<void()> _renderFn;

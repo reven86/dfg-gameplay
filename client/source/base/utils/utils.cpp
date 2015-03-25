@@ -60,7 +60,7 @@ const UChar * Utils::WCSToUString(const wchar_t * str)
 
 const wchar_t * Utils::UTF8ToWCS(const char * str)
 {
-    UChar valueUni[ 1024 ];
+    static UChar valueUni[ 1024 ];
     int32_t length = 0;
     UErrorCode error = U_ZERO_ERROR;
     u_strFromUTF8( valueUni, 1024, &length, str, -1, &error );
@@ -90,34 +90,18 @@ const wchar_t * Utils::ANSIToWCS(const char * str)
 
 
 
-const wchar_t * Utils::format(const wchar_t * fmt, ...)
+const char * Utils::format(const char * fmt, ...)
 {
-    static wchar_t result[ 2048 ];
-
-    int32_t length = 0;
-    UErrorCode error = U_ZERO_ERROR;
-
-    UChar ufmt[ 2048 ];
-    u_strFromWCS( ufmt, 2048, &length, fmt, -1, &error );
-
-    if( U_FAILURE( error ) )
-        return L"Error!";
+    static char result[ 2048 ];
 
     va_list args;
     va_start(args, fmt);
 
-    UChar buffer[ 2048 ];
-    error = U_ZERO_ERROR;
-    u_vformatMessage( "en_US", ufmt, -1, buffer, 2048, args, &error );
-
-    if( U_FAILURE( error ) )
-        return L"Error!";
-
-    error = U_ZERO_ERROR;
-    u_strToWCS( result, 2048, &length, buffer, -1, &error );
-
-    if( U_FAILURE( error ) )
-        return L"Error!";
+#ifdef WIN32
+    _vsnprintf(result, 2048, fmt, args);
+#else
+    vsnprintf(result, 2048, fmt, args);
+#endif
 
     va_end(args);
 
