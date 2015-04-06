@@ -250,3 +250,10 @@ void DfgGame::cancelAllLocalNotifications()
 #endif
 #endif
 }
+
+void DfgGame::preventFromSleeping(bool prevent)
+{
+#ifdef __APPLE__
+    [UIApplication sharedApplication].idleTimerDisabled = prevent ? YES : NO;
+#endif
+}

@@ -16,6 +16,8 @@ protected:
 public:
     DfgGame();
 
+    static DfgGame * getInstance() { return static_cast<DfgGame *>(gameplay::Game::getInstance()); };
+
     const char * getUserDataFolder() const { return _userFolder.c_str(); };
     const char * getGameLocale() const { return _gameLocale.c_str(); };
 
@@ -31,6 +33,10 @@ public:
     /** Cancel all local notification.
      */
     virtual void cancelAllLocalNotifications();
+
+    /** Prevent device from sleeping.
+     */
+    virtual void preventFromSleeping(bool prevent);
 
 protected:
     void initialize();
