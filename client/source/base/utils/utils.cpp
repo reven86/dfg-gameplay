@@ -151,7 +151,11 @@ void Utils::deserializeString(gameplay::Stream * stream, std::string& str)
 {
     str.clear();
     int32_t size = 0;
-    stream->read(&size, sizeof(size), 1);
+    if (stream->read(&size, sizeof(size), 1) != 1)
+        return;
+
+    if (size < 0 || size > 65535)
+        return; // something wrong with data
 
     char * buf = reinterpret_cast<char *>(alloca(sizeof(char)* (size + 1)));
     if (buf)
