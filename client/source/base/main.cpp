@@ -22,6 +22,7 @@
 
 #ifdef __ANDROID__
 #include <android_native_app_glue.h>
+#include <android/window.h>
 extern struct android_app* __state;
 #endif
 
@@ -92,7 +93,7 @@ void DfgGame::initialize()
     jint id = env->CallIntMethod(jResource, midGetIdentifier, languageVar, TypeName, packageName);
 
     jmethodID midGetAppName = env->GetMethodID(resource_Class, "getString", "(I)Ljava/lang/String;");
-    jstring language = env->CallObjectMethod(jResource, midGetAppName, id);
+    jstring language = (jstring) env->CallObjectMethod(jResource, midGetAppName, id);
 
     const char * lng = env->GetStringUTFChars(language, NULL);
     if (lng)
@@ -253,7 +254,13 @@ void DfgGame::cancelAllLocalNotifications()
 
 void DfgGame::preventFromSleeping(bool prevent)
 {
-#ifdef __APPLE__
+#if defined(__APPLE__)
     [UIApplication sharedApplication].idleTimerDisabled = prevent ? YES : NO;
+#elif defined(__ANDROID__)
+    ANativeActivity* activity = __state->activity;
+    if (prevent)
+        ANativeActivity_setWindowFlags(activity, AWINDOW_FLAG_KEEP_SCREEN_ON, 0);
+    else
+        ANativeActivity_setWindowFlags(activity, 0, AWINDOW_FLAG_KEEP_SCREEN_ON);
 #endif
 }
