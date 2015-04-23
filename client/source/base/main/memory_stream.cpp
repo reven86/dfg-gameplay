@@ -136,5 +136,6 @@ bool MemoryStream::seek(long int offset, int origin)
         break;
     }
 
+    GP_ASSERT(_cursor <= _bufferSize);
     return _cursor <= _bufferSize;
 }
