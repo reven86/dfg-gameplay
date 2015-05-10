@@ -10,7 +10,6 @@
 bool TrackerService::_threadForceQuit = false;
 int TrackerService::_dispatchPeriod = 1000;
 int TrackerService::_dispatchRate = 1;
-std::auto_ptr< std::thread > TrackerService::_dispatchThread;
 
 TrackerService::TrackerService(const ServiceManager * manager)
     : Service(manager)

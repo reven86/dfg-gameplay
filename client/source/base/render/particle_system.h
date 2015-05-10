@@ -279,7 +279,7 @@ class ParticleSystem : public BaseParticleSystem, public Asset
     float _updateTimer;
     gameplay::Vector4 _colorModulator;
 
-    static Cache< ParticleSystem > _cache;
+    static Cache< ParticleSystem > * _cache;
 
     class RenderService * _renderService;
 
@@ -291,7 +291,12 @@ public:
 
     // copy constructor and assignment operator are fine.
 
-    static Cache< ParticleSystem >& getCache() { return _cache; };
+    static Cache< ParticleSystem >& getCache()
+    {
+        if (!_cache)
+            _cache = Cache< ParticleSystem >::create();
+        return *_cache;
+    }
 
     static ParticleSystem * create(const char * url);
 

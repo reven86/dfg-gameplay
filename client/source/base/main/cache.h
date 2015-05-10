@@ -6,38 +6,65 @@
 
 
 
+class CacheBase : Noncopyable
+{
+    sigc::connection _cachesConnection;
+
+public:
+    virtual ~CacheBase() { _cachesConnection.disconnect(); };
+
+    //! Remove all assets.
+    virtual void clear() = 0;
+
+    //! Reload all asset.
+    virtual void reloadAll() = 0;
+};
+
+
+
 /*! \brief %Caches holder.
- *
- *	Holds all caches and manages them.
- *
- *	\author Andrew "RevEn" Karpushin
- */
+*
+*	Holds all caches and manages them.
+*
+*	\author Andrew "RevEn" Karpushin
+*/
 
 class Caches : public Singleton< Caches >
 {
     friend class Singleton< Caches >;
 
-public:
-    //! Clear callback function.
-    typedef sigc::signal< void > ClearCallbacksType;
+    std::vector< CacheBase * > _registeredCaches;
 
 private:
-    ClearCallbacksType _clearCallbacks;
-
-private:
-    Caches() { };
-    ~Caches() { };
+    Caches() {};
+    ~Caches() {};
 
 public:
-    //! Get/Set clear callbacks.
-    ClearCallbacksType& clearCallbacks() { return _clearCallbacks; };
+    //! Unload resources from all caches.
+    void flushAll()
+    {
+        std::for_each(_registeredCaches.begin(), _registeredCaches.end(), std::mem_fun(&CacheBase::clear));
+    }
 
-public:
-    //! Flush all caches.
-    void flushAll() { _clearCallbacks(); };
+    //! Register new cache object.
+    void registerCacheObject(CacheBase * obj)
+    {
+        GP_ASSERT(std::find(_registeredCaches.begin(), _registeredCaches.end(), obj) == _registeredCaches.end());
+        _registeredCaches.push_back(obj);
+    }
+
+    /** Destroy all caches.
+     *  As a result all caches with their assets will be unloaded and memory will be freed.
+     *  This method must be called at the finilization state of the program to avoid memory leaks.
+     */
+    void destroyAll()
+    {
+        for (CacheBase * cache : _registeredCaches)
+            SAFE_DELETE(cache);
+
+        _registeredCaches.clear();
+    }
 };
-
-
 
 
 
@@ -49,19 +76,21 @@ public:
  */
 
 template< class T >
-class Cache : Noncopyable
+class Cache : public CacheBase
 {
     typedef std::unordered_map< std::string, RefPtr< const T > > ResourcesType;
     ResourcesType _resources;
 
-    sigc::connection _cachesConnection;
+private:
+    Cache() { };
 
 public:
-    //! Constructs empty cache.
-    Cache() {};
-
-    //! Destructs cache object and unloads all loaded resources.
-    ~Cache() { clear(); _cachesConnection.disconnect(); };
+    static Cache<T> * create()
+    {
+        Cache<T> * res = new Cache<T>();
+        Caches::getInstance()->registerCacheObject(res);
+        return res;
+    }
 
     /*!	\brief Register new asset.
      *
@@ -74,10 +103,6 @@ public:
      */
     RefPtr< const T > load(const char * url)
     {
-        if (!_cachesConnection.connected())
-            _cachesConnection = Caches::getInstance()->clearCallbacks().connect(
-            sigc::mem_fun(this, &Cache< T >::clear));
-
         std::string lowerName(url);
         std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
             std::bind2nd(std::ptr_fun(&std::tolower< char >), std::locale("")));
@@ -125,18 +150,19 @@ public:
     };
 
     //! Remove all assets.
-    void clear()
+    virtual void clear()
     {
         _resources.clear();
     };
 
     //! Reload all asset.
-    void reloadAll()
+    virtual void reloadAll()
     {
         for (typename ResourcesType::iterator it = _resources.begin(), end_it = _resources.end(); it != end_it; it++)
             const_cast<T *>((*it).second.get())->reload();
     }
 };
+
 
 
 

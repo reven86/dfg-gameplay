@@ -113,7 +113,7 @@ void DfgGame::initialize()
 void DfgGame::finalize()
 {
     ServiceManager::getInstance()->shutdown();
-    Caches::getInstance()->flushAll();
+    Caches::getInstance()->destroyAll();
 
     u_cleanup();
 }

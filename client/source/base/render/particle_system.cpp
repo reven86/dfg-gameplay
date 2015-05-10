@@ -84,7 +84,7 @@ void ParticleSubSystem::spawnParticle(Particle& p, const gameplay::Matrix& trans
 bool ParticleSubSystem::loadFloatCurveFromProperties(gameplay::Properties * properties, Curve< float > * curve) const
 {
     const char* name;
-    while ((name = properties->getNextProperty()))
+    while ((name = properties->getNextProperty()) != 0)
     {
         if (strcmp(name, "key") == 0)
         {
@@ -107,7 +107,7 @@ bool ParticleSubSystem::loadFloatCurveFromProperties(gameplay::Properties * prop
 bool ParticleSubSystem::loadColorCurveFromProperties(gameplay::Properties * properties, Curve< gameplay::Vector4 > * curve) const
 {
     const char* name;
-    while ((name = properties->getNextProperty()))
+    while ((name = properties->getNextProperty()) != 0)
     {
         if (strcmp(name, "key") == 0)
         {
@@ -140,7 +140,7 @@ bool ParticleSubSystem::loadFromProperties(gameplay::Properties * properties)
 
     // Go through all the particle system properties and create subsystem under this system.
     gameplay::Properties* curveProperties = NULL;
-    while (curveProperties = properties->getNextNamespace())
+    while ((curveProperties = properties->getNextNamespace()) != 0)
     {
         if (strcmp(curveProperties->getNamespace(), "size_curve") == 0)
         {
@@ -251,7 +251,7 @@ BaseParticleSystem::BaseParticleSystem()
 // ParticleSystem
 //
 
-Cache< ParticleSystem > ParticleSystem::_cache;
+Cache< ParticleSystem > * ParticleSystem::_cache = nullptr;
 
 ParticleSystem::ParticleSystem()
     : _invisibleTimer(0)
@@ -583,7 +583,7 @@ bool ParticleSystem::loadFromProperties(gameplay::Properties * properties)
 
     // Go through all the particle system properties and create subsystem under this system.
     gameplay::Properties* subsystemProperties = NULL;
-    while ((subsystemProperties = properties->getNextNamespace()))
+    while ((subsystemProperties = properties->getNextNamespace()) != 0)
     {
         if (strcmp(subsystemProperties->getNamespace(), "subsystem") == 0)
         {

@@ -10,7 +10,7 @@
 // PropertiesAsset
 //
 
-Cache< PropertiesAsset > PropertiesAsset::_cache;
+Cache< PropertiesAsset > * PropertiesAsset::_cache = nullptr;
 
 PropertiesAsset::PropertiesAsset()
     : _properties(NULL)
@@ -53,7 +53,7 @@ bool PropertiesAsset::reload()
 // SpriteBatchAsset
 //
 
-Cache< SpriteBatchAsset > SpriteBatchAsset::_cache;
+Cache< SpriteBatchAsset > * SpriteBatchAsset::_cache = nullptr;
 
 SpriteBatchAsset::SpriteBatchAsset()
     : _spriteBatch(NULL)

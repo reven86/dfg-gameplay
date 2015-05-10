@@ -36,7 +36,7 @@ class TrackerService : public Service
     std::string _appVersion;    // cached app version
     std::string _currentView;
 
-    static std::auto_ptr< std::thread > _dispatchThread;
+    std::unique_ptr< std::thread > _dispatchThread;
     std::mutex _payloadQueueMutex;
     std::mutex _dispatchMutex;
     static bool _threadForceQuit;

@@ -14,7 +14,7 @@ class PropertiesAsset : public Asset
 {
     gameplay::Properties * _properties;
 
-    static Cache< PropertiesAsset > _cache;
+    static Cache< PropertiesAsset > * _cache;
 
 protected:
     PropertiesAsset();
@@ -22,7 +22,12 @@ protected:
 public:
     virtual ~PropertiesAsset();
 
-    static Cache< PropertiesAsset >& getCache() { return _cache; };
+    static Cache< PropertiesAsset >& getCache()
+    {
+        if (!_cache)
+            _cache = Cache< PropertiesAsset >::create();
+        return *_cache;
+    }
 
     /** Load Properties from url.
      */
@@ -55,7 +60,7 @@ class SpriteBatchAsset : public Asset
 {
     gameplay::SpriteBatch * _spriteBatch;
 
-    static Cache< SpriteBatchAsset > _cache;
+    static Cache< SpriteBatchAsset > * _cache;
 
 protected:
     SpriteBatchAsset();
@@ -63,7 +68,12 @@ protected:
 public:
     virtual ~SpriteBatchAsset();
 
-    static Cache<SpriteBatchAsset>& getCache() { return _cache; };
+    static Cache<SpriteBatchAsset>& getCache()
+    {
+        if (!_cache)
+            _cache = Cache< SpriteBatchAsset >::create();
+        return *_cache;
+    }
 
     /** Load SpriteBatch from url.
     */
@@ -98,7 +108,7 @@ class GameplayRefAsset : public Asset
 {
     RefPtr< _Type > _asset;
 
-    static Cache< GameplayRefAsset< _Type > > _cache;
+    static Cache< GameplayRefAsset< _Type > > * _cache;
 
 protected:
     GameplayRefAsset() {};
@@ -106,7 +116,12 @@ protected:
 public:
     virtual ~GameplayRefAsset() {};
 
-    static Cache< GameplayRefAsset< _Type > >& getCache() { return _cache; };
+    static Cache< GameplayRefAsset< _Type > >& getCache()
+    {
+        if (!_cache)
+            _cache = Cache< GameplayRefAsset< _Type > >::create();
+        return *_cache;
+    }
 
     /** Load FontAsset from url.
     */
