@@ -33,10 +33,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     struct zip_stat st;
     zip_stat_init(&st);
     if (zip_stat(_zipFile.get(), fullPath.c_str(), 0, &st) != 0)
-    {
-        GP_WARN("Can't open file %s", path);
         return NULL;
-    }
 
     //Alloc memory for its uncompressed contents
     size_t fileSize = static_cast<size_t>(st.size);
@@ -45,10 +42,8 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     //Read the compressed file
     zip_file *f = zip_fopen(_zipFile.get(), fullPath.c_str(), 0);
     if (!f)
-    {
-        GP_WARN("Can't open file %s", path);
         return NULL;
-    }
+
     zip_fread(f, contents.get(), fileSize);
     zip_fclose(f);
 
