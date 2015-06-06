@@ -60,7 +60,7 @@ public:
     _Service * findService() const { return static_cast<_Service *>(findService(_Service::getTypeName())); }
 
     //! Get frame time in seconds.
-    float getFrameTime() const { return _elapsedTime; };
+    float getFrameElapsedTime() const { return _elapsedTime; };
 
     //! Shutdown all services.
     void shutdown();

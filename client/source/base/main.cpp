@@ -120,7 +120,7 @@ void DfgGame::finalize()
 
 void DfgGame::update(float elapsedTime)
 {
-    ServiceManager::getInstance()->update(elapsedTime * 0.001f);
+    ServiceManager::getInstance()->update(elapsedTime);
 }
 
 void DfgGame::render(float /*elapsedTime*/)

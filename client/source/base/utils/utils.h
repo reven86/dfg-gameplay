@@ -59,7 +59,7 @@ static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const
 static void serializeString(gameplay::Stream * stream, const std::string& str);
 
 /// Deserialize string from stream.
-static void deserializeString(gameplay::Stream * stream, std::string& str);
+static void deserializeString(gameplay::Stream * stream, std::string * str);
 
 
 };

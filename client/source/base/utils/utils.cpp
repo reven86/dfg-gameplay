@@ -147,9 +147,8 @@ void Utils::serializeString(gameplay::Stream * stream, const std::string& str)
     stream->write(str.c_str(), sizeof(char), size);
 }
 
-void Utils::deserializeString(gameplay::Stream * stream, std::string& str)
+void Utils::deserializeString(gameplay::Stream * stream, std::string * str)
 {
-    str.clear();
     int32_t size = 0;
     if (stream->read(&size, sizeof(size), 1) != 1)
         return;
@@ -162,6 +161,10 @@ void Utils::deserializeString(gameplay::Stream * stream, std::string& str)
     {
         stream->read(buf, sizeof(char), size);
         buf[size] = '\0';
-        str = buf;
+        if (str)
+        {
+            str->clear();
+            *str = buf;
+        }
     }
 }
