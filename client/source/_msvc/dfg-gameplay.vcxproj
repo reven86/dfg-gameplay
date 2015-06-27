@@ -68,12 +68,14 @@
     <ClCompile Include="..\base\main\zip_stream.cpp" />
     <ClCompile Include="..\base\render\particle_system.cpp" />
     <ClCompile Include="..\base\services\debug_service.cpp" />
+    <ClCompile Include="..\base\services\httprequest_service.cpp" />
     <ClCompile Include="..\base\services\input_service.cpp" />
     <ClCompile Include="..\base\services\render_service.cpp" />
     <ClCompile Include="..\base\services\service.cpp" />
     <ClCompile Include="..\base\services\service_manager.cpp" />
     <ClCompile Include="..\base\services\social_service.cpp" />
     <ClCompile Include="..\base\services\storefront_service.cpp" />
+    <ClCompile Include="..\base\services\taskqueue_service.cpp" />
     <ClCompile Include="..\base\services\tracker_service.cpp" />
     <ClCompile Include="..\base\utils\profiler.cpp" />
     <ClCompile Include="..\base\utils\singleton.cpp" />
@@ -95,6 +97,7 @@
     <ClInclude Include="..\base\main\zip_stream.h" />
     <ClInclude Include="..\base\render\particle_system.h" />
     <ClInclude Include="..\base\services\debug_service.h" />
+    <ClInclude Include="..\base\services\httprequest_service.h" />
     <ClInclude Include="..\base\services\input_service.h" />
     <ClInclude Include="..\base\services\render_service.h" />
     <ClInclude Include="..\base\services\service.h" />
@@ -102,6 +105,7 @@
     <ClInclude Include="..\base\services\signals.h" />
     <ClInclude Include="..\base\services\social_service.h" />
     <ClInclude Include="..\base\services\storefront_service.h" />
+    <ClInclude Include="..\base\services\taskqueue_service.h" />
     <ClInclude Include="..\base\services\tracker_service.h" />
     <ClInclude Include="..\base\utils\curve.h" />
     <ClInclude Include="..\base\utils\noncopyable.h" />

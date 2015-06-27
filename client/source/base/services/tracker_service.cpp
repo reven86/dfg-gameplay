@@ -428,16 +428,7 @@ void TrackerService::sendData(const char * format, ...)
 
 const char * TrackerService::urlEncode(const char * str)
 {
-    static std::string res[16];
-    static int resInd = 0;
-    char * escapedStr = curl_easy_escape(_curl, str, static_cast<int>(strlen(str)));
-    res[resInd] = escapedStr;
-    const char * resStr = res[resInd].c_str();
-    resInd = (resInd + 1) & 15;
-
-    curl_free(escapedStr);
-
-    return resStr;
+    return Utils::urlEncode(str);
 }
 
 void TrackerService::dispatchThreadProc(void * arg)

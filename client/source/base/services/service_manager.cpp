@@ -89,6 +89,7 @@ void ServiceManager::shutdown()
             (*it)->service->setState(Service::SHUTTING_DOWN);
 
     _state = Service::SHUTTING_DOWN;
+    signals.serviceManagerStateChangedEvent(_state);
     while (_state != Service::COMPLETE)
         update(_elapsedTime);
 
@@ -125,5 +126,8 @@ void ServiceManager::update(float elapsedTime)
     }
 
     if (allCompleted)
+    {
         _state = static_cast<Service::State>(_state + 1);
+        signals.serviceManagerStateChangedEvent(_state);
+    }
 }

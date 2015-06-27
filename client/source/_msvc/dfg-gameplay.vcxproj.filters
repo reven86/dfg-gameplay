@@ -62,6 +62,12 @@
     <ClCompile Include="..\base\main\zip_stream.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\services\taskqueue_service.cpp">
+      <Filter>base\services</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\services\httprequest_service.cpp">
+      <Filter>base\services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -143,6 +149,12 @@
     </ClInclude>
     <ClInclude Include="..\base\main\zip_stream.h">
       <Filter>base\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\services\taskqueue_service.h">
+      <Filter>base\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\services\httprequest_service.h">
+      <Filter>base\services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

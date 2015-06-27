@@ -77,7 +77,7 @@ const wchar_t * Utils::UTF8ToWCS(const char * str)
 
 const wchar_t * Utils::ANSIToWCS(const char * str)
 {
-    static wchar_t result[ 2048 ];
+    static wchar_t result[2048];
 
     wchar_t * o = result;
     while( *str )
@@ -92,7 +92,11 @@ const wchar_t * Utils::ANSIToWCS(const char * str)
 
 const char * Utils::format(const char * fmt, ...)
 {
-    static char result[ 2048 ];
+    static char results[16][2048];
+    static int resInd = 0;
+
+    char * result = results[resInd];
+    resInd = (resInd + 1) & 15;
 
     va_list args;
     va_start(args, fmt);
@@ -108,6 +112,40 @@ const char * Utils::format(const char * fmt, ...)
     return result;
 }
 
+
+const char * Utils::urlEncode(const char * src)
+{
+    static std::string res[16];
+    static int resInd = 0;
+
+    std::string& result = res[resInd];
+    resInd = (resInd + 1) & 15;
+
+    result.clear();
+
+    static char hexmap[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+    int max = strlen(src);
+    for (int i = 0; i < max; i++, src++)
+    {
+        if (('0' <= *src && *src <= '9') ||
+            ('A' <= *src && *src <= 'Z') ||
+            ('a' <= *src && *src <= 'z') ||
+            (*src == '~' || *src == '-' || *src == '_' || *src == '.')
+            )
+        {
+            result.push_back(*src);
+        }
+        else
+        {
+            result.push_back('%');
+            result.push_back(hexmap[(unsigned char)(*src) >> 4]);
+            result.push_back(hexmap[*src & 0x0F]);
+        }
+    }
+
+    return result.c_str();
+}
 
 
 
@@ -166,5 +204,49 @@ void Utils::deserializeString(gameplay::Stream * stream, std::string * str)
             str->clear();
             *str = buf;
         }
+    }
+}
+
+void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
+{
+    if (!control)
+        return;
+
+    // the actual scaling
+    if (!control->isXPercentage())
+        control->setX(control->getX() * kx);
+    if (!control->isYPercentage())
+        control->setY(control->getY() * ky);
+    if (!control->isWidthPercentage() && (control->getAutoSize() & gameplay::Control::AUTO_SIZE_WIDTH) == 0)
+        control->setWidth(control->getWidth() * kx);
+    if (!control->isHeightPercentage() && (control->getAutoSize() & gameplay::Control::AUTO_SIZE_HEIGHT) == 0)
+        control->setHeight(control->getHeight() * ky);
+
+    const gameplay::Theme::Border& border = control->getBorder();
+    const gameplay::Theme::Margin& margin = control->getMargin();
+    const gameplay::Theme::Padding& padding = control->getPadding();
+    control->setBorder(border.top * ky, border.bottom * ky, border.left * kx, border.right * kx);
+    control->setMargin(margin.top * ky, margin.bottom * ky, margin.left * kx, margin.right * kx);
+    control->setPadding(padding.top * ky, padding.bottom * ky, padding.left * kx, padding.right * kx);
+
+    control->setFontSize(ky * control->getFontSize());
+
+    if (strcmp(control->getTypeName(), "Slider") == 0)
+        static_cast<gameplay::Slider *>(control)->setScaleFactor(ky);
+
+    if (strcmp(control->getTypeName(), "ImageControl") == 0)
+    {
+        gameplay::ImageControl * image = static_cast< gameplay::ImageControl * >(control);
+        const gameplay::Rectangle& dstRegion = image->getRegionDst();
+        image->setRegionDst(dstRegion.x * kx, dstRegion.y * ky, dstRegion.width * kx, dstRegion.height * ky);
+    }
+
+    if (strcmp(control->getTypeName(), "Container") == 0)
+    {
+        gameplay::Container * container = static_cast<gameplay::Container *>(control);
+
+        const std::vector< gameplay::Control * >& children = container->getControls();
+        for (unsigned j = 0; j < children.size(); j++)
+            scaleUIControl(children[j], kx, ky);
     }
 }

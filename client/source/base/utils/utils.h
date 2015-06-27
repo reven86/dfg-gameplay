@@ -51,8 +51,13 @@ static const wchar_t * ANSIToWCS(const char * str);
 static const char * format(const char * fmt, ...);
 
 
+/// UrlEncode string. Nested calls are not allowed.
+static const char * urlEncode(const char * src);
+
+
 //! Clip text to bounds inserting '...' if text is too long.
 static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize);
+
 
 
 /// Serialize string to stream.
@@ -60,6 +65,13 @@ static void serializeString(gameplay::Stream * stream, const std::string& str);
 
 /// Deserialize string from stream.
 static void deserializeString(gameplay::Stream * stream, std::string * str);
+
+
+
+/** Recursively scale gameplay::Control and all its children by some factors.
+ *  The margin, padding and border are scaled as well.
+ */
+static void scaleUIControl(gameplay::Control * control, float kx, float ky);
 
 
 };

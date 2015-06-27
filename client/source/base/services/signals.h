@@ -31,6 +31,12 @@ struct Signals : Noncopyable
     sigc::signal< void > resumeEvent;
 
     //
+    // ServiceManager
+    //
+
+    sigc::signal< void, const Service::State& > serviceManagerStateChangedEvent;
+
+    //
     // SocialService
     //
 
@@ -56,6 +62,14 @@ struct Signals : Noncopyable
     sigc::signal< bool, const char *, int, double, const char * >::accumulated< interruptable_accumulator > storefrontTransactionSucceededEvent;
     sigc::signal< bool, const char *, int, double, const char * >::accumulated< interruptable_accumulator > storefrontTransactionRestoredEvent;
     sigc::signal< bool, const char * >::accumulated< interruptable_accumulator > storefrontIsProductConsumable;
+
+    //
+    // TaskQueueService
+    //
+    sigc::signal< void, int > taskQueueWorkItemLoadedEvent;
+    sigc::signal< void, int > taskQueueWorkItemProcessedEvent;
+    sigc::signal< void, const char * > taskQueueStartedEvent;
+    sigc::signal< void, const char * > taskQueueStoppedEvent;
 };
 
 
