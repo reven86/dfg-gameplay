@@ -23,7 +23,7 @@ class HTTPRequestService : public Service
     {
         std::string url;
         std::string postPayload;
-        std::function<void(int, const char *)> responseCallback;
+        std::function<void(int, const std::string&)> responseCallback;
     };
 
     TaskQueueService * _taskQueueService;
@@ -50,7 +50,7 @@ public:
      *  \param[in] responseCallback Callback functor when response is received.
      *  \return Work item handle.
      */
-    int makeRequest(const char * url, const char * payload, const std::function<void(int, const char *)>& responseCallback);
+    int makeRequest(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback);
 
 private:
     void sendRequest(const Request& request);

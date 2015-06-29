@@ -61,7 +61,7 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequest(const char * url, const char * payload, const std::function<void(int, const char *)>& responseCallback)
+int HTTPRequestService::makeRequest(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback)
 {
     Request request;
     request.url = url;
@@ -75,14 +75,16 @@ int HTTPRequestService::makeRequest(const char * url, const char * payload, cons
 
 void HTTPRequestService::sendRequest(const Request& request)
 {
-    curl_easy_setopt(_curl, CURLOPT_URL, request.url);
+    curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
     curl_easy_setopt(_curl, CURLOPT_POST, !request.postPayload.empty());
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
 
     _response.clear();
 
     CURLcode res = curl_easy_perform(_curl);
-    request.responseCallback(res, _response.c_str());
+    
+    // response is copied by value since callback is invoked on main thread
+    _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, _response));
 }
 
 size_t HTTPRequestService::writeFunction(void *contents, size_t size, size_t nmemb, void *userp)
