@@ -45,6 +45,9 @@ public:
 
     /** Create HTTP request and add it to the outgoing queue.
      *
+     *  Note: Response callback is called from the main thread, so
+     *  there is no need to use synchonization primitives.
+     *
      *  \param[in] url URL to send request to.
      *  \param[in] payload Payload for POST requests or NULL.
      *  \param[in] responseCallback Callback functor when response is received.

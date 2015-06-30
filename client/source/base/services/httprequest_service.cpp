@@ -39,6 +39,7 @@ bool HTTPRequestService::onInit()
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
         curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
         curl_easy_setopt(_curl, CURLOPT_WRITEDATA, this);
+        curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1);
     }
 
     return true;
