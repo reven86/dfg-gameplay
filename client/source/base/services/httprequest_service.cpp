@@ -62,7 +62,7 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequest(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback)
+int HTTPRequestService::makeRequestAsync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback)
 {
     Request request;
     request.url = url;
@@ -72,6 +72,17 @@ int HTTPRequestService::makeRequest(const char * url, const char * payload, cons
 
     // note: request is copied by value
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request));
+}
+
+void HTTPRequestService::makeRequestSync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback)
+{
+    Request request;
+    request.url = url;
+    if (payload)
+        request.postPayload = payload;
+    request.responseCallback = responseCallback;
+
+    sendRequest(request);
 }
 
 void HTTPRequestService::sendRequest(const Request& request)

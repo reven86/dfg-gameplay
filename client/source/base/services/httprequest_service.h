@@ -53,7 +53,15 @@ public:
      *  \param[in] responseCallback Callback functor when response is received.
      *  \return Work item handle.
      */
-    int makeRequest(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback);
+    int makeRequestAsync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback);
+
+    /** Create HTTP request and execute it immediately from calling thread.
+     *
+     *  \param[in] url URL to send request to.
+     *  \param[in] payload Payload for POST requests or NULL.
+     *  \param[in] responseCallback Callback functor when response is received.
+     */
+    void makeRequestSync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback);
 
 private:
     void sendRequest(const Request& request);
