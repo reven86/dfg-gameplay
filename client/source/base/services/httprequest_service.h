@@ -28,6 +28,7 @@ class HTTPRequestService : public Service
 
     TaskQueueService * _taskQueueService;
     std::string _response;
+    std::mutex _requestProcessingMutex;
 
 public:
     HTTPRequestService(const ServiceManager * manager);

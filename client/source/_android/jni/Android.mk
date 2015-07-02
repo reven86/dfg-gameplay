@@ -116,12 +116,14 @@ LOCAL_SRC_FILES := \
     base/main/zip_stream.cpp \
     base/render/particle_system.cpp \
     base/services/debug_service.cpp \
+    base/services/httprequest_service.cpp \
     base/services/input_service.cpp \
     base/services/render_service.cpp \
     base/services/service.cpp \
     base/services/service_manager.cpp \
     base/services/social_service.cpp \
     base/services/storefront_service.cpp \
+    base/services/taskqueue_service.cpp \
     base/services/tracker_service.cpp \
     base/utils/profiler.cpp \
     base/utils/singleton.cpp \

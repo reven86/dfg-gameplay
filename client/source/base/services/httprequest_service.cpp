@@ -87,6 +87,9 @@ void HTTPRequestService::makeRequestSync(const char * url, const char * payload,
 
 void HTTPRequestService::sendRequest(const Request& request)
 {
+    // make sure curl is used only for one thread in any moment
+    std::unique_lock<std::mutex> lock(_requestProcessingMutex);
+
     curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
     curl_easy_setopt(_curl, CURLOPT_POST, !request.postPayload.empty());
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
@@ -94,7 +97,7 @@ void HTTPRequestService::sendRequest(const Request& request)
     _response.clear();
 
     CURLcode res = curl_easy_perform(_curl);
-    
+
     // response is copied by value since callback is invoked on main thread
     _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, _response));
 }

@@ -175,7 +175,7 @@ int TaskQueue::addWorkItem(const std::function<void()>& func)
     std::unique_lock<std::mutex> lock(_queueMutex);
 
     _itemCounter++;
-    _queue.push_back(std::make_pair(_itemCounter, func));
+    _queue.push_back(std::make_pair(_itemCounter.load(), func));
     _queueIsNotEmpty.notify_one();
 
     return _itemCounter;
