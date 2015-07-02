@@ -28,6 +28,8 @@
 		EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F813F1AAB25CD00839018 /* profiler.cpp */; };
 		EB9F81581AAB25CD00839018 /* singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81421AAB25CD00839018 /* singleton.cpp */; };
 		EB9F81591AAB25CD00839018 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81441AAB25CD00839018 /* utils.cpp */; };
+		EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
+		EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -94,6 +96,10 @@
 		EB9F81431AAB25CD00839018 /* singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleton.h; sourceTree = "<group>"; };
 		EB9F81441AAB25CD00839018 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		EB9F81451AAB25CD00839018 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = httprequest_service.cpp; sourceTree = "<group>"; };
+		EBD4BEDB1B45A0C0001AA0D6 /* httprequest_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httprequest_service.h; sourceTree = "<group>"; };
+		EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskqueue_service.cpp; sourceTree = "<group>"; };
+		EBD4BEDD1B45A0C0001AA0D6 /* taskqueue_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taskqueue_service.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +181,10 @@
 		EB9F81291AAB25CD00839018 /* services */ = {
 			isa = PBXGroup;
 			children = (
+				EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */,
+				EBD4BEDB1B45A0C0001AA0D6 /* httprequest_service.h */,
+				EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */,
+				EBD4BEDD1B45A0C0001AA0D6 /* taskqueue_service.h */,
 				EB9F812A1AAB25CD00839018 /* debug_service.cpp */,
 				EB9F812B1AAB25CD00839018 /* debug_service.h */,
 				EB9F812C1AAB25CD00839018 /* input_service.cpp */,
@@ -269,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EB9F814F1AAB25CD00839018 /* debug_service.cpp in Sources */,
+				EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */,
 				EB9F81581AAB25CD00839018 /* singleton.cpp in Sources */,
 				EB9F81531AAB25CD00839018 /* service_manager.cpp in Sources */,
 				EB9F814E1AAB25CD00839018 /* particle_system.cpp in Sources */,
@@ -284,6 +295,7 @@
 				EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */,
 				EB9F81481AAB25CD00839018 /* gameplay_assets.cpp in Sources */,
 				EB9F81561AAB25CD00839018 /* tracker_service.cpp in Sources */,
+				EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */,
 				EB9F814C1AAB25CD00839018 /* zip_stream.cpp in Sources */,
 				EB9F81521AAB25CD00839018 /* service.cpp in Sources */,
 				EB9F814A1AAB25CD00839018 /* zip_package.cpp in Sources */,
