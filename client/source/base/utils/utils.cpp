@@ -74,6 +74,22 @@ const wchar_t * Utils::UTF8ToWCS(const char * str)
 
 
 
+const char * Utils::WCSToUTF8(const wchar_t * str)
+{
+    static UChar valueUni[1024];
+    int32_t length = 0;
+    UErrorCode error = U_ZERO_ERROR;
+    u_strFromWCS(valueUni, 1024, &length, str, -1, &error);
+
+    error = U_ZERO_ERROR;
+    static char value[1024];
+    u_strToUTF8(value, 1024, &length, valueUni, -1, &error);
+
+    return value;
+}
+
+
+
 
 const wchar_t * Utils::ANSIToWCS(const char * str)
 {

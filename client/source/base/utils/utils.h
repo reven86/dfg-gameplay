@@ -43,6 +43,10 @@ static const UChar * WCSToUString(const wchar_t * str);
 static const wchar_t * UTF8ToWCS(const char * str);
 
 
+//! Convert wide-char string to UTF8 one.
+static const char * WCSToUTF8(const wchar_t * str);
+
+
 //! Function to map char * string to wchar_t * one. Works ONLY for ANSI characters. Max 2048 chars.
 static const wchar_t * ANSIToWCS(const char * str);
 
