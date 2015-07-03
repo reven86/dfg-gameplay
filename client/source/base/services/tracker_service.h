@@ -35,6 +35,7 @@ class TrackerService : public Service
     std::string _appName;       // cached app name
     std::string _appVersion;    // cached app version
     std::string _currentView;
+    std::string _userId;           // UserID
 
     std::unique_ptr< std::thread > _dispatchThread;
     std::mutex _payloadQueueMutex;
@@ -85,6 +86,16 @@ public:
 
     void setCustomDimension(const int& id, const char * dimension);
     void setCustomMetric(const int& id, const int& metric);
+
+    /** Set UserID property.
+     *
+     *  UserID is added to every request to GA and helps track user's behavior
+     *  accross different devices.
+     *
+     *  \param[in] userId UserID (or null to remove UserID tracking).
+     */
+    void setUserId(const char * userId);
+    const char * getUserId() const { return _userId.c_str(); };
 
     /*! Immediately send all payloads to analytics server
      *

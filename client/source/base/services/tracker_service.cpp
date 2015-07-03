@@ -237,6 +237,9 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
         _appVersion.c_str(),
         payload.params.c_str());
 
+    if (!_userId.empty())
+        sprintf(finalRequest, "%s&uid=%s", finalRequest, _userId.c_str());
+
     // reset session when time between payloads passed midnight
     time_t time1 = _trackerStartTime + static_cast<int>(_lastPayloadSentTime * 0.001f);
     time_t time2 = _trackerStartTime + static_cast<int>(curTime * 0.001f);
@@ -429,6 +432,11 @@ void TrackerService::sendData(const char * format, ...)
 const char * TrackerService::urlEncode(const char * str)
 {
     return Utils::urlEncode(str);
+}
+
+void TrackerService::setUserId(const char * userId)
+{
+    _userId = userId ? userId : "";
 }
 
 void TrackerService::dispatchThreadProc(void * arg)
