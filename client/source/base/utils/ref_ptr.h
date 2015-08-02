@@ -5,16 +5,14 @@
 
 
 
-/*! \brief Smart pointer to Ref objects.
+/** @brief Smart pointer to Ref objects.
  *
- *	\author Andrew "RevEn" Karpushin
+ *	@author Andrew "RevEn" Karpushin
  */
 
 template< class _Type >
 class RefPtr
 {
-    _Type * _pointer;
-
 public:
     RefPtr()
         : _pointer(NULL)
@@ -108,6 +106,9 @@ public:
     {
         return _pointer;
     };
+
+private:
+    _Type * _pointer;
 };
 
 template< class _Type >

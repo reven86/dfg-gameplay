@@ -5,27 +5,29 @@
 
 
 
-/*! \brief %Singleton base class.
+/** @brief %Singleton base class.
  *
  *  Classes derived from singleton MUST have trivial default constructor and destructor.
  *
- *	\author Andrew "RevEn" Karpushin
+ *	@author Andrew "RevEn" Karpushin
  */
 
 template< class T >
 class Singleton : public Noncopyable
 {
-protected:
-	Singleton					() {};
-	virtual ~Singleton			() {};
-
 public:
-	//! Get an instance.
+	/**
+     * Get an instance.
+     */
 	static T * getInstance		()
 	{
 		static T instance;
 		return &instance;
 	};
+
+protected:
+    Singleton() {};
+    virtual ~Singleton() {};
 };
 
 

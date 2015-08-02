@@ -8,8 +8,6 @@
 
 class CacheBase : Noncopyable
 {
-    sigc::connection _cachesConnection;
-
 public:
     virtual ~CacheBase() { _cachesConnection.disconnect(); };
 
@@ -18,44 +16,46 @@ public:
 
     //! Reload all asset.
     virtual void reloadAll() = 0;
+
+private:
+    sigc::connection _cachesConnection;
 };
 
 
 
-/*! \brief %Caches holder.
-*
-*	Holds all caches and manages them.
-*
-*	\author Andrew "RevEn" Karpushin
-*/
+/** @brief %Caches holder.
+ *
+ *	Holds all caches and manages them.
+ *
+ *	@author Andrew "RevEn" Karpushin
+ */
 
 class Caches : public Singleton< Caches >
 {
     friend class Singleton< Caches >;
 
-    std::vector< CacheBase * > _registeredCaches;
-
-private:
-    Caches() {};
-    ~Caches() {};
-
 public:
-    //! Unload resources from all caches.
+    /**
+     * Unload resources from all caches.
+     */
     void flushAll()
     {
         std::for_each(_registeredCaches.begin(), _registeredCaches.end(), std::mem_fun(&CacheBase::clear));
     }
 
-    //! Register new cache object.
+    /**
+     * Register new cache object.
+     */
     void registerCacheObject(CacheBase * obj)
     {
         GP_ASSERT(std::find(_registeredCaches.begin(), _registeredCaches.end(), obj) == _registeredCaches.end());
         _registeredCaches.push_back(obj);
     }
 
-    /** Destroy all caches.
-     *  As a result all caches with their assets will be unloaded and memory will be freed.
-     *  This method must be called at the finilization state of the program to avoid memory leaks.
+    /**
+     * Destroy all caches.
+     * As a result all caches with their assets will be unloaded and memory will be freed.
+     * This method must be called at the finilization state of the program to avoid memory leaks.
      */
     void destroyAll()
     {
@@ -64,6 +64,12 @@ public:
 
         _registeredCaches.clear();
     }
+
+private:
+    Caches() {};
+    ~Caches() {};
+
+    std::vector< CacheBase * > _registeredCaches;
 };
 
 
@@ -78,12 +84,6 @@ public:
 template< class T >
 class Cache : public CacheBase
 {
-    typedef std::unordered_map< std::string, RefPtr< const T > > ResourcesType;
-    ResourcesType _resources;
-
-private:
-    Cache() { };
-
 public:
     static Cache<T> * create()
     {
@@ -92,14 +92,14 @@ public:
         return res;
     }
 
-    /*!	\brief Register new asset.
+    /**	@brief Register new asset.
      *
      *	Register new asset from file or get existing one.
      *  Assets loaded by this function are constant by default.
      *  If you need to alter asset, make a copy from this one.
      *
-     *	\param	url Asset's URL.
-     *	\return	Returns shared pointer to resource.
+     *	@param	url Asset's URL.
+     *	@return	Returns shared pointer to resource.
      */
     RefPtr< const T > load(const char * url)
     {
@@ -127,12 +127,12 @@ public:
         return (*it).second;
     };
 
-    /*!	\brief Unregister asset.
-    *
-    *	Removes asset from cache.
-    *
-    *	\param	object	Asset object.
-    */
+    /**	@brief Unregister asset.
+     *
+     *	Removes asset from cache.
+     *
+     *	@param	object	Asset object.
+     */
     void remove(RefPtr< T >& object)
     {
         // Linear search used due to rarely function using.
@@ -149,18 +149,28 @@ public:
         }
     };
 
-    //! Remove all assets.
+    /**
+     * Remove all assets.
+     */
     virtual void clear()
     {
         _resources.clear();
     };
 
-    //! Reload all asset.
+    /**
+     * Reload all asset.
+     */
     virtual void reloadAll()
     {
         for (typename ResourcesType::iterator it = _resources.begin(), end_it = _resources.end(); it != end_it; it++)
             const_cast<T *>((*it).second.get())->reload();
     }
+
+private:
+    Cache() { };
+
+    typedef std::unordered_map< std::string, RefPtr< const T > > ResourcesType;
+    ResourcesType _resources;
 };
 
 

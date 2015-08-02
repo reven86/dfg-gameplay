@@ -6,42 +6,43 @@
 
 
 
-/*! \brief Storefront service controls IAPs.
+/** @brief Storefront service controls IAPs.
  */
 
 class StorefrontService : public Service, public gameplay::StoreListener
 {
-    std::vector< gameplay::StoreProduct > _products;
-    std::vector< std::string > _invalidProducts;
+    friend class ServiceManager;
 
 public:
+    static const char * getTypeName() { return "StorefrontService"; }
+
+    void refreshProducts(const char ** productsToHandle);
+
+    /**
+     * Check whether the product is valid or not.
+     *
+     * Invalid products should not be displayed in UI since they indicate
+     * an error in product's configuration in the Store.
+     */
+    bool isProductValid(const char * product) const;
+
+    /**
+     * Get product by its id.
+     *
+     * Return NULL if product information is not available (e.g. no connection).
+     * Call to RefreshProducts invalidates all previously returned products.
+     */
+    const gameplay::StoreProduct * getProduct(const char * product) const;
+
+protected:
     StorefrontService(const ServiceManager * manager);
     virtual ~StorefrontService();
-
-    static const char * getTypeName() { return "StorefrontService"; }
 
     virtual bool onPreInit();
     virtual bool onInit();
     virtual bool onTick();
     virtual bool onShutdown();
 
-    void refreshProducts(const char ** productsToHandle);
-
-    /*! Check whether the product is valid or not.
-     *
-     *  Invalid products should not be displayed in UI since they indicate
-     *  an error in product's configuration in the Store.
-     */
-    bool isProductValid(const char * product) const;
-
-    /*! Get product by its id.
-     *
-     *  Return NULL if product information is not available (e.g. no connection).
-     *  Call to RefreshProducts invalidates all previously returned products.
-     */
-    const gameplay::StoreProduct * getProduct(const char * product) const;
-
-protected:
     /**
      * @see gameplay::StoreListener::getProductsEvent
      */
@@ -76,6 +77,10 @@ protected:
     * @see gameplay::StoreListener::isProductConsumable
     */
     virtual bool isProductConsumable(const char * productID);
+
+private:
+    std::vector< gameplay::StoreProduct > _products;
+    std::vector< std::string > _invalidProducts;
 };
 
 

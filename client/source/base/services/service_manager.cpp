@@ -85,12 +85,12 @@ Service * ServiceManager::findService(const char * name) const
 void ServiceManager::shutdown()
 {
     for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
-        if ((*it)->service->getState() != Service::COMPLETE)
+        if ((*it)->service->getState() != Service::COMPLETED)
             (*it)->service->setState(Service::SHUTTING_DOWN);
 
     _state = Service::SHUTTING_DOWN;
     signals.serviceManagerStateChangedEvent(_state);
-    while (_state != Service::COMPLETE)
+    while (_state != Service::COMPLETED)
         update(_elapsedTime);
 
     cleanup();
@@ -99,7 +99,7 @@ void ServiceManager::shutdown()
 void ServiceManager::update(float elapsedTime)
 {
     _elapsedTime = elapsedTime;
-    if (_state == Service::COMPLETE)
+    if (_state == Service::COMPLETED)
         return;
 
     static bool (Service::* state_funcs[]) () =

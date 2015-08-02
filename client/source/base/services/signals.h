@@ -19,7 +19,7 @@ struct interruptable_accumulator
 };
 
 
-/*! \brief A common registry of all signals. Available through service manager.
+/** @brief A common registry of all signals. Available through service manager.
  */
 struct Signals : Noncopyable
 {

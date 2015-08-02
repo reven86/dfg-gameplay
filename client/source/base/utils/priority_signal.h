@@ -4,7 +4,7 @@
 
 
 
-/*! \brief sigc::signal wrapper that stores slots 
+/*! @brief sigc::signal wrapper that stores slots 
  *  as ordered collection
  */
 template< class _Signal >
@@ -44,17 +44,18 @@ private:
 
 public:
 
-    /** Add a slot to the list of slots.
-    * Any functor or slot may be passed into connect().
-    * It will be converted into a slot implicitely.
-    * The returned iterator may be stored for disconnection
-    * of the slot at some later point. It stays valid until
-    * the slot is removed from the list of slots. The iterator
-    * can also be implicitely converted into a sigc::connection object
-    * that may be used safely beyond the life time of the slot.
-    * @param slot_ The slot to add to the list of slots.
-    * @return An iterator pointing to the new slot in the list.
-    */
+    /** 
+     * Add a slot to the list of slots.
+     * Any functor or slot may be passed into connect().
+     * It will be converted into a slot implicitely.
+     * The returned iterator may be stored for disconnection
+     * of the slot at some later point. It stays valid until
+     * the slot is removed from the list of slots. The iterator
+     * can also be implicitely converted into a sigc::connection object
+     * that may be used safely beyond the life time of the slot.
+     * @param slot_ The slot to add to the list of slots.
+     * @return An iterator pointing to the new slot in the list.
+     */
     iterator connect(int priority, const slot_type& slot_)
     {
         typename slot_data_list_type::iterator it = std::upper_bound( _slotData.begin( ), _slotData.end( ), priority, slot_data_cmp( ) );

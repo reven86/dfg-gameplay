@@ -5,14 +5,6 @@
 
 class DfgGame : public gameplay::Game
 {
-    std::string _userFolder;
-    std::string _gameLocale;
-    bool _hyperKeyPressed;  // WinKey (win), Command (osx)
-
-protected:
-    class RenderService * _renderService;
-    class InputService * _inputService;
-
 public:
     DfgGame();
 
@@ -21,20 +13,23 @@ public:
     const char * getUserDataFolder() const { return _userFolder.c_str(); };
     const char * getGameLocale() const { return _gameLocale.c_str(); };
 
-    /** Schedule local notification.
+    /**
+     * Schedule local notification.
      *
-     *  \param[in]  datetime            Date in time (UNIX timestamp).
-     *  \param[in]  utf8Body            Message text (UTF8).
-     *  \param[in]  utf8ActionButton    Action button's name (UTF8).
-     *  \param[in]  badgeNumber         App icon badge number.
+     * @param[in]  datetime            Date in time (UNIX timestamp).
+     * @param[in]  utf8Body            Message text (UTF8).
+     * @param[in]  utf8ActionButton    Action button's name (UTF8).
+     * @param[in]  badgeNumber         App icon badge number.
      */
     virtual void scheduleLocalNotification(time_t datetime, const char * utf8Body, const char * utf8ActionButton, int badgeNumber = 1, const std::unordered_map< std::string, std::string >& userDictionary = std::unordered_map< std::string, std::string >());
 
-    /** Cancel all local notification.
+    /** 
+     * Cancel all local notification.
      */
     virtual void cancelAllLocalNotifications();
 
-    /** Prevent device from sleeping.
+    /**
+     * Prevent device from sleeping.
      */
     virtual void preventFromSleeping(bool prevent);
 
@@ -52,6 +47,14 @@ protected:
     void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 
     void reportError(bool isFatal, const char * errorMessage, ...);
+
+    class RenderService * _renderService;
+    class InputService * _inputService;
+
+private:
+    std::string _userFolder;
+    std::string _gameLocale;
+    bool _hyperKeyPressed;  // WinKey (win), Command (osx)
 };
 
 

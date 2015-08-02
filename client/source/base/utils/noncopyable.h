@@ -5,12 +5,12 @@
 
 
 
-/*! \class Noncopyable noncopyable.h "utils/noncopyable.h"
-*	\brief %Noncopyable base class.
-*
-*	\author Andrew "RevEn" Karpushin
-*/
-
+/** @class Noncopyable noncopyable.h "utils/noncopyable.h"
+ *	@brief %Noncopyable base class.
+ *
+ *	@author Andrew "RevEn" Karpushin
+ */
+ 
 class Noncopyable
 {
 protected:

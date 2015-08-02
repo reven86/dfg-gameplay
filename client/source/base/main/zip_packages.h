@@ -12,15 +12,16 @@
  */
 class ZipPackagesCache : Noncopyable
 {
-    static std::unordered_map< std::string, std::shared_ptr< zip > > _packages;
+public:
+    static zip * findOrOpenPackage(const char * packageName);
+    static bool hasFile(const char * packageName, const char * filename);
 
 protected:
     ZipPackagesCache() {};
     ~ZipPackagesCache() {};
 
-public:
-    static zip * findOrOpenPackage(const char * packageName);
-    static bool hasFile(const char * packageName, const char * filename);
+private:
+    static std::unordered_map< std::string, std::shared_ptr< zip > > _packages;
 };
 
 

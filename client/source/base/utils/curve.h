@@ -7,36 +7,31 @@
 
 
 
-/*! %Curve class is a container that assign custom values with 
-*	decimal keys. %Curve provides methods to get a value between keys.
-*	Is this case value is linear interpolated.
-*
-*	Template class is specialezed by value type T, key type _KT and 
-*	lerp functor _LerpFn which by default is SimpleLerpFn< T >
-*
-*	\author Andrew "RevEn" Karpushin
-*/
+/** 
+ * %Curve class is a container that assign custom values with 
+ * decimal keys. %Curve provides methods to get a value between keys
+ * using custom interpolator.
+ *
+ * Template class is specialezed by value type T, key type _KT and 
+ * interpolator functor _Interpolator which by default is LinearInterpolator< T >
+ *
+ * @author Andrew "RevEn" Karpushin
+ */
 
 template<class T, class _KT = uint8_t, class _Interpolator = Utils::LinearInterpolator<T> >
 class Curve
 {
-    typedef std::pair<_KT, T> KeyType;
-    typedef std::vector<KeyType> KeysType;
-
-    KeysType _keys;
-    T _emptyKey;
-
 public:
     Curve () {};
     ~Curve () {};
 
-    /*! \brief Add new key and value associated with this key.
-    *
-    *	\note Keys should be added in ascending order.
-    *	
-    *	\param[in] t		Key.
-    *	\param[in] key		Value.
-    */
+    /** @brief Add new key and value associated with this key.
+     *
+     *	@note Keys should be added in ascending order.
+     *	
+     *	@param[in] t		Key.
+     *	@param[in] key		Value.
+     */
     void addKey (const _KT& t, const T& key)
     {
         GP_ASSERT(_keys.empty() || (t > _keys.back().first));
@@ -44,7 +39,9 @@ public:
             _keys.push_back(KeyType(t, key));
     };
 
-    //! Gets a value, associated with key.
+    /**
+     * Gets a value, associated with key.
+     */
     T key(const _KT& t) const
     {
         if (_keys.empty())
@@ -81,8 +78,17 @@ public:
         return _keys.back().second;
     };
 
-    //! Makes an envelope empty.
+    /**
+     * Makes a curve empty.
+     */
     void clear() { KeysType().swap(_keys); };
+
+private:
+    typedef std::pair<_KT, T> KeyType;
+    typedef std::vector<KeyType> KeysType;
+
+    KeysType _keys;
+    T _emptyKey;
 };
 
 

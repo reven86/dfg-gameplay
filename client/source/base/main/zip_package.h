@@ -9,8 +9,6 @@
  */
 class ZipPackage : public gameplay::Package, Noncopyable
 {
-    std::shared_ptr< struct zip > _zipFile;
-
 public:
     virtual ~ZipPackage();
 
@@ -19,16 +17,19 @@ public:
     virtual gameplay::Stream * open(const char * path, size_t streamMode = gameplay::FileSystem::READ);
 
     /**
-    * Checks if the file at the given path exists.
-    *
-    * @param filePath The path to the file.
-    *
-    * @return <code>true</code> if the file exists; <code>false</code> otherwise.
-    */
+     * Checks if the file at the given path exists.
+     *
+     * @param filePath The path to the file.
+     *
+     * @return <code>true</code> if the file exists; <code>false</code> otherwise.
+     */
     virtual bool fileExists(const char* filePath);
 
 protected:
     ZipPackage(struct zip * zipFile);
+
+private:
+    std::shared_ptr< struct zip > _zipFile;
 };
 
 

@@ -6,31 +6,34 @@
 
 
 
-/*! \brief Social service.
+/** @brief Social service.
  */
 
 class SocialService : public Service, public gameplay::SocialSessionListener
 {
-    gameplay::SocialSession * _session;
+    friend class ServiceManager;
 
 public:
+    static const char * getTypeName() { return "SocialService"; }
+
+    gameplay::SocialSession * getSession() { return _session; };
+
+protected:
     SocialService(const ServiceManager * manager);
     virtual ~SocialService();
-
-    static const char * getTypeName() { return "SocialService"; }
 
     virtual bool onPreInit();
     virtual bool onInit();
     virtual bool onTick();
     virtual bool onShutdown();
 
-    gameplay::SocialSession * getSession() { return _session; };
-
-protected:
     /**
      * @see gameplay::SocialSessionListener::authenticateEvent
      */
     virtual void authenticateEvent(ResponseCode code, gameplay::SocialSession* session);
+
+private:
+    gameplay::SocialSession * _session;
 };
 
 

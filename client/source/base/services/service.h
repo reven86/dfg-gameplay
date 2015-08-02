@@ -5,10 +5,10 @@
 
 
 
-/*! \class Service service.h "services/service.h"
- *	\brief %Service base class.
+/** @class Service service.h "services/service.h"
+ *	@brief %Service base class.
  *
- *	\author Andrew "RevEn" Karpushin
+ *	@author Andrew "RevEn" Karpushin
  */
 
 class Service : Noncopyable
@@ -22,15 +22,10 @@ public:
         INITIALIZING,
         RUNNING,
         SHUTTING_DOWN,
-        COMPLETE,
+        COMPLETED,
     };
 
-protected:
-    State _state;
-    const class ServiceManager * _manager;
-
 public:
-    Service(const ServiceManager * manager);
     virtual ~Service();
 
     const State& getState() const { return _state; };
@@ -39,34 +34,43 @@ public:
     // state changing functions.
     // each function returns True if service is ready to transit to next state.
 
-    /** Pre initializing state function.
+    /** 
+     * Pre initializing state function.
      *
      * Use this function to make some lightweight initialization actions, e.g.
      * to store pointers to services this service depends on.
      */
     virtual bool onPreInit() { return true; };
 
-    /** Initialization state function.
+    /**
+     * Initialization state function.
      *
      * Use this function to load all necessary resources and assets. This method
      * will be called every frame until true is returned (as any other state method).
      */
     virtual bool onInit() { return true; };
 
-    /** Tick state function.
+    /**
+     * Tick state function.
      *
      * Use this function if your service is needed to make some actions every frame.
      */
     virtual bool onTick() { return true; };
 
-    /** Shutdown state function.
+    /**
+     * Shutdown state function.
      *
      * Use this function to free all service's resources.
      */
     virtual bool onShutdown() { return true; };
 
 protected:
+    Service(const ServiceManager * manager);
+
     void setState(const State& state) { _state = state; };
+
+    State _state;
+    const class ServiceManager * _manager;
 };
 
 
