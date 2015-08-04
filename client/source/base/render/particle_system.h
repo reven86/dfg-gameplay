@@ -372,7 +372,7 @@ public:
 
     /**
      * Set high precision update.
-     *
+     */
     void setHighPrecisionUpdate(bool hi_prec) { if (hi_prec) _flags |= EFL_HIGH_PRECISION; else _flags &= ~EFL_HIGH_PRECISION; };
 
     /**

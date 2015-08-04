@@ -7,6 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EB7991301B70C63F00A30C9F /* debug_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F812A1AAB25CD00839018 /* debug_service.cpp */; };
+		EB7991311B70C63F00A30C9F /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
+		EB7991321B70C63F00A30C9F /* singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81421AAB25CD00839018 /* singleton.cpp */; };
+		EB7991331B70C63F00A30C9F /* service_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81321AAB25CD00839018 /* service_manager.cpp */; };
+		EB7991341B70C63F00A30C9F /* particle_system.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81271AAB25CD00839018 /* particle_system.cpp */; };
+		EB7991351B70C63F00A30C9F /* render_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F812E1AAB25CD00839018 /* render_service.cpp */; };
+		EB7991361B70C63F00A30C9F /* asset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81141AAB25CD00839018 /* asset.cpp */; };
+		EB7991371B70C63F00A30C9F /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81441AAB25CD00839018 /* utils.cpp */; };
+		EB7991381B70C63F00A30C9F /* zip_packages.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811F1AAB25CD00839018 /* zip_packages.cpp */; };
+		EB7991391B70C63F00A30C9F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81231AAB25CD00839018 /* main.cpp */; };
+		EB79913A1B70C63F00A30C9F /* storefront_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81371AAB25CD00839018 /* storefront_service.cpp */; };
+		EB79913B1B70C63F00A30C9F /* memory_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811B1AAB25CD00839018 /* memory_stream.cpp */; };
+		EB79913C1B70C63F00A30C9F /* input_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F812C1AAB25CD00839018 /* input_service.cpp */; };
+		EB79913D1B70C63F00A30C9F /* dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81171AAB25CD00839018 /* dictionary.cpp */; };
+		EB79913E1B70C63F00A30C9F /* profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F813F1AAB25CD00839018 /* profiler.cpp */; };
+		EB79913F1B70C63F00A30C9F /* gameplay_assets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81191AAB25CD00839018 /* gameplay_assets.cpp */; };
+		EB7991401B70C63F00A30C9F /* tracker_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81391AAB25CD00839018 /* tracker_service.cpp */; };
+		EB7991411B70C63F00A30C9F /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
+		EB7991421B70C63F00A30C9F /* zip_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81211AAB25CD00839018 /* zip_stream.cpp */; };
+		EB7991431B70C63F00A30C9F /* service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81301AAB25CD00839018 /* service.cpp */; };
+		EB7991441B70C63F00A30C9F /* zip_package.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811D1AAB25CD00839018 /* zip_package.cpp */; };
+		EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81351AAB25CD00839018 /* social_service.cpp */; };
+		EB7991461B70C63F00A30C9F /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F810F1AAB21EE00839018 /* pch.cpp */; };
 		EB9F81111AAB21EE00839018 /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F810F1AAB21EE00839018 /* pch.cpp */; };
 		EB9F81461AAB25CD00839018 /* asset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81141AAB25CD00839018 /* asset.cpp */; };
 		EB9F81471AAB25CD00839018 /* dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81171AAB25CD00839018 /* dictionary.cpp */; };
@@ -33,6 +56,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		EB7991481B70C63F00A30C9F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EB9F80F31AAB21BC00839018 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -45,6 +77,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EB79914C1B70C63F00A30C9F /* libdfg-gameplay-mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libdfg-gameplay-mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9F80F51AAB21BD00839018 /* libdfg-gameplay-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libdfg-gameplay-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9F810E1AAB21EE00839018 /* dfg_include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dfg_include.h; path = ../dfg_include.h; sourceTree = "<group>"; };
 		EB9F810F1AAB21EE00839018 /* pch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pch.cpp; path = ../pch.cpp; sourceTree = "<group>"; };
@@ -103,6 +136,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		EB7991471B70C63F00A30C9F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EB9F80F21AAB21BC00839018 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				EB9F80F51AAB21BD00839018 /* libdfg-gameplay-ios.a */,
+				EB79914C1B70C63F00A30C9F /* libdfg-gameplay-mac.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -226,6 +267,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		EB79912E1B70C63F00A30C9F /* dfg-gameplay-mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB7991491B70C63F00A30C9F /* Build configuration list for PBXNativeTarget "dfg-gameplay-mac" */;
+			buildPhases = (
+				EB79912F1B70C63F00A30C9F /* Sources */,
+				EB7991471B70C63F00A30C9F /* Frameworks */,
+				EB7991481B70C63F00A30C9F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "dfg-gameplay-mac";
+			productName = "dfg-gameplay-ios";
+			productReference = EB79914C1B70C63F00A30C9F /* libdfg-gameplay-mac.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		EB9F80F41AAB21BC00839018 /* dfg-gameplay-ios */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EB9F810B1AAB21BD00839018 /* Build configuration list for PBXNativeTarget "dfg-gameplay-ios" */;
@@ -269,11 +327,42 @@
 			projectRoot = "";
 			targets = (
 				EB9F80F41AAB21BC00839018 /* dfg-gameplay-ios */,
+				EB79912E1B70C63F00A30C9F /* dfg-gameplay-mac */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		EB79912F1B70C63F00A30C9F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB7991301B70C63F00A30C9F /* debug_service.cpp in Sources */,
+				EB7991311B70C63F00A30C9F /* httprequest_service.cpp in Sources */,
+				EB7991321B70C63F00A30C9F /* singleton.cpp in Sources */,
+				EB7991331B70C63F00A30C9F /* service_manager.cpp in Sources */,
+				EB7991341B70C63F00A30C9F /* particle_system.cpp in Sources */,
+				EB7991351B70C63F00A30C9F /* render_service.cpp in Sources */,
+				EB7991361B70C63F00A30C9F /* asset.cpp in Sources */,
+				EB7991371B70C63F00A30C9F /* utils.cpp in Sources */,
+				EB7991381B70C63F00A30C9F /* zip_packages.cpp in Sources */,
+				EB7991391B70C63F00A30C9F /* main.cpp in Sources */,
+				EB79913A1B70C63F00A30C9F /* storefront_service.cpp in Sources */,
+				EB79913B1B70C63F00A30C9F /* memory_stream.cpp in Sources */,
+				EB79913C1B70C63F00A30C9F /* input_service.cpp in Sources */,
+				EB79913D1B70C63F00A30C9F /* dictionary.cpp in Sources */,
+				EB79913E1B70C63F00A30C9F /* profiler.cpp in Sources */,
+				EB79913F1B70C63F00A30C9F /* gameplay_assets.cpp in Sources */,
+				EB7991401B70C63F00A30C9F /* tracker_service.cpp in Sources */,
+				EB7991411B70C63F00A30C9F /* taskqueue_service.cpp in Sources */,
+				EB7991421B70C63F00A30C9F /* zip_stream.cpp in Sources */,
+				EB7991431B70C63F00A30C9F /* service.cpp in Sources */,
+				EB7991441B70C63F00A30C9F /* zip_package.cpp in Sources */,
+				EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */,
+				EB7991461B70C63F00A30C9F /* pch.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EB9F80F11AAB21BC00839018 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,6 +396,82 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		EB79914A1B70C63F00A30C9F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "dfg-gameplay-mac";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		EB79914B1B70C63F00A30C9F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "dfg-gameplay-mac";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		EB9F80EF1AAB211E00839018 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -430,6 +595,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		EB7991491B70C63F00A30C9F /* Build configuration list for PBXNativeTarget "dfg-gameplay-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB79914A1B70C63F00A30C9F /* Debug */,
+				EB79914B1B70C63F00A30C9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		EB9F80EE1AAB211E00839018 /* Build configuration list for PBXProject "dfg-gameplay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

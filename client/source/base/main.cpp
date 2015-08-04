@@ -255,7 +255,9 @@ void DfgGame::cancelAllLocalNotifications()
 void DfgGame::preventFromSleeping(bool prevent)
 {
 #if defined(__APPLE__)
+#if TARGET_OS_IPHONE
     [UIApplication sharedApplication].idleTimerDisabled = prevent ? YES : NO;
+#endif
 #elif defined(__ANDROID__)
     ANativeActivity* activity = __state->activity;
     if (prevent)
