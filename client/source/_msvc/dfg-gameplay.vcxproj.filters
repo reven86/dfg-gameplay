@@ -68,6 +68,12 @@
     <ClCompile Include="..\base\services\httprequest_service.cpp">
       <Filter>base\services</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\dial_button.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\ui\expanded_tab.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -156,6 +162,12 @@
     <ClInclude Include="..\base\services\httprequest_service.h">
       <Filter>base\services</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\ui\dial_button.h">
+      <Filter>base\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ui\expanded_tab.h">
+      <Filter>base\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -172,6 +184,9 @@
     </Filter>
     <Filter Include="base\main">
       <UniqueIdentifier>{6e0aaa1b-bbc8-4a0d-b233-365d9ec635f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\ui">
+      <UniqueIdentifier>{2d1e30e5-aca9-4f2a-850a-4f3d6c430f46}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

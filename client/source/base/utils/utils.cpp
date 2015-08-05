@@ -257,7 +257,7 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
         image->setRegionDst(dstRegion.x * kx, dstRegion.y * ky, dstRegion.width * kx, dstRegion.height * ky);
     }
 
-    if (strcmp(control->getTypeName(), "Container") == 0)
+    if (control->isContainer())
     {
         gameplay::Container * container = static_cast<gameplay::Container *>(control);
 
