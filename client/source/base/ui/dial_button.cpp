@@ -15,6 +15,8 @@ DialButton::DialButton()
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
     , _animationWaitDuration(1000)
     , _animationDuration(1000)
+    , _currentItemBeforeTouch(0)
+    , _startScrollingPosition(0.0f, 0.0f)
 {
 }
 
@@ -102,8 +104,9 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
     if (_expandingFactor <= 0.0f && getControlCount() > 0)
     {
         unsigned closestControlIndex = findClosestControlIndex(-_scrollPosition.y, false);
-        if (evt == gameplay::Touch::TOUCH_MOVE)
+        switch (evt)
         {
+        case gameplay::Touch::TOUCH_MOVE:
             if (_currentItemIndex != closestControlIndex)
             {
                 _currentItemIndex = closestControlIndex;
@@ -113,13 +116,17 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
                     _expandAnimationClip = NULL;
                 }
             }
-        }
-        else if (evt == gameplay::Touch::TOUCH_RELEASE)
-        {
+            break;
+        case gameplay::Touch::TOUCH_RELEASE:
             // scroll to nearest item
             _currentItemIndex = closestControlIndex;
             scrollToItem(closestControlIndex);
-            notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+            if (_currentItemBeforeTouch != _currentItemIndex)
+                notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+            break;
+        case gameplay::Touch::TOUCH_PRESS:
+            _currentItemBeforeTouch = _currentItemIndex;
+            break;
         }
     }
 
@@ -150,23 +157,44 @@ unsigned DialButton::findClosestControlIndex(float localY, bool exitOnPositiveOf
     return closestControlIndex;
 }
 
-void DialButton::scrollToItem(unsigned itemIndex)
+void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
 {
-    GP_ASSERT(_currentItemIndex < getControlCount());
+    if (itemIndex >= getControlCount())
+        return;
 
-    gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
-    gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
+    if (!immediately)
+    {
+        float from = 0.0f;
+        float to = 1.0f;
 
-    gameplay::Animation * animation = createAnimationFromTo("scrollbar-scroll-to", ANIMATE_SCROLLBAR_POSITION, &_scrollPosition.x, &desiredScrollPosition.x, gameplay::Curve::QUADRATIC_IN, (int)(0.1f * 1000.0f));
-    animation->play();
+        float scrollDistance = fabsf(_currentItemIndex - itemIndex);
+
+        _startScrollingPosition = _scrollPosition;
+
+        gameplay::Animation * animation = createAnimationFromTo("scrollbar-scroll-to-item", ANIMATE_SCROLL_TO_ITEM, &from, &to,
+            gameplay::Curve::QUADRATIC_IN, std::max(200UL, static_cast<unsigned long>(scrollDistance * 200)));
+        animation->play();
+    }
+    else
+    {
+        gameplay::Control * itemToScrollTo = getControl(itemIndex);
+        gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
+        setScrollPosition(desiredScrollPosition);
+    }
+
+    if (_currentItemIndex != itemIndex)
+    {
+        _currentItemIndex = itemIndex;
+        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+    }
 }
 
 unsigned int DialButton::getAnimationPropertyComponentCount(int propertyId) const
 {
     switch (propertyId)
     {
-    case ANIMATE_SCROLLBAR_POSITION:
-        return 2;
+    case ANIMATE_SCROLL_TO_ITEM:
+        return 1;
     case ANIMATE_BUTTON_EXPANDING:
         return 1;
     default:
@@ -180,8 +208,12 @@ void DialButton::getAnimationPropertyValue(int propertyId, gameplay::AnimationVa
 
     switch (propertyId)
     {
-    case ANIMATE_SCROLLBAR_POSITION:
-        value->setFloats(0, &_scrollPosition.x, 2);
+    case ANIMATE_SCROLL_TO_ITEM:
+        {
+            gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
+            gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
+            value->setFloat(0, (_scrollPosition - _startScrollingPosition).length() / (desiredScrollPosition - _startScrollingPosition).length());
+        }
         break;
     case ANIMATE_BUTTON_EXPANDING:
         value->setFloat(0, _expandingFactor);
@@ -198,11 +230,17 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
 
     switch (propertyId)
     {
-    case ANIMATE_SCROLLBAR_POSITION:
-        value->getFloats(0, &_scrollPosition.x, 2);
-        _scrollPosition *= blendWeight;
-        setDirty(DIRTY_BOUNDS);
-        setChildrenDirty(DIRTY_BOUNDS, true);
+    case ANIMATE_SCROLL_TO_ITEM:
+        {
+            gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
+            gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
+
+            float scrollFactor = value->getFloat(0);
+            _scrollPosition = _startScrollingPosition + (desiredScrollPosition - _startScrollingPosition) * scrollFactor * blendWeight;
+
+            setDirty(DIRTY_BOUNDS);
+            setChildrenDirty(DIRTY_BOUNDS, true);
+        }
         break;
     case ANIMATE_BUTTON_EXPANDING:
         {
@@ -280,7 +318,8 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
 void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::AnimationClip::Listener::EventType type)
 {
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
-    notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+    if (_currentItemBeforeTouch != _currentItemIndex)
+        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
 }
 
 unsigned int DialButton::drawBorder(gameplay::Form * form) const
@@ -306,4 +345,24 @@ unsigned int DialButton::drawBorder(gameplay::Form * form) const
     }
 
     return drawCalls;
+}
+
+void DialButton::removeControl(unsigned int index)
+{
+    gameplay::Container::removeControl(index);
+    if (_currentItemIndex >= index && _currentItemIndex > 0)
+        _currentItemIndex--;
+}
+
+unsigned int DialButton::addControl(gameplay::Control * control)
+{
+    unsigned int res = gameplay::Container::addControl(control);
+    control->setConsumeInputEvents(false);
+    return res;
+}
+
+void DialButton::insertControl(gameplay::Control * control, unsigned int index)
+{
+    gameplay::Container::insertControl(control, index);
+    control->setConsumeInputEvents(false);
 }

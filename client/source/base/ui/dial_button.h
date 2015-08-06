@@ -26,9 +26,38 @@ public:
     unsigned getCurrentItemIndex() const { return _currentItemIndex; };
 
     /**
-     * Set current item. 
+     * Scroll to item. 
+     * The current item index is changed immediately to itemIndex.
+     * Duration of scroll is dependant on scroll distance.
+     *
+     * @param itemIndex Index of item to scroll to.
+     * @param immediately Set current item without scrolling. 
      */
-    void scrollToItem(unsigned itemIndex);
+    void scrollToItem(unsigned itemIndex, bool immediately = false);
+
+    /**
+     * Adds a new control to this container.
+     *
+	 * @param control The control to add.
+     *
+     * @return The index assigned to the new Control.
+     */
+    virtual unsigned int addControl(gameplay::Control* control);
+
+    /**
+     * Inserts a control at a specific index.
+     *
+     * @param control The control to insert.
+     * @param index The index at which to insert the control.
+     */
+    virtual void insertControl(gameplay::Control* control, unsigned int index);
+
+    /**
+     * Remove a control at a specific index.
+     *
+     * @param index The index from which to remove the control.
+     */
+    virtual void removeControl(unsigned int index);
 
 protected:
 
@@ -71,7 +100,7 @@ protected:
     /**
      * Constant used to scroll container to fixed offset.
      */
-    static const int ANIMATE_SCROLLBAR_POSITION = 9;
+    static const int ANIMATE_SCROLL_TO_ITEM = 9;
 
     /**
     * Constant used to animate button expanding process.
@@ -141,10 +170,12 @@ private:
     unsigned findClosestControlIndex(float localY, bool exitOnPositiveOffset) const;
 
     unsigned _currentItemIndex;
+    unsigned _currentItemBeforeTouch;
     float _heightCollapsed;
     float _heightExpanded;
     float _expandingFactor;
     float _targetScrollPositionOnExpand;
+    gameplay::Vector2 _startScrollingPosition;
 
     gameplay::AnimationClip * _expandAnimationClip;
     gameplay::Curve::InterpolationType _animationInterpolator;
