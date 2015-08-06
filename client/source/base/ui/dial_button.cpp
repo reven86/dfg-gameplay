@@ -162,12 +162,19 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
     if (itemIndex >= getControlCount())
         return;
 
+    unsigned int lastItem = _currentItemIndex;
+    if (_currentItemIndex != itemIndex)
+    {
+        _currentItemIndex = itemIndex;
+        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+    }
+
     if (!immediately)
     {
         float from = 0.0f;
         float to = 1.0f;
 
-        float scrollDistance = fabsf(_currentItemIndex - itemIndex);
+        float scrollDistance = fabsf(static_cast<float>(lastItem)-itemIndex);
 
         _startScrollingPosition = _scrollPosition;
 
@@ -180,12 +187,6 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
         gameplay::Control * itemToScrollTo = getControl(itemIndex);
         gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
         setScrollPosition(desiredScrollPosition);
-    }
-
-    if (_currentItemIndex != itemIndex)
-    {
-        _currentItemIndex = itemIndex;
-        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
     }
 }
 
