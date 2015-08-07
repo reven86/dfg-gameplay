@@ -39,7 +39,27 @@ public:
      * Get current tab's state.
      */
     States getState() const { return _state; };
+    
+    /**
+     * Get control's width in maximized state.
+     */
+    float getWidthMaximized() const { return _widthMaximized; };
 
+    /**
+     * Get control's width in minimized state.
+     */
+    float getWidthMinimized() const { return _widthMinimized; };
+    
+    /**
+     * Set control's width in maximized state.
+     */
+    void setWidthMaximized(float width) { _widthMaximized = width; };
+    
+    /**
+     * Set control's width in minimized state.
+     */
+    void setWidthMinimized(float width) { _widthMinimized = width; };
+    
 protected:
 
     /**

@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "utils.h"
+#include "ui/dial_button.h"
+#include "ui/expanded_tab.h"
 
 #if defined (WIN32)
 #include <Rpc.h>
@@ -255,6 +257,20 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
         gameplay::ImageControl * image = static_cast< gameplay::ImageControl * >(control);
         const gameplay::Rectangle& dstRegion = image->getRegionDst();
         image->setRegionDst(dstRegion.x * kx, dstRegion.y * ky, dstRegion.width * kx, dstRegion.height * ky);
+    }
+    
+    if (strcmp(control->getTypeName(), "DialButton") == 0)
+    {
+        DialButton * button = static_cast<DialButton *>(control);
+        button->setHeightCollapsed(ky * button->getHeightCollapsed());
+        button->setHeightExpanded(ky * button->getHeightExpanded());
+    }
+    
+    if (strcmp(control->getTypeName(), "ExpandedTab") == 0)
+    {
+        ExpandedTab * tab = static_cast<ExpandedTab * >(control);
+        tab->setWidthMinimized(kx * tab->getWidthMinimized());
+        tab->setWidthMaximized(kx * tab->getWidthMaximized());
     }
 
     if (control->isContainer())

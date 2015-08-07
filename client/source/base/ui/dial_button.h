@@ -58,6 +58,27 @@ public:
      * @param index The index from which to remove the control.
      */
     virtual void removeControl(unsigned int index);
+    
+    /** 
+     * Get control's height in collapsed (minimized) state.
+     */
+    float getHeightCollapsed() const { return _heightCollapsed; };
+    
+    /**
+     * Get control's height in expanded (maximized) state.
+     */
+    float getHeightExpanded() const { return _heightExpanded; };
+    
+    /**
+     * Set control's height in collapsed (minimized) state.
+     */
+    void setHeightCollapsed(float height) { _heightCollapsed = height; };
+    
+    /**
+     * Set control's height in expanded (maximized) state.
+     */
+    void setHeightExpanded(float height) { _heightExpanded = height; };
+    
 
 protected:
 

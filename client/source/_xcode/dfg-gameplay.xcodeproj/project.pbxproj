@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790211B75147500E1DDB2 /* dial_button.cpp */; };
+		EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790211B75147500E1DDB2 /* dial_button.cpp */; };
+		EB7790271B75147500E1DDB2 /* expanded_tab.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790231B75147500E1DDB2 /* expanded_tab.cpp */; };
+		EB7790281B75147500E1DDB2 /* expanded_tab.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790231B75147500E1DDB2 /* expanded_tab.cpp */; };
 		EB7991301B70C63F00A30C9F /* debug_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F812A1AAB25CD00839018 /* debug_service.cpp */; };
 		EB7991311B70C63F00A30C9F /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
 		EB7991321B70C63F00A30C9F /* singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81421AAB25CD00839018 /* singleton.cpp */; };
@@ -77,6 +81,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EB7790211B75147500E1DDB2 /* dial_button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dial_button.cpp; path = ui/dial_button.cpp; sourceTree = "<group>"; };
+		EB7790221B75147500E1DDB2 /* dial_button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dial_button.h; path = ui/dial_button.h; sourceTree = "<group>"; };
+		EB7790231B75147500E1DDB2 /* expanded_tab.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = expanded_tab.cpp; path = ui/expanded_tab.cpp; sourceTree = "<group>"; };
+		EB7790241B75147500E1DDB2 /* expanded_tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = expanded_tab.h; path = ui/expanded_tab.h; sourceTree = "<group>"; };
 		EB79914C1B70C63F00A30C9F /* libdfg-gameplay-mac.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libdfg-gameplay-mac.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9F80F51AAB21BD00839018 /* libdfg-gameplay-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libdfg-gameplay-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EB9F810E1AAB21EE00839018 /* dfg_include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dfg_include.h; path = ../dfg_include.h; sourceTree = "<group>"; };
@@ -153,6 +161,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EB7790201B75145300E1DDB2 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				EB7790211B75147500E1DDB2 /* dial_button.cpp */,
+				EB7790221B75147500E1DDB2 /* dial_button.h */,
+				EB7790231B75147500E1DDB2 /* expanded_tab.cpp */,
+				EB7790241B75147500E1DDB2 /* expanded_tab.h */,
+			);
+			name = ui;
+			sourceTree = "<group>";
+		};
 		EB9F80EA1AAB211E00839018 = {
 			isa = PBXGroup;
 			children = (
@@ -176,6 +195,7 @@
 		EB9F81121AAB25CD00839018 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				EB7790201B75145300E1DDB2 /* ui */,
 				EB9F81131AAB25CD00839018 /* main */,
 				EB9F81231AAB25CD00839018 /* main.cpp */,
 				EB9F81241AAB25CD00839018 /* main.h */,
@@ -347,6 +367,7 @@
 				EB7991371B70C63F00A30C9F /* utils.cpp in Sources */,
 				EB7991381B70C63F00A30C9F /* zip_packages.cpp in Sources */,
 				EB7991391B70C63F00A30C9F /* main.cpp in Sources */,
+				EB7790281B75147500E1DDB2 /* expanded_tab.cpp in Sources */,
 				EB79913A1B70C63F00A30C9F /* storefront_service.cpp in Sources */,
 				EB79913B1B70C63F00A30C9F /* memory_stream.cpp in Sources */,
 				EB79913C1B70C63F00A30C9F /* input_service.cpp in Sources */,
@@ -358,6 +379,7 @@
 				EB7991421B70C63F00A30C9F /* zip_stream.cpp in Sources */,
 				EB7991431B70C63F00A30C9F /* service.cpp in Sources */,
 				EB7991441B70C63F00A30C9F /* zip_package.cpp in Sources */,
+				EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */,
 				EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */,
 				EB7991461B70C63F00A30C9F /* pch.cpp in Sources */,
 			);
@@ -377,6 +399,7 @@
 				EB9F81591AAB25CD00839018 /* utils.cpp in Sources */,
 				EB9F814B1AAB25CD00839018 /* zip_packages.cpp in Sources */,
 				EB9F814D1AAB25CD00839018 /* main.cpp in Sources */,
+				EB7790271B75147500E1DDB2 /* expanded_tab.cpp in Sources */,
 				EB9F81551AAB25CD00839018 /* storefront_service.cpp in Sources */,
 				EB9F81491AAB25CD00839018 /* memory_stream.cpp in Sources */,
 				EB9F81501AAB25CD00839018 /* input_service.cpp in Sources */,
@@ -388,6 +411,7 @@
 				EB9F814C1AAB25CD00839018 /* zip_stream.cpp in Sources */,
 				EB9F81521AAB25CD00839018 /* service.cpp in Sources */,
 				EB9F814A1AAB25CD00839018 /* zip_package.cpp in Sources */,
+				EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */,
 				EB9F81541AAB25CD00839018 /* social_service.cpp in Sources */,
 				EB9F81111AAB21EE00839018 /* pch.cpp in Sources */,
 			);
