@@ -178,6 +178,7 @@ private:
     gameplay::Vector2 _startScrollingPosition;
 
     gameplay::AnimationClip * _expandAnimationClip;
+    gameplay::AnimationClip * _itemScrollingClip;
     gameplay::Curve::InterpolationType _animationInterpolator;
     unsigned int _animationWaitDuration;
     unsigned int _animationDuration;

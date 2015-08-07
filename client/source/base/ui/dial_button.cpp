@@ -15,8 +15,9 @@ DialButton::DialButton()
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
     , _animationWaitDuration(1000)
     , _animationDuration(1000)
-    , _currentItemBeforeTouch(0)
+    , _currentItemBeforeTouch(~0)
     , _startScrollingPosition(0.0f, 0.0f)
+    , _itemScrollingClip(NULL)
 {
 }
 
@@ -104,10 +105,11 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
     if (_expandingFactor <= 0.0f && getControlCount() > 0)
     {
         unsigned closestControlIndex = findClosestControlIndex(-_scrollPosition.y, false);
+        // using _currentItemBeforeTouch also as a flag that touch is still present (_currentItemBeforeTouch < getControlCount())
         switch (evt)
         {
         case gameplay::Touch::TOUCH_MOVE:
-            if (_currentItemIndex != closestControlIndex)
+            if (_currentItemBeforeTouch < getControlCount() && _currentItemIndex != closestControlIndex)
             {
                 _currentItemIndex = closestControlIndex;
                 if (_expandAnimationClip)
@@ -119,10 +121,14 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
             break;
         case gameplay::Touch::TOUCH_RELEASE:
             // scroll to nearest item
-            _currentItemIndex = closestControlIndex;
-            scrollToItem(closestControlIndex);
-            if (_currentItemBeforeTouch != _currentItemIndex)
-                notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+            if (_currentItemBeforeTouch < getControlCount())
+            {
+                _currentItemIndex = closestControlIndex;
+                scrollToItem(closestControlIndex);
+                if (_currentItemBeforeTouch != _currentItemIndex)
+                    notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+                _currentItemBeforeTouch = ~0;
+            }
             break;
         case gameplay::Touch::TOUCH_PRESS:
             _currentItemBeforeTouch = _currentItemIndex;
@@ -140,16 +146,19 @@ unsigned DialButton::findClosestControlIndex(float localY, bool exitOnPositiveOf
     unsigned index = 0;
     for (gameplay::Control * control : getControls())
     {
-        float distance = control->getY() - control->getMargin().top - localY;
-        if (exitOnPositiveOffset && distance > -control->getHeight())
-            return index;
-
-        if (fabs(distance) < minDistance)
+        if (control->isVisible())
         {
-            minDistance = fabs(distance);
-            closestControlIndex = index;
-            if (distance > 0.0f)
-                return closestControlIndex;
+            float distance = control->getY() - control->getMargin().top - localY;
+            if (exitOnPositiveOffset && distance > -control->getHeight())
+                return index;
+
+            if (fabs(distance) < minDistance)
+            {
+                minDistance = fabs(distance);
+                closestControlIndex = index;
+                if (distance > 0.0f)
+                    return closestControlIndex;
+            }
         }
         index++;
     }
@@ -161,6 +170,12 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
 {
     if (itemIndex >= getControlCount())
         return;
+
+    if (_itemScrollingClip && _itemScrollingClip->isPlaying())
+    {
+        _itemScrollingClip->stop();
+        _itemScrollingClip = NULL;
+    }
 
     unsigned int lastItem = _currentItemIndex;
     if (_currentItemIndex != itemIndex)
@@ -180,7 +195,8 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
 
         gameplay::Animation * animation = createAnimationFromTo("scrollbar-scroll-to-item", ANIMATE_SCROLL_TO_ITEM, &from, &to,
             gameplay::Curve::QUADRATIC_IN, std::max(200UL, static_cast<unsigned long>(scrollDistance * 200)));
-        animation->play();
+        _itemScrollingClip = animation->getClip();
+        _itemScrollingClip->play();
     }
     else
     {
@@ -319,7 +335,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
 void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::AnimationClip::Listener::EventType type)
 {
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
-    if (_currentItemBeforeTouch != _currentItemIndex)
+    if (_currentItemBeforeTouch < getControlCount() && _currentItemBeforeTouch != _currentItemIndex)
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
 }
 
