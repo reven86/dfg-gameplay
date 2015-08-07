@@ -15,9 +15,11 @@ DialButton::DialButton()
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
     , _animationWaitDuration(1000)
     , _animationDuration(1000)
-    , _currentItemBeforeTouch(~0)
+    , _currentItemBeforeTouch((unsigned)~0)
     , _startScrollingPosition(0.0f, 0.0f)
     , _itemScrollingClip(NULL)
+    , _menuState(false)
+    , _lastScrollPositionOnPress(0)
 {
 }
 
@@ -76,6 +78,9 @@ unsigned int DialButton::draw(gameplay::Form * form) const
 
 bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex)
 {
+    if (_menuState)
+        return gameplay::Container::touchEventScroll(evt, x, y, contactIndex);
+
     if (evt == gameplay::Touch::TOUCH_MOVE && _expandingFactor > 0.0f)
     {
         if (_expandingFactor >= 1.0f && (!_expandAnimationClip || !_expandAnimationClip->isPlaying()))
@@ -105,7 +110,7 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
     if (_expandingFactor <= 0.0f && getControlCount() > 0)
     {
         unsigned closestControlIndex = findClosestControlIndex(-_scrollPosition.y, false);
-        // using _currentItemBeforeTouch also as a flag that touch is still present (_currentItemBeforeTouch < getControlCount())
+        // using _currentItemBeforeTouch also as a flag that touch is still pressed (_currentItemBeforeTouch < getControlCount())
         switch (evt)
         {
         case gameplay::Touch::TOUCH_MOVE:
@@ -127,7 +132,7 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
                 scrollToItem(closestControlIndex);
                 if (_currentItemBeforeTouch != _currentItemIndex)
                     notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
-                _currentItemBeforeTouch = ~0;
+                _currentItemBeforeTouch = (unsigned)~0;
             }
             break;
         case gameplay::Touch::TOUCH_PRESS:
@@ -290,7 +295,59 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
 
     bool res = gameplay::Container::touchEvent(evt, x, y, contactIndex);
 
-    if ((evt == gameplay::Touch::TOUCH_PRESS && _expandingFactor <= 0.0f) || evt == gameplay::Touch::TOUCH_RELEASE)
+    if (_menuState && _expandingFactor >= 1.0f)
+    {
+        if (evt == gameplay::Touch::TOUCH_PRESS)
+        {
+            _lastScrollPositionOnPress = _scrollPosition.y;
+        }
+        else if (evt == gameplay::Touch::TOUCH_RELEASE)
+        {
+            // check that we just tap instead of scrolling a list
+            float distance = fabsf(_scrollPosition.y - _lastScrollPositionOnPress);
+            if (distance > _heightCollapsed * 0.5f)
+            {
+                // scrolling, do nothing
+                return res;
+            }
+
+            // set new current item and fallback to shrink animation
+            int localY = y + _absoluteBounds.y - _viewportBounds.y;
+            _currentItemIndex = findClosestControlIndex(localY - _scrollPosition.y, true);
+        }
+    }
+
+    if (evt == gameplay::Touch::TOUCH_RELEASE && _expandAnimationClip && _expandingFactor <= 0.0f)
+    {
+        // button is about to expand but touch was released a bit earlier
+        // expand button and transition to a 'menu' state
+
+        if (_expandAnimationClip)
+        {
+            _expandAnimationClip->stop();
+            _expandAnimationClip = NULL;
+        }
+
+        float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
+        float to = 1.0f;
+        unsigned times[] = { 0, _animationDuration };
+        float values[] = { from, to };
+        gameplay::Animation * animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
+
+        if (getControlCount() > 0)
+        {
+            gameplay::Control * currentItem = getControl(_currentItemIndex);
+            float currentItemOffset = currentItem->getY() - currentItem->getMargin().top;
+            _targetScrollPositionOnExpand = -currentItemOffset + (_heightExpanded - _heightCollapsed) * 0.5f;
+        }
+
+        _expandAnimationClip = animation->getClip();
+        _expandAnimationClip->play();
+
+        _menuState = true;
+        _lastScrollPositionOnPress = _targetScrollPositionOnExpand;
+    }
+    else if ((evt == gameplay::Touch::TOUCH_PRESS && _expandingFactor <= 0.0f) || evt == gameplay::Touch::TOUCH_RELEASE)
     {
         if (_expandAnimationClip)
         {
@@ -335,6 +392,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
 void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::AnimationClip::Listener::EventType type)
 {
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
+    _menuState = false;
     if (_currentItemBeforeTouch < getControlCount() && _currentItemBeforeTouch != _currentItemIndex)
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
 }

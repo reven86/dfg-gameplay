@@ -182,6 +182,9 @@ private:
     gameplay::Curve::InterpolationType _animationInterpolator;
     unsigned int _animationWaitDuration;
     unsigned int _animationDuration;
+
+    bool _menuState;
+    float _lastScrollPositionOnPress;
 };
 
 
