@@ -12,7 +12,7 @@
  * Transition between states are smooth and uses Animation class.
  * Tabs can be grouped in hierarchy.
  */
-class ExpandedTab : public gameplay::Container
+class ExpandedTab : public gameplay::Container, public gameplay::AnimationClip::Listener
 {
     friend class UIService2;
 
@@ -98,10 +98,10 @@ protected:
     void initialize(const char* typeName, gameplay::Theme::Style* style, gameplay::Properties* properties);
 
     /**
-    * Minimize all tabs in the given group.
-    *
-    * @param groupId The group to clear.
-    */
+     * Minimize all tabs in the given group.
+     *
+     * @param groupId The group to clear.
+     */
     static void minimizeAll(const std::string& groupId);
 
 protected:
@@ -109,6 +109,11 @@ protected:
      * @see Control#controlEvent
      */
     void controlEvent(Control::Listener::EventType evt);
+
+    /**
+     * Handles when animation event occurs.
+     */
+    virtual void animationEvent(gameplay::AnimationClip* clip, gameplay::AnimationClip::Listener::EventType type);
 
     /**
      * The tab's group ID.
@@ -121,6 +126,7 @@ private:
     float _widthMinimized;
     gameplay::Curve::InterpolationType _animationInterpolator;
     unsigned int _animationDuration;
+    gameplay::AnimationClip * _stateChangeClip;
 };
 
 

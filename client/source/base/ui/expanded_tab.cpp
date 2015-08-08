@@ -13,6 +13,7 @@ ExpandedTab::ExpandedTab()
     , _state(MAXIMIZED)
     , _animationDuration(1000)
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
+    , _stateChangeClip(NULL)
 {
 }
 
@@ -36,6 +37,15 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
 
     _state = state;
 
+    if (_stateChangeClip)
+    {
+        _stateChangeClip->stop();
+        _stateChangeClip = NULL;
+    }
+
+    if (_state != HIDDEN)
+        setVisible(true);
+
     float to[] = { 0.0f, _widthMinimized, _widthMaximized };
     if (immediately)
     {
@@ -46,8 +56,20 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
         float from = getWidth();
 
         gameplay::Animation * animation = createAnimationFromTo("tab-change-state", gameplay::Control::ANIMATE_SIZE_WIDTH, &from, &to[_state], _animationInterpolator, _animationDuration);
-        animation->play();
+        _stateChangeClip = animation->getClip();
+
+        if (_state == HIDDEN)
+            _stateChangeClip->addEndListener(this);
+
+        _stateChangeClip->play();
     }
+}
+
+void ExpandedTab::animationEvent(gameplay::AnimationClip * clip, gameplay::AnimationClip::Listener::EventType type)
+{
+    GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
+    if (_state == HIDDEN)
+        setVisible(false);
 }
 
 gameplay::Control * ExpandedTab::create(gameplay::Theme::Style * style, gameplay::Properties * properties)
