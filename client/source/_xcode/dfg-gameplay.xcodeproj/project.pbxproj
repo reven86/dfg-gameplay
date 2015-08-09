@@ -55,6 +55,8 @@
 		EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F813F1AAB25CD00839018 /* profiler.cpp */; };
 		EB9F81581AAB25CD00839018 /* singleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81421AAB25CD00839018 /* singleton.cpp */; };
 		EB9F81591AAB25CD00839018 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81441AAB25CD00839018 /* utils.cpp */; };
+		EBC5B34B1B77C8FE008076C1 /* control_event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */; };
+		EBC5B34C1B77C8FE008076C1 /* control_event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */; };
 		EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
 		EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
 /* End PBXBuildFile section */
@@ -137,6 +139,8 @@
 		EB9F81431AAB25CD00839018 /* singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleton.h; sourceTree = "<group>"; };
 		EB9F81441AAB25CD00839018 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
 		EB9F81451AAB25CD00839018 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = control_event_handler.cpp; path = ui/control_event_handler.cpp; sourceTree = "<group>"; };
+		EBC5B34A1B77C8FE008076C1 /* control_event_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_event_handler.h; path = ui/control_event_handler.h; sourceTree = "<group>"; };
 		EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = httprequest_service.cpp; sourceTree = "<group>"; };
 		EBD4BEDB1B45A0C0001AA0D6 /* httprequest_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httprequest_service.h; sourceTree = "<group>"; };
 		EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskqueue_service.cpp; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 		EB7790201B75145300E1DDB2 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */,
+				EBC5B34A1B77C8FE008076C1 /* control_event_handler.h */,
 				EB7790211B75147500E1DDB2 /* dial_button.cpp */,
 				EB7790221B75147500E1DDB2 /* dial_button.h */,
 				EB7790231B75147500E1DDB2 /* expanded_tab.cpp */,
@@ -374,6 +380,7 @@
 				EB79913D1B70C63F00A30C9F /* dictionary.cpp in Sources */,
 				EB79913E1B70C63F00A30C9F /* profiler.cpp in Sources */,
 				EB79913F1B70C63F00A30C9F /* gameplay_assets.cpp in Sources */,
+				EBC5B34C1B77C8FE008076C1 /* control_event_handler.cpp in Sources */,
 				EB7991401B70C63F00A30C9F /* tracker_service.cpp in Sources */,
 				EB7991411B70C63F00A30C9F /* taskqueue_service.cpp in Sources */,
 				EB7991421B70C63F00A30C9F /* zip_stream.cpp in Sources */,
@@ -406,6 +413,7 @@
 				EB9F81471AAB25CD00839018 /* dictionary.cpp in Sources */,
 				EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */,
 				EB9F81481AAB25CD00839018 /* gameplay_assets.cpp in Sources */,
+				EBC5B34B1B77C8FE008076C1 /* control_event_handler.cpp in Sources */,
 				EB9F81561AAB25CD00839018 /* tracker_service.cpp in Sources */,
 				EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */,
 				EB9F814C1AAB25CD00839018 /* zip_stream.cpp in Sources */,
