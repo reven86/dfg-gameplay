@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __DIAL_BUTTON_H__
-#define __DIAL_BUTTON_H__
+#ifndef __DFG_DIAL_BUTTON_H__
+#define __DFG_DIAL_BUTTON_H__
 
 
 
@@ -210,4 +210,4 @@ private:
 
 
 
-#endif // __DIAL_BUTTON_H__
+#endif // __DFG_DIAL_BUTTON_H__

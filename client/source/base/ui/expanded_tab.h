@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __EXPANDED_TAB_H__
-#define __EXPANDED_TAB_H__
+#ifndef __DFG_EXPANDED_TAB_H__
+#define __DFG_EXPANDED_TAB_H__
 
 
 
@@ -131,4 +131,4 @@ private:
 
 
 
-#endif // __EXPANDED_TAB_H__
+#endif // __DFG_EXPANDED_TAB_H__

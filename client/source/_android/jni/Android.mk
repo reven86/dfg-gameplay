@@ -125,6 +125,7 @@ LOCAL_SRC_FILES := \
     base/services/storefront_service.cpp \
     base/services/taskqueue_service.cpp \
     base/services/tracker_service.cpp \
+    base/ui/control_event_handler.cpp \
     base/ui/dial_button.cpp \
     base/ui/expanded_tab.cpp \
     base/utils/profiler.cpp \

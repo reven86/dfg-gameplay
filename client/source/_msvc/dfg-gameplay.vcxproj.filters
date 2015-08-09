@@ -74,6 +74,9 @@
     <ClCompile Include="..\base\ui\expanded_tab.cpp">
       <Filter>base\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\control_event_handler.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -166,6 +169,9 @@
       <Filter>base\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\base\ui\expanded_tab.h">
+      <Filter>base\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ui\control_event_handler.h">
       <Filter>base\ui</Filter>
     </ClInclude>
   </ItemGroup>
