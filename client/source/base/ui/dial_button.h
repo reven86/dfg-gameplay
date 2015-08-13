@@ -124,8 +124,8 @@ protected:
     static const int ANIMATE_SCROLL_TO_ITEM = 9;
 
     /**
-    * Constant used to animate button expanding process.
-    */
+     * Constant used to animate button expanding process.
+     */
     static const int ANIMATE_BUTTON_EXPANDING = 10;
 
 

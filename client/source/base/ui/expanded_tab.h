@@ -27,6 +27,22 @@ public:
         MAXIMIZED,
     };
 
+    /**
+     * Tab's specific listener that provides double-click event.
+     */
+    class Listener : public gameplay::Control::Listener
+    {
+    public:
+        enum EventType
+        {
+            /**
+             * Event triggered after consecutive PRESS and RELEASE events take place
+             * within the bounds of a control that is happend twice in a short amount of time.
+             */
+            DOUBLE_CLICK = 0x2000
+        };
+    };
+
     /** 
      * Set new tab's state. Triggers animation.
      *
@@ -106,6 +122,11 @@ protected:
 
 protected:
     /**
+     * Constant used as a timer to wait for double click event.
+     */
+    static const int ANIMATE_DOUBLE_CLICK = 10;
+
+    /**
      * @see Control#controlEvent
      */
     void controlEvent(Control::Listener::EventType evt);
@@ -114,6 +135,28 @@ protected:
      * Handles when animation event occurs.
      */
     virtual void animationEvent(gameplay::AnimationClip* clip, gameplay::AnimationClip::Listener::EventType type);
+
+    /**
+     * Notify this control's listeners of a specific event.
+     *
+     * @param eventType The event to trigger.
+     */
+    virtual void notifyListeners(gameplay::Control::Listener::EventType eventType);
+
+    /**
+     * @see AnimationTarget::getAnimationPropertyComponentCount
+     */
+    virtual unsigned int getAnimationPropertyComponentCount(int propertyId) const;
+
+    /**
+     * @see AnimationTarget::getAnimationProperty
+     */
+    virtual void getAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value);
+
+    /**
+     * @see AnimationTarget::setAnimationProperty
+     */
+    virtual void setAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value, float blendWeight = 1.0f);
 
     /**
      * The tab's group ID.
@@ -127,6 +170,7 @@ private:
     gameplay::Curve::InterpolationType _animationInterpolator;
     unsigned int _animationDuration;
     gameplay::AnimationClip * _stateChangeClip;
+    gameplay::AnimationClip * _clickWaitClip;
 };
 
 

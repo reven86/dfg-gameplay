@@ -14,6 +14,7 @@ ExpandedTab::ExpandedTab()
     , _animationDuration(1000)
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
     , _stateChangeClip(NULL)
+    , _clickWaitClip(NULL)
 {
 }
 
@@ -68,8 +69,16 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
 void ExpandedTab::animationEvent(gameplay::AnimationClip * clip, gameplay::AnimationClip::Listener::EventType type)
 {
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
-    if (_state == HIDDEN)
-        setVisible(false);
+
+    if (clip == _clickWaitClip)
+    {
+        gameplay::Container::notifyListeners(gameplay::Control::Listener::CLICK);
+    }
+    else
+    {
+        if (_state == HIDDEN)
+            setVisible(false);
+    }
 }
 
 gameplay::Control * ExpandedTab::create(gameplay::Theme::Style * style, gameplay::Properties * properties)
@@ -153,6 +162,75 @@ void ExpandedTab::controlEvent(Control::Listener::EventType evt)
     case Control::Listener::CLICK:
         if (_state == MINIMIZED)
             setState(MAXIMIZED);
+        break;
+    }
+}
+
+void ExpandedTab::notifyListeners(gameplay::Control::Listener::EventType eventType)
+{
+    // delay actual click event if we're waiting for double click
+    if (eventType == gameplay::Control::Listener::CLICK)
+    {
+        if (_clickWaitClip && _clickWaitClip->isPlaying())
+        {
+            if (_clickWaitClip->getElapsedTime() > 0)
+            {
+                // that is second click, fire DOUBLE_CLICK event
+                notifyListeners(static_cast<gameplay::Control::Listener::EventType>(Listener::DOUBLE_CLICK));
+                return;
+            }
+        }
+        else
+        {
+            // it's first click, start a waiting animation
+            float from = 0;
+            float to = 1;
+            gameplay::Animation * animation = createAnimationFromTo("double-click-wait", ANIMATE_DOUBLE_CLICK, &from, &to, gameplay::Curve::LINEAR, 300);
+            _clickWaitClip = animation->getClip();
+            _clickWaitClip->addEndListener(this);
+            _clickWaitClip->play();
+        }
+    }
+
+    gameplay::Container::notifyListeners(eventType);
+}
+
+unsigned int ExpandedTab::getAnimationPropertyComponentCount(int propertyId) const
+{
+    switch (propertyId)
+    {
+    case ANIMATE_DOUBLE_CLICK:
+        return 1;
+    default:
+        return Container::getAnimationPropertyComponentCount(propertyId);
+    }
+}
+
+void ExpandedTab::getAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value)
+{
+    GP_ASSERT(value);
+
+    switch (propertyId)
+    {
+    case ANIMATE_DOUBLE_CLICK:
+        value->setFloat(0, 0.0f);
+        break;
+    default:
+        gameplay::Container::getAnimationPropertyValue(propertyId, value);
+        break;
+    }
+}
+
+void ExpandedTab::setAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value, float blendWeight)
+{
+    GP_ASSERT(value);
+
+    switch (propertyId)
+    {
+    case ANIMATE_DOUBLE_CLICK:
+        break;
+    default:
+        gameplay::Container::setAnimationPropertyValue(propertyId, value, blendWeight);
         break;
     }
 }
