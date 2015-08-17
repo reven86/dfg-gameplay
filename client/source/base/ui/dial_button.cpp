@@ -20,6 +20,8 @@ DialButton::DialButton()
     , _itemScrollingClip(NULL)
     , _menuState(false)
     , _lastScrollPositionOnPress(0)
+    , _rawScrollPosition(0, 0)
+    , _freeSliding(false)
 {
 }
 
@@ -62,6 +64,8 @@ void DialButton::initialize(const char* typeName, gameplay::Theme::Style* style,
     if (duration > 0)
         _animationWaitDuration = static_cast<unsigned>(duration);
 
+    _freeSliding = properties->getBool("freeSliding");
+
     setConsumeInputEvents(true);
 
     for (gameplay::Control * child : getControls())
@@ -102,7 +106,14 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
         return false;
     }
 
+    // using _currentItemBeforeTouch also as a flag that touch is still pressed ()
+    // remap scroll position only touch is pressed
+    if (_currentItemBeforeTouch >= getControlCount())
+        _rawScrollPosition = _scrollPosition;
+
+    _scrollPosition = _rawScrollPosition;
     bool res = gameplay::Container::touchEventScroll(evt, x, y, contactIndex);
+    _rawScrollPosition = _scrollPosition;
 
     // reset velocity
     _scrollingVelocity.set(0.0f, 0.0f);
@@ -110,7 +121,23 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
     if (_expandingFactor <= 0.0f && getControlCount() > 0)
     {
         unsigned closestControlIndex = findClosestControlIndex(-_scrollPosition.y, false);
-        // using _currentItemBeforeTouch also as a flag that touch is still pressed (_currentItemBeforeTouch < getControlCount())
+
+        if (!_freeSliding)
+        {
+            // remap scrollPosition so it feels like there is a spring inside button
+            // that help items to stick to borders when rotating a dial
+            gameplay::Control * closestControl = getControl(closestControlIndex);
+            float distance = 0.5f * (closestControl->getHeight() + closestControl->getMargin().top + closestControl->getMargin().bottom);
+            float relativeOffsetToClosestItem = (closestControl->getY() + closestControl->getHeight() * 0.5f + _scrollPosition.y) / distance - 1.0f;
+            //GP_LOG("%f", relativeOffsetToClosestItem);
+            relativeOffsetToClosestItem = std::min(1.0f, std::max(-1.0f, relativeOffsetToClosestItem));
+
+            relativeOffsetToClosestItem *= relativeOffsetToClosestItem * relativeOffsetToClosestItem;
+            _scrollPosition.y = (relativeOffsetToClosestItem + 1.0f) * distance - closestControl->getY() - closestControl->getHeight() * 0.5f;
+
+            closestControlIndex = findClosestControlIndex(-_scrollPosition.y, false);
+        }
+
         switch (evt)
         {
         case gameplay::Touch::TOUCH_MOVE:
@@ -394,7 +421,10 @@ void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::Animati
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
     _menuState = false;
     if (_currentItemBeforeTouch < getControlCount() && _currentItemBeforeTouch != _currentItemIndex)
+    {
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+        _currentItemBeforeTouch = (unsigned)~0;
+    }
 }
 
 unsigned int DialButton::drawBorder(gameplay::Form * form) const

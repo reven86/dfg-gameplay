@@ -206,6 +206,9 @@ private:
 
     bool _menuState;
     float _lastScrollPositionOnPress;
+
+    bool _freeSliding;
+    gameplay::Vector2 _rawScrollPosition;
 };
 
 
