@@ -54,6 +54,18 @@ class RenderStep : Noncopyable
     friend class RenderService;
 
 public:
+    /**
+     * Signals is invoked when RenderStep is about to be drawn.
+     */
+    sigc::signal<void, const RenderStep *> preRenderSignal;
+
+    /**
+    * Signals is invoked when RenderStep has been drawn.
+    */
+    sigc::signal<void, const RenderStep *> postRenderSignal;
+
+
+
     virtual ~RenderStep();
 
     /**
