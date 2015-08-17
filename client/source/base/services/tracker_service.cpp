@@ -203,11 +203,16 @@ void TrackerService::forceDispatch()
 
 void TrackerService::endSession(const char * viewName)
 {
+    _dispatchMutex.lock();
     if (_payloadsQueue.empty() || _payloadsQueue.back().params.find("&sc=end") == _payloadsQueue.back().params.npos)
     {
-        sendView(viewName);
-        _payloadsQueue.back().params += "&sc=end";
+        if (_currentView != viewName)
+        {
+            sendView(viewName);
+            _payloadsQueue.back().params += "&sc=end";
+        }
     }
+    _dispatchMutex.unlock();
 
     forceDispatch();
 
