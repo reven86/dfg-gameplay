@@ -168,7 +168,7 @@ void DfgGame::pause()
 
     TrackerService * trackerService = ServiceManager::getInstance()->findService< TrackerService >();
     if (trackerService)
-        trackerService->endSession();
+        trackerService->endSession("Pause");
 
     gameplay::Game::pause();
 }

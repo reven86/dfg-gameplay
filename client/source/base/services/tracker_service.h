@@ -56,14 +56,15 @@ public:
 
     /** 
      * Immediately send all payloads to analytics server
-     *
-     * Normally all payloads except the last are dispatched. This is needed to properly send 'session end' signal.
-     * Session end signal is always attached to the last payload, which should be available.
-     *
-     * @param[in]  dispatchCount   Amount of payloads to be sent. 0 to send all.
      */
-    void forceDispatch(int dispatchCount);
-    void endSession();
+    void forceDispatch();
+
+    /**
+     * End session. Sends new view and attaches session end marker to it.
+     *
+     * @param viewName Session end view name. Default is 'SessionEnd'.
+     */
+    void endSession(const char * viewName = "SessionEnd");
 
     /**
      * Flush all payloads immediately to disk.
@@ -121,7 +122,6 @@ private:
     std::mutex _dispatchMutex;
     static bool _threadForceQuit;
     static int _dispatchPeriod;  // in ms
-    static int _dispatchRate;  // in ms
 
     bool _allowDispatch;
     time_t _trackerStartTime;

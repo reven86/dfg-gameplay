@@ -9,7 +9,6 @@
 
 bool TrackerService::_threadForceQuit = false;
 int TrackerService::_dispatchPeriod = 1000;
-int TrackerService::_dispatchRate = 1;
 
 TrackerService::TrackerService(const ServiceManager * manager)
     : Service(manager)
@@ -176,7 +175,7 @@ bool TrackerService::onTick()
     return false; // as long as service is active dispatch thread is working
 }
 
-void TrackerService::forceDispatch(int dispatchCount)
+void TrackerService::forceDispatch()
 {
     _dispatchMutex.lock();
 
@@ -187,9 +186,7 @@ void TrackerService::forceDispatch(int dispatchCount)
         return;
     }
 
-    bool flushAll = dispatchCount == 0;
-    dispatchCount = std::min< int >(dispatchCount, static_cast<int>(_payloadsQueue.size()) - 1);
-    while (flushAll && !_payloadsQueue.empty() || dispatchCount > 0)
+    while (!_payloadsQueue.empty())
     {
         // get a copy of payload because queue can be modified in another thread
         PayloadInfo payload = _payloadsQueue.front();
@@ -200,18 +197,19 @@ void TrackerService::forceDispatch(int dispatchCount)
         _payloadQueueMutex.lock();
         _payloadsQueue.pop_front();
         _payloadQueueMutex.unlock();
-
-        dispatchCount--;
     }
     _dispatchMutex.unlock();
 }
 
-void TrackerService::endSession()
+void TrackerService::endSession(const char * viewName)
 {
-    if (!_payloadsQueue.empty() && _payloadsQueue.back().params.find("&sc=end") == _payloadsQueue.back().params.npos)
+    if (_payloadsQueue.empty() || _payloadsQueue.back().params.find("&sc=end") == _payloadsQueue.back().params.npos)
+    {
+        sendView(viewName);
         _payloadsQueue.back().params += "&sc=end";
+    }
 
-    forceDispatch(0);
+    forceDispatch();
 
     _dispatchMutex.lock();
     _sessionStartTime = 0;
@@ -448,7 +446,7 @@ void TrackerService::dispatchThreadProc(void * arg)
 
     while (!_this->_threadForceQuit && (_this->getState() == Service::INITIALIZING || _this->getState() == Service::RUNNING))
     {
-        _this->forceDispatch(_this->_dispatchRate);
+        _this->forceDispatch();
         std::this_thread::sleep_for(std::chrono::milliseconds(_this->_dispatchPeriod));
     }
 }
