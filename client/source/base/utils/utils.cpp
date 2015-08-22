@@ -174,7 +174,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const
     result = text;
 
     float textw = 0, texth = 0;
-    font->measureText( text, fontSize, &textw, &texth );
+    font->measureText( text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth );
     if( textw >= width && width > 0 )
     {
         result.erase(result.end() - 1, result.end());
@@ -187,7 +187,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const
             result.push_back( '.' );
             result.push_back( '.' );
             result.push_back( '.' );
-            font->measureText( result.c_str( ), fontSize, &textw, &texth );
+            font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
         }
         while( textw >= width );
     }
