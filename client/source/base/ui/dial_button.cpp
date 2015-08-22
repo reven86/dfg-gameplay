@@ -6,7 +6,7 @@
 
 
 DialButton::DialButton()
-    : _currentItemIndex(0)
+    : _currentItemIndex(INVALID_ITEM_INDEX)
     , _heightCollapsed(100.0f)
     , _heightExpanded(300.0f)
     , _expandAnimationClip(NULL)
@@ -15,7 +15,7 @@ DialButton::DialButton()
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
     , _animationWaitDuration(1000)
     , _animationDuration(1000)
-    , _currentItemBeforeTouch((unsigned)~0)
+    , _currentItemBeforeTouch(INVALID_ITEM_INDEX)
     , _startScrollingPosition(0.0f, 0.0f)
     , _itemScrollingClip(NULL)
     , _menuState(false)
@@ -106,9 +106,9 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
         return false;
     }
 
-    // using _currentItemBeforeTouch also as a flag that touch is still pressed ()
-    // remap scroll position only touch is pressed
-    if (_currentItemBeforeTouch >= getControlCount())
+    // using _currentItemBeforeTouch also as a flag that touch is still pressed (INVALID_ITEM_INDEX)
+    // remap scroll position only when touch is pressed
+    if (_currentItemBeforeTouch == INVALID_ITEM_INDEX)
         _rawScrollPosition = _scrollPosition;
 
     _scrollPosition = _rawScrollPosition;
@@ -129,7 +129,6 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
             gameplay::Control * closestControl = getControl(closestControlIndex);
             float distance = 0.5f * (closestControl->getHeight() + closestControl->getMargin().top + closestControl->getMargin().bottom);
             float relativeOffsetToClosestItem = (closestControl->getY() + closestControl->getHeight() * 0.5f + _scrollPosition.y) / distance - 1.0f;
-            //GP_LOG("%f", relativeOffsetToClosestItem);
             relativeOffsetToClosestItem = std::min(1.0f, std::max(-1.0f, relativeOffsetToClosestItem));
 
             relativeOffsetToClosestItem *= relativeOffsetToClosestItem * relativeOffsetToClosestItem;
@@ -141,7 +140,7 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
         switch (evt)
         {
         case gameplay::Touch::TOUCH_MOVE:
-            if (_currentItemBeforeTouch < getControlCount() && _currentItemIndex != closestControlIndex)
+            if (_currentItemBeforeTouch != INVALID_ITEM_INDEX && _currentItemIndex != closestControlIndex)
             {
                 _currentItemIndex = closestControlIndex;
                 if (_expandAnimationClip)
@@ -153,13 +152,13 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
             break;
         case gameplay::Touch::TOUCH_RELEASE:
             // scroll to nearest item
-            if (_currentItemBeforeTouch < getControlCount())
+            if (_currentItemBeforeTouch != INVALID_ITEM_INDEX)
             {
                 _currentItemIndex = closestControlIndex;
                 scrollToItem(closestControlIndex);
                 if (_currentItemBeforeTouch != _currentItemIndex)
                     notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
-                _currentItemBeforeTouch = (unsigned)~0;
+                _currentItemBeforeTouch = INVALID_ITEM_INDEX;
             }
             break;
         case gameplay::Touch::TOUCH_PRESS:
@@ -216,7 +215,7 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
     }
 
-    if (!immediately)
+    if (!immediately && lastItem < getControlCount())
     {
         float from = 0.0f;
         float to = 1.0f;
@@ -259,6 +258,7 @@ void DialButton::getAnimationPropertyValue(int propertyId, gameplay::AnimationVa
     {
     case ANIMATE_SCROLL_TO_ITEM:
         {
+            GP_ASSERT(_currentItemIndex < getControlCount());
             gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
             gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
             value->setFloat(0, (_scrollPosition - _startScrollingPosition).length() / (desiredScrollPosition - _startScrollingPosition).length());
@@ -281,6 +281,7 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
     {
     case ANIMATE_SCROLL_TO_ITEM:
         {
+            GP_ASSERT(_currentItemIndex < getControlCount());
             gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
             gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
 
@@ -299,7 +300,7 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
             setHeight(height);
 
             // update scroll as well since the current item should be placed in center of the container
-            if (_expandingFactor > 0.0f && getControlCount() > 0)
+            if (_expandingFactor > 0.0f && _currentItemIndex != INVALID_ITEM_INDEX)
             {
                 gameplay::Control * currentItem = getControl(_currentItemIndex);
                 float currentItemOffset = currentItem->getY() - currentItem->getMargin().top;
@@ -340,6 +341,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
 
             // set new current item and fallback to shrink animation
             int localY = y + _absoluteBounds.y - _viewportBounds.y;
+            _currentItemBeforeTouch = _currentItemIndex;
             _currentItemIndex = findClosestControlIndex(localY - _scrollPosition.y, true);
         }
     }
@@ -348,31 +350,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
     {
         // button is about to expand but touch was released a bit earlier
         // expand button and transition to a 'menu' state
-
-        if (_expandAnimationClip)
-        {
-            _expandAnimationClip->stop();
-            _expandAnimationClip = NULL;
-        }
-
-        float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
-        float to = 1.0f;
-        unsigned times[] = { 0, _animationDuration };
-        float values[] = { from, to };
-        gameplay::Animation * animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
-
-        if (getControlCount() > 0)
-        {
-            gameplay::Control * currentItem = getControl(_currentItemIndex);
-            float currentItemOffset = currentItem->getY() - currentItem->getMargin().top;
-            _targetScrollPositionOnExpand = -currentItemOffset + (_heightExpanded - _heightCollapsed) * 0.5f;
-        }
-
-        _expandAnimationClip = animation->getClip();
-        _expandAnimationClip->play();
-
-        _menuState = true;
-        _lastScrollPositionOnPress = _targetScrollPositionOnExpand;
+        transitionToMenu();
     }
     else if ((evt == gameplay::Touch::TOUCH_PRESS && _expandingFactor <= 0.0f) || evt == gameplay::Touch::TOUCH_RELEASE)
     {
@@ -393,6 +371,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
 
             if (getControlCount() > 0)
             {
+                GP_ASSERT(_currentItemIndex < getControlCount());
                 gameplay::Control * currentItem = getControl(_currentItemIndex);
                 float currentItemOffset = currentItem->getY() - currentItem->getMargin().top;
                 _targetScrollPositionOnExpand = -currentItemOffset + (_heightExpanded - _heightCollapsed) * 0.5f;
@@ -420,10 +399,10 @@ void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::Animati
 {
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
     _menuState = false;
-    if (_currentItemBeforeTouch < getControlCount() && _currentItemBeforeTouch != _currentItemIndex)
+    if (_currentItemBeforeTouch != _currentItemIndex)
     {
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
-        _currentItemBeforeTouch = (unsigned)~0;
+        _currentItemBeforeTouch = INVALID_ITEM_INDEX;
     }
 }
 
@@ -431,7 +410,7 @@ unsigned int DialButton::drawBorder(gameplay::Form * form) const
 {
     unsigned int drawCalls = gameplay::Container::drawBorder(form);
 
-    if (getControlCount() > 0)
+    if (getControlCount() > 0 && _currentItemIndex != INVALID_ITEM_INDEX)
     {
         gameplay::SpriteBatch* batch = _style->getTheme()->getSpriteBatch();
         startBatch(form, batch);
@@ -455,7 +434,7 @@ unsigned int DialButton::drawBorder(gameplay::Form * form) const
 void DialButton::removeControl(unsigned int index)
 {
     gameplay::Container::removeControl(index);
-    if (_currentItemIndex >= index && _currentItemIndex > 0)
+    if (_currentItemIndex != INVALID_ITEM_INDEX && _currentItemIndex >= index && _currentItemIndex > 0)
         _currentItemIndex--;
 }
 
@@ -470,4 +449,39 @@ void DialButton::insertControl(gameplay::Control * control, unsigned int index)
 {
     gameplay::Container::insertControl(control, index);
     control->setConsumeInputEvents(false);
+}
+
+void DialButton::transitionToMenu()
+{
+    if (_menuState)
+        return;
+
+    if (_expandAnimationClip)
+    {
+        _expandAnimationClip->stop();
+        _expandAnimationClip = NULL;
+    }
+
+    float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
+    float to = 1.0f;
+    unsigned times[] = { 0, _animationDuration };
+    float values[] = { from, to };
+    gameplay::Animation * animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
+
+    if (_currentItemIndex != INVALID_ITEM_INDEX)
+    {
+        gameplay::Control * currentItem = getControl(_currentItemIndex);
+        float currentItemOffset = currentItem->getY() - currentItem->getMargin().top;
+        _targetScrollPositionOnExpand = -currentItemOffset + (_heightExpanded - _heightCollapsed) * 0.5f;
+    }
+    else
+    {
+        _targetScrollPositionOnExpand = 0.0f;
+    }
+
+    _expandAnimationClip = animation->getClip();
+    _expandAnimationClip->play();
+
+    _menuState = true;
+    _lastScrollPositionOnPress = _targetScrollPositionOnExpand;
 }

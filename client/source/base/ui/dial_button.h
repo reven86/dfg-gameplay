@@ -20,6 +20,8 @@ class DialButton : public gameplay::Container, public gameplay::AnimationClip::L
     friend class UIService2;
 
 public:
+    static const unsigned int INVALID_ITEM_INDEX = 0xffffffff;
+
     /**
      * Get current item index (visible child index).
      */
@@ -79,6 +81,10 @@ public:
      */
     void setHeightExpanded(float height) { _heightExpanded = height; };
     
+    /**
+     * Set the button to a menu state, the button will automatically expand.
+     */
+    void transitionToMenu();
 
 protected:
 
