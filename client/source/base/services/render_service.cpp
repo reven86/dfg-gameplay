@@ -52,6 +52,11 @@ RenderStep * RenderService::findRenderStep(const char * name)
     return NULL;
 }
 
+void RenderService::removeRenderStep(RenderStep * step)
+{
+    _renderSteps.remove(step);
+}
+
 void RenderService::renderFrame()
 {
     for (RenderStepsType::const_iterator it = _renderSteps.begin(), end_it = _renderSteps.end(); it != end_it; it++)

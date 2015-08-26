@@ -127,6 +127,11 @@ public:
     RenderStep * findRenderStep(const char * name);
 
     /**
+     * Remove render step from the rendering list.
+     */
+    void removeRenderStep(RenderStep * step);
+
+    /**
      * Draw frame.
      */
     void renderFrame();
