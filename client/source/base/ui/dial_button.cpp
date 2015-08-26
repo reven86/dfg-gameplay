@@ -194,7 +194,7 @@ unsigned DialButton::findClosestControlIndex(float localY, bool exitOnPositiveOf
         index++;
     }
 
-    return closestControlIndex;
+    return closestControlIndex < getControlCount() ? closestControlIndex : INVALID_ITEM_INDEX;
 }
 
 void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
@@ -220,12 +220,10 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
         float from = 0.0f;
         float to = 1.0f;
 
-        float scrollDistance = fabsf(static_cast<float>(lastItem)-itemIndex);
-
         _startScrollingPosition = _scrollPosition;
 
         gameplay::Animation * animation = createAnimationFromTo("scrollbar-scroll-to-item", ANIMATE_SCROLL_TO_ITEM, &from, &to,
-            gameplay::Curve::QUADRATIC_IN, std::max(200UL, static_cast<unsigned long>(scrollDistance * 200)));
+            gameplay::Curve::QUADRATIC_IN, 200);
         _itemScrollingClip = animation->getClip();
         _itemScrollingClip->play();
     }
@@ -369,12 +367,16 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
             float values[] = { from, from, to };
             animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 3, times, values, _animationInterpolator);
 
-            if (getControlCount() > 0)
+            if (_currentItemIndex != INVALID_ITEM_INDEX)
             {
                 GP_ASSERT(_currentItemIndex < getControlCount());
                 gameplay::Control * currentItem = getControl(_currentItemIndex);
                 float currentItemOffset = currentItem->getY() - currentItem->getMargin().top;
                 _targetScrollPositionOnExpand = -currentItemOffset + (_heightExpanded - _heightCollapsed) * 0.5f;
+            }
+            else
+            {
+                _targetScrollPositionOnExpand = 0.0f;
             }
         }
         else
@@ -436,6 +438,12 @@ void DialButton::removeControl(unsigned int index)
     gameplay::Container::removeControl(index);
     if (_currentItemIndex != INVALID_ITEM_INDEX && _currentItemIndex >= index && _currentItemIndex > 0)
         _currentItemIndex--;
+
+    if (_currentItemIndex >= getControlCount())
+    {
+        _currentItemIndex = INVALID_ITEM_INDEX;
+        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+    }
 }
 
 unsigned int DialButton::addControl(gameplay::Control * control)
