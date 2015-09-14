@@ -37,6 +37,7 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
         return;
 
     _state = state;
+    notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
 
     if (_stateChangeClip)
     {

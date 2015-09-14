@@ -14,8 +14,6 @@
  */
 class ExpandedTab : public gameplay::Container, public gameplay::AnimationClip::Listener
 {
-    friend class UIService2;
-
 public:
     /**
      * The definition of tab states
@@ -42,6 +40,16 @@ public:
             DOUBLE_CLICK = 0x2000
         };
     };
+
+    /**
+     * Create an expanded tab with a given style and properties.
+     *
+     * @param style The style to apply to this tab.
+     * @param properties A properties object containing a definition of the tab (optional).
+     *
+     * @return The new tab.
+     */
+    static gameplay::Control* create(gameplay::Theme::Style* style, gameplay::Properties* properties = NULL);
 
     /** 
      * Set new tab's state. Triggers animation.
@@ -76,6 +84,13 @@ public:
      */
     void setWidthMinimized(float width) { _widthMinimized = width; };
     
+    /**
+     * Minimize all tabs in the given group.
+     *
+     * @param groupId The group to clear.
+     */
+    static void minimizeAll(const std::string& groupId);
+
 protected:
 
     /**
@@ -99,26 +114,9 @@ protected:
     const char* getTypeName() const;
 
     /**
-     * Create an expanded tab with a given style and properties.
-     *
-     * @param style The style to apply to this tab.
-     * @param properties A properties object containing a definition of the tab (optional).
-     *
-     * @return The new tab.
-     */
-    static gameplay::Control* create(gameplay::Theme::Style* style, gameplay::Properties* properties = NULL);
-
-    /**
      * @see Control::initialize
      */
     void initialize(const char* typeName, gameplay::Theme::Style* style, gameplay::Properties* properties);
-
-    /**
-     * Minimize all tabs in the given group.
-     *
-     * @param groupId The group to clear.
-     */
-    static void minimizeAll(const std::string& groupId);
 
 protected:
     /**

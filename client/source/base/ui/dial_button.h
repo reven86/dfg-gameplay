@@ -17,10 +17,18 @@
 
 class DialButton : public gameplay::Container, public gameplay::AnimationClip::Listener
 {
-    friend class UIService2;
-
 public:
     static const unsigned int INVALID_ITEM_INDEX = 0xffffffff;
+
+    /**
+     * Create a dial button with a given style and properties.
+     *
+     * @param style The style to apply to this button.
+     * @param properties A properties object containing a definition of the button (optional).
+     *
+     * @return The new button.
+     */
+    static gameplay::Control* create(gameplay::Theme::Style* style, gameplay::Properties* properties = NULL);
 
     /**
      * Get current item index (visible child index).
@@ -107,16 +115,6 @@ protected:
      * @see ScriptTarget::getTypeName()
      */
     const char* getTypeName() const;
-
-    /**
-     * Create a dial button with a given style and properties.
-     *
-     * @param style The style to apply to this button.
-     * @param properties A properties object containing a definition of the button (optional).
-     *
-     * @return The new button.
-     */
-    static gameplay::Control* create(gameplay::Theme::Style* style, gameplay::Properties* properties = NULL);
 
     /**
      * @see Control::initialize
