@@ -66,42 +66,51 @@ void DfgGame::initialize()
 
     // set default resources locale
     _gameLocale = getConfig()->getString("language");
+    setGameLocale();
+}
 
-    // get system-wide locale and override _gameLocale if we have resources for it
-    std::string newLocale;
+void DfgGame::setGameLocale(const char * newLocale)
+{
+    std::string systemLocale(_gameLocale);
+    if (newLocale == NULL)
+    {
+        // get system-wide locale and override _gameLocale if we have resources for it
 #ifdef __APPLE__
-    NSString* preferredLang = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"GameLanguage"];
-    newLocale = [preferredLang cStringUsingEncoding:NSASCIIStringEncoding];
+        NSString* preferredLang = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"GameLanguage"];
+        systemLocale = [preferredLang cStringUsingEncoding : NSASCIIStringEncoding];
 #endif
 
 #ifdef __ANDROID__
-    android_app* app = __state;
-    JNIEnv* env = app->activity->env;
-    JavaVM* vm = app->activity->vm;
-    vm->AttachCurrentThread(&env, NULL);
+        android_app* app = __state;
+        JNIEnv* env = app->activity->env;
+        JavaVM* vm = app->activity->vm;
+        vm->AttachCurrentThread(&env, NULL);
 
-    jclass android_content_Context = env->FindClass("android/content/Context");
-    jmethodID midGetPackageName = env->GetMethodID(android_content_Context, "getPackageName", "()Ljava/lang/String;");
-    jstring packageName = (jstring) env->CallObjectMethod(app->activity->clazz, midGetPackageName);
-    jmethodID midGetResources = env->GetMethodID(android_content_Context, "getResources", "()Landroid/content/res/Resources;");
-    jobject jResource = env->CallObjectMethod(app->activity->clazz, midGetResources);
+        jclass android_content_Context = env->FindClass("android/content/Context");
+        jmethodID midGetPackageName = env->GetMethodID(android_content_Context, "getPackageName", "()Ljava/lang/String;");
+        jstring packageName = (jstring)env->CallObjectMethod(app->activity->clazz, midGetPackageName);
+        jmethodID midGetResources = env->GetMethodID(android_content_Context, "getResources", "()Landroid/content/res/Resources;");
+        jobject jResource = env->CallObjectMethod(app->activity->clazz, midGetResources);
 
-    jclass resource_Class = env->GetObjectClass(jResource);
-    jmethodID midGetIdentifier = env->GetMethodID(resource_Class, "getIdentifier", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
-    jstring languageVar = env->NewStringUTF("GameLanguage");
-    jstring TypeName = env->NewStringUTF("string");
-    jint id = env->CallIntMethod(jResource, midGetIdentifier, languageVar, TypeName, packageName);
+        jclass resource_Class = env->GetObjectClass(jResource);
+        jmethodID midGetIdentifier = env->GetMethodID(resource_Class, "getIdentifier", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)I");
+        jstring languageVar = env->NewStringUTF("GameLanguage");
+        jstring TypeName = env->NewStringUTF("string");
+        jint id = env->CallIntMethod(jResource, midGetIdentifier, languageVar, TypeName, packageName);
 
-    jmethodID midGetAppName = env->GetMethodID(resource_Class, "getString", "(I)Ljava/lang/String;");
-    jstring language = (jstring) env->CallObjectMethod(jResource, midGetAppName, id);
+        jmethodID midGetAppName = env->GetMethodID(resource_Class, "getString", "(I)Ljava/lang/String;");
+        jstring language = (jstring)env->CallObjectMethod(jResource, midGetAppName, id);
 
-    const char * lng = env->GetStringUTFChars(language, NULL);
-    if (lng)
-        newLocale = lng;
-    env->ReleaseStringUTFChars(language, lng);
+        const char * lng = env->GetStringUTFChars(language, NULL);
+        if (lng)
+            systemLocale = lng;
+        env->ReleaseStringUTFChars(language, lng);
 
-    vm->DetachCurrentThread();
+        vm->DetachCurrentThread();
 #endif
+
+        newLocale = systemLocale.c_str();
+    }
 
     std::string aliasesName("aliases_");
     if (getConfig()->getNamespace((aliasesName + newLocale).c_str(), true))

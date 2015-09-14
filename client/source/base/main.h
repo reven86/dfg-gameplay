@@ -41,6 +41,13 @@ protected:
     void pause();
     void resume();
 
+    /**
+     * Set game locale, or use system default one.
+     *
+     * @param newLocale Locale to be set, NULL to use system-wide locale.
+     */
+    void setGameLocale(const char * newLocale = NULL);
+
     void keyEvent(gameplay::Keyboard::KeyEvent evt, int key);
     void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex);
     bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta);
