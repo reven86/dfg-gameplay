@@ -69,6 +69,16 @@ public:
     virtual ~RenderStep();
 
     /**
+     * Get render step's active flag. True by default.
+     */
+    const bool& isActive() const { return _active; };
+
+    /**
+     * Set render step's active flag.
+     */
+    void setActive(bool active) { _active = active; };
+
+    /**
      * Render step name.
      */
     const char * getName() const { return _name.c_str(); };
@@ -94,6 +104,7 @@ private:
     typedef std::list<RenderClick *> RenderClicksType;
     RenderClicksType _renderClicks;
     std::string _name;
+    bool _active;
 };
 
 

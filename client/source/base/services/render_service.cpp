@@ -60,7 +60,8 @@ void RenderService::removeRenderStep(RenderStep * step)
 void RenderService::renderFrame()
 {
     for (RenderStepsType::const_iterator it = _renderSteps.begin(), end_it = _renderSteps.end(); it != end_it; it++)
-        (*it)->render();
+        if ((*it)->isActive())
+            (*it)->render();
 }
 
 
@@ -89,6 +90,7 @@ RenderClick::~RenderClick()
 
 RenderStep::RenderStep(const char * name)
     : _name(name)
+    , _active(true)
 {
 }
 
