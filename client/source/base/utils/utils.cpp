@@ -170,29 +170,28 @@ const char * Utils::urlEncode(const char * src)
 const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize)
 {
     static std::wstring result;
-    
+
     result = text;
 
     float textw = 0, texth = 0;
-    font->measureText( text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth );
-    if( textw >= width && width > 0 )
+    font->measureText(text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
+    if (textw >= width && width > 0)
     {
         result.erase(result.end() - 1, result.end());
-        result.push_back( '.' );
-        result.push_back( '.' );
-        result.push_back( '.' );
+        result.push_back('.');
+        result.push_back('.');
+        result.push_back('.');
         do
         {
-            result.erase( result.end() - 4, result.end() );
-            result.push_back( '.' );
-            result.push_back( '.' );
-            result.push_back( '.' );
+            result.erase(result.end() - 4, result.end());
+            result.push_back('.');
+            result.push_back('.');
+            result.push_back('.');
             font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
-        }
-        while( textw >= width );
+        } while (result.size() > 3 && textw >= width);
     }
 
-    return result.c_str( );
+    return result.c_str();
 }
 
 
