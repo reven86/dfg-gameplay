@@ -76,6 +76,7 @@
     <ClCompile Include="..\base\services\social_service.cpp" />
     <ClCompile Include="..\base\services\storefront_service.cpp" />
     <ClCompile Include="..\base\services\taskqueue_service.cpp" />
+    <ClCompile Include="..\base\services\taskscheduler_service.cpp" />
     <ClCompile Include="..\base\services\tracker_service.cpp" />
     <ClCompile Include="..\base\ui\control_event_handler.cpp" />
     <ClCompile Include="..\base\ui\dial_button.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="..\base\services\social_service.h" />
     <ClInclude Include="..\base\services\storefront_service.h" />
     <ClInclude Include="..\base\services\taskqueue_service.h" />
+    <ClInclude Include="..\base\services\taskscheduler_service.h" />
     <ClInclude Include="..\base\services\tracker_service.h" />
     <ClInclude Include="..\base\ui\control_event_handler.h" />
     <ClInclude Include="..\base\ui\dial_button.h" />

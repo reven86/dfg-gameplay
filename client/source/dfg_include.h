@@ -28,6 +28,7 @@
 #include "services/social_service.h"
 #include "services/storefront_service.h"
 #include "services/taskqueue_service.h"
+#include "services/taskscheduler_service.h"
 #include "services/tracker_service.h"
 #include "ui/control_event_handler.h"
 #include "ui/dial_button.h"

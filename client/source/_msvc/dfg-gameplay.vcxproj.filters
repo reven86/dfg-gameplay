@@ -77,6 +77,9 @@
     <ClCompile Include="..\base\ui\control_event_handler.cpp">
       <Filter>base\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\services\taskscheduler_service.cpp">
+      <Filter>base\services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -173,6 +176,9 @@
     </ClInclude>
     <ClInclude Include="..\base\ui\control_event_handler.h">
       <Filter>base\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\services\taskscheduler_service.h">
+      <Filter>base\services</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
