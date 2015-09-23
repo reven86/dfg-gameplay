@@ -96,6 +96,9 @@ void ExpandedTab::initialize(const char * typeName, gameplay::Theme::Style * sty
 
     if (properties)
     {
+        // Make tabs to consume input events by default (all other containers don't)
+        _consumeInputEvents = properties->getBool("consumeInputEvents", true);
+
         _widthMinimized = properties->getFloat("widthMinimized");
         _widthMaximized = getWidth();
 
@@ -133,8 +136,6 @@ void ExpandedTab::initialize(const char * typeName, gameplay::Theme::Style * sty
         if (duration > 0)
             _animationDuration = static_cast<unsigned>(duration);
     }
-
-    setConsumeInputEvents(true);
 }
 
 const char * ExpandedTab::getTypeName() const
