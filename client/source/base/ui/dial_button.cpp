@@ -402,10 +402,8 @@ void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::Animati
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
     _menuState = false;
     if (_currentItemBeforeTouch != _currentItemIndex)
-    {
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
-        _currentItemBeforeTouch = INVALID_ITEM_INDEX;
-    }
+    _currentItemBeforeTouch = INVALID_ITEM_INDEX;
 }
 
 unsigned int DialButton::drawBorder(gameplay::Form * form) const
