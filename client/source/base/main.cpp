@@ -171,6 +171,12 @@ void DfgGame::gesturePinchEvent(int x, int y, float scale, int numberOfTouches)
         _inputService->injectGesturePinchEvent(x, y, scale, numberOfTouches);
 }
 
+void DfgGame::gestureSwipeEvent(int x, int y, int direction)
+{
+    if (_inputService)
+        _inputService->injectGestureSwipeEvent(x, y, direction);
+}
+
 void DfgGame::pause()
 {
     ServiceManager::getInstance()->signals.pauseEvent();

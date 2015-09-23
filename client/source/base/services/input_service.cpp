@@ -55,3 +55,12 @@ void InputService::injectGesturePinchEvent(int x, int y, float scale, int number
         if ((*it)(x, y, scale, numberOfTouches))
             break;
 }
+
+void InputService::injectGestureSwipeEvent(int x, int y, int direction)
+{
+    for (auto& slot : _manager->signals.inputGestureSwipeEvent.signal.slots())
+    {
+        if (slot(x, y, direction))
+            break;
+    }
+}

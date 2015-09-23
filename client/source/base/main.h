@@ -53,6 +53,20 @@ protected:
     bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta);
     void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 
+    /**
+     * Gesture callback on Gesture::SWIPE events.
+     *
+     * @param x The x-coordinate of the start of the swipe.
+     * @param y The y-coordinate of the start of the swipe.
+     * @param direction The direction of the swipe
+     *
+     * @see Gesture::SWIPE_DIRECTION_UP
+     * @see Gesture::SWIPE_DIRECTION_DOWN
+     * @see Gesture::SWIPE_DIRECTION_LEFT
+     * @see Gesture::SWIPE_DIRECTION_RIGHT
+     */
+    virtual void gestureSwipeEvent(int x, int y, int direction);
+
     void reportError(bool isFatal, const char * errorMessage, ...);
 
     class RenderService * _renderService;
