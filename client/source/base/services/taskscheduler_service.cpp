@@ -40,7 +40,7 @@ bool TaskSchedulerService::onTick()
     return false;
 }
 
-int TaskSchedulerService::scheduleTask(float time, const std::function<void()>& func)
+unsigned TaskSchedulerService::scheduleTask(float time, const std::function<void()>& func)
 {
     _nextTaskHandle++;
     _taskQueue.emplace(TaskType(time, _nextTaskHandle, func));
@@ -48,7 +48,7 @@ int TaskSchedulerService::scheduleTask(float time, const std::function<void()>& 
     return _nextTaskHandle;
 }
 
-void TaskSchedulerService::removeTask(int handle)
+void TaskSchedulerService::removeTask(unsigned handle)
 {
     _removedTasks.insert(handle);
 }

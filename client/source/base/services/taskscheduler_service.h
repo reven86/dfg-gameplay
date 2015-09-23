@@ -21,7 +21,7 @@ class TaskSchedulerService : public Service
     friend class ServiceManager;
 
 public:
-    static const int INVALID_TASK_HANDLE = 0;
+    static const unsigned INVALID_TASK_HANDLE = 0;
 
     static const char * getTypeName() { return "TaskSchedulerService"; };
 
@@ -33,14 +33,14 @@ public:
      * @return Task handle.
      * @see gameplay::Game::getGameTime
      */
-    int scheduleTask(float time, const std::function<void()>& func);
+    unsigned scheduleTask(float time, const std::function<void()>& func);
 
     /**
      * Remove task from queue.
      *
      * @param handle Task's handle.
      */
-    void removeTask(int handle);
+    void removeTask(unsigned handle);
 
 protected:
     TaskSchedulerService(const ServiceManager * manager);
@@ -54,7 +54,7 @@ private:
     struct TaskType
     {
         float time;
-        int handle;
+        unsigned handle;
         std::function<void()> functor;
 
         TaskType(float t, int h, const std::function<void()>& f) : time(t), handle(h), functor(f) {};
@@ -64,7 +64,7 @@ private:
         }
     };
 
-    int _nextTaskHandle;
+    unsigned _nextTaskHandle;
     std::priority_queue<TaskType> _taskQueue;
     std::set<int> _removedTasks;
 };
