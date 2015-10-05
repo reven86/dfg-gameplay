@@ -229,6 +229,8 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
     }
     else
     {
+        updateChildBounds();
+        updateBounds();
         gameplay::Control * itemToScrollTo = getControl(itemIndex);
         gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
         setScrollPosition(desiredScrollPosition);
