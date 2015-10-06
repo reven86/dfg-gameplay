@@ -18,6 +18,9 @@
 class DialButton : public gameplay::Container, public gameplay::AnimationClip::Listener
 {
 public:
+    sigc::signal<void> buttonIsAboutToExpandSignal;
+    sigc::signal<void> buttonIsCollapsedSignal;
+
     static const unsigned int INVALID_ITEM_INDEX = 0xffffffff;
 
     /**
@@ -92,7 +95,7 @@ public:
     /**
      * Set the button to a menu state, the button will automatically expand.
      */
-    void transitionToMenu();
+    virtual void transitionToMenu();
 
 protected:
 
@@ -190,6 +193,14 @@ protected:
      * @see Control::drawBorder.
      */
     virtual unsigned int drawBorder(gameplay::Form* form) const;
+
+    /**
+     * Called when a control event is fired for this control, before external
+     * listeners are notified of the event.
+     *
+     * @param evt The event type.
+     */
+    virtual void controlEvent(gameplay::Control::Listener::EventType evt);
 
 private:
     unsigned findClosestControlIndex(float localY, bool exitOnPositiveOffset) const;

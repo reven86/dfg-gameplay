@@ -294,10 +294,14 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
         break;
     case ANIMATE_BUTTON_EXPANDING:
         {
+            float oldExpandingFactor = _expandingFactor;
             _expandingFactor = value->getFloat(0) * blendWeight;
         
             float height = gameplay::Curve::lerp(_expandingFactor, _heightCollapsed, _heightExpanded);
             setHeight(height);
+
+            if (oldExpandingFactor <= 0.0f && _expandingFactor > 0.0f)
+                buttonIsAboutToExpandSignal();
 
             // update scroll as well since the current item should be placed in center of the container
             if (_expandingFactor > 0.0f && _currentItemIndex != INVALID_ITEM_INDEX)
@@ -406,6 +410,7 @@ void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::Animati
     if (_currentItemBeforeTouch != _currentItemIndex)
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
     _currentItemBeforeTouch = INVALID_ITEM_INDEX;
+    buttonIsCollapsedSignal();
 }
 
 unsigned int DialButton::drawBorder(gameplay::Form * form) const
@@ -492,4 +497,29 @@ void DialButton::transitionToMenu()
 
     _menuState = true;
     _lastScrollPositionOnPress = _targetScrollPositionOnExpand;
+}
+
+void DialButton::controlEvent(gameplay::Control::Listener::EventType evt)
+{
+    gameplay::Container::controlEvent(evt);
+
+    if (_expandingFactor > 0.0f && evt == gameplay::Control::Listener::FOCUS_LOST)
+    {
+        if (_expandAnimationClip)
+        {
+            _expandAnimationClip->stop();
+            _expandAnimationClip = NULL;
+        }
+
+        float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
+        float to = 0.0f;
+        unsigned times[] = { 0, _animationDuration };
+        float values[] = { from, to };
+        gameplay::Animation * animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
+        _targetScrollPositionOnExpand = _scrollPosition.y;
+
+        _expandAnimationClip = animation->getClip();
+        _expandAnimationClip->addEndListener(this);
+        _expandAnimationClip->play();
+    }
 }
