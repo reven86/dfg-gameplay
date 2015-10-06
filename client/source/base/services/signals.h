@@ -5,18 +5,6 @@
 
 
 
-struct interruptable_accumulator
-{
-    typedef bool result_type;
-    template<typename T_iterator>
-    result_type operator()(T_iterator first, T_iterator last) const
-    {
-        for (; first != last; ++first)
-            if (!*first)
-                return false;
-        return true;
-    }
-};
 
 
 /** @brief A common registry of all signals. Available through service manager.

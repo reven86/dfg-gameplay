@@ -18,7 +18,7 @@
 class DialButton : public gameplay::Container, public gameplay::AnimationClip::Listener
 {
 public:
-    sigc::signal<void> buttonIsAboutToExpandSignal;
+    sigc::signal<bool>::accumulated<interruptable_accumulator> buttonIsAboutToExpandSignal;
     sigc::signal<void> buttonIsCollapsedSignal;
 
     static const unsigned int INVALID_ITEM_INDEX = 0xffffffff;
