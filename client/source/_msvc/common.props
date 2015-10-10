@@ -7,8 +7,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(GAMEPLAY_PATH)gameplay\src;$(GAMEPLAY_PATH)external-deps\include;$(ProjectDir)..\..\..\third_party\libsigc++\include;$(ProjectDir)..\..\..\third_party\zip\include;$(ProjectDir)..\;$(ProjectDir)..\base;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(GAMEPLAY_PATH)gameplay\src;$(GAMEPLAY_PATH)external-deps\include;$(ProjectDir)..\..\..\third_party\libsigc++\include;$(ProjectDir)..\;$(ProjectDir)..\base;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB;_CRT_NONSTDC_NO_WARNINGS;ZIP_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -18,7 +18,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>xinput.lib;libcurl.lib;libsigc++.lib;libyaml.lib;zipstatic.lib;OpenGL32.lib;GLU32.lib;gameplay.lib;gameplay-deps.lib;rpcrt4.lib;urlmon.lib;Ws2_32.lib;Wldap32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GAMEPLAY_PATH)gameplay\windows\$(PlatformTarget)\$(Configuration);$(GAMEPLAY_PATH)external-deps\lib\windows\x86_64\$(Configuration);$(SolutionDir)..\..\..\ThirdParty\libsigc++\lib\windows\$(PlatformTarget)\$(Configuration);$(SolutionDir)..\..\..\ThirdParty\libcurl\lib\windows\$(PlatformTarget);$(SolutionDir)..\..\..\ThirdParty\icu\lib\windows\$(PlatformTarget)\$(Configuration);$(SolutionDir)..\..\..\ThirdParty\zip\lib\windows\$(PlatformTarget)\Release;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(GAMEPLAY_PATH)gameplay\windows\$(PlatformTarget)\$(Configuration);$(GAMEPLAY_PATH)external-deps\lib\windows\x86_64\$(Configuration);$(SolutionDir)..\..\..\ThirdParty\libsigc++\lib\windows\$(PlatformTarget)\$(Configuration);$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\lib\$(PlatformName);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
