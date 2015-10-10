@@ -1,8 +1,6 @@
 #ifndef __DFG_UTILS__
 #define __DFG_UTILS__
 
-#include <unicode/umsg.h>
-
 
 
 struct interruptable_accumulator
@@ -54,10 +52,6 @@ static _Type hermiteSpline( const _Type& v0, const _Type& t0, const _Type& v1, c
 static std::string generateUUID();
 
 
-/**
- * Helper function that converts wchar_t string to UChar one. Max 2048 chars.
- */
-static const UChar * WCSToUString(const wchar_t * str);
 
 
 /**

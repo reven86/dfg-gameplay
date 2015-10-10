@@ -180,6 +180,18 @@
     <ClInclude Include="..\base\services\taskscheduler_service.h">
       <Filter>base\services</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\utils\utf8.h">
+      <Filter>base\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\utils\utf8\checked.h">
+      <Filter>base\utils\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\utils\utf8\core.h">
+      <Filter>base\utils\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\utils\utf8\unchecked.h">
+      <Filter>base\utils\utf8</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -199,6 +211,9 @@
     </Filter>
     <Filter Include="base\ui">
       <UniqueIdentifier>{2d1e30e5-aca9-4f2a-850a-4f3d6c430f46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\utils\utf8">
+      <UniqueIdentifier>{2fe09325-4eb7-4458-8e15-6b71d566f93c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

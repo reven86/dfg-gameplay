@@ -121,6 +121,10 @@
     <ClInclude Include="..\base\utils\profiler.h" />
     <ClInclude Include="..\base\utils\ref_ptr.h" />
     <ClInclude Include="..\base\utils\singleton.h" />
+    <ClInclude Include="..\base\utils\utf8.h" />
+    <ClInclude Include="..\base\utils\utf8\checked.h" />
+    <ClInclude Include="..\base\utils\utf8\core.h" />
+    <ClInclude Include="..\base\utils\utf8\unchecked.h" />
     <ClInclude Include="..\base\utils\utils.h" />
     <ClInclude Include="..\dfg_include.h" />
     <ClInclude Include="..\pch.h" />

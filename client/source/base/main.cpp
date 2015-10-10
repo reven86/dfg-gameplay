@@ -4,7 +4,6 @@
 #include "services/render_service.h"
 #include "services/input_service.h"
 #include "services/tracker_service.h"
-#include <unicode/uclean.h>
 
 #ifdef WIN32
 #include <direct.h>
@@ -123,8 +122,6 @@ void DfgGame::finalize()
 {
     ServiceManager::getInstance()->shutdown();
     Caches::getInstance()->destroyAll();
-
-    u_cleanup();
 }
 
 void DfgGame::update(float elapsedTime)

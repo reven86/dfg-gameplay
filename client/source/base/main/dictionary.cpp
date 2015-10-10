@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "dictionary.h"
-#include <unicode/ustring.h>
 
 
 
@@ -28,23 +27,7 @@ void Dictionary::create(gameplay::Properties * properties)
 
             GP_ASSERT(_dictionary.find(key) == _dictionary.end());
 
-            UChar valueUni[1024];
-            int32_t length = 0;
-            UErrorCode error = U_ZERO_ERROR;
-            u_strFromUTF8(valueUni, 1024, &length, value, -1, &error);
-
-            if (error != U_ZERO_ERROR)
-                GP_WARN("Can't read dictionary entry: %s", key);
-            else
-            {
-                error = U_ZERO_ERROR;
-                wchar_t valueW[1024];
-                u_strToWCS(valueW, 1024, &length, valueUni, -1, &error);
-
-                if (error == U_ZERO_ERROR)
-                    _dictionary.insert(std::make_pair(key, valueW));
-            }
-
+            _dictionary.insert(std::make_pair(key, Utils::UTF8ToWCS(value)));
             _dictionaryUTF8.insert(std::make_pair(key, value));
         }
     }

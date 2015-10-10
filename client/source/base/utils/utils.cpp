@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
+#include "utf8.h"
 
 #if defined (WIN32)
 #include <Rpc.h>
@@ -43,51 +44,23 @@ std::string Utils::generateUUID( )
 
 
 
-const UChar * Utils::WCSToUString(const wchar_t * str)
-{
-    static UChar result[ 2048 ];
-    
-    int32_t length = 0;
-    UErrorCode error = U_ZERO_ERROR;
-    
-    u_strFromWCS( result, 2048, &length, str, -1, &error );
-
-    if( U_FAILURE( error ) )
-        return NULL;
-    
-    return result;
-}
-
-
 
 const wchar_t * Utils::UTF8ToWCS(const char * str)
 {
-    static UChar valueUni[ 1024 ];
-    int32_t length = 0;
-    UErrorCode error = U_ZERO_ERROR;
-    u_strFromUTF8( valueUni, 1024, &length, str, -1, &error );
-
-    error = U_ZERO_ERROR;
-    static wchar_t valueW[ 1024 ];
-    u_strToWCS( valueW, 1024, &length, valueUni, -1, &error );
-
-    return valueW;
+    static std::wstring res;
+    res.clear();
+    utf8::unchecked::utf8to16(str, str + strlen(str), std::back_inserter(res));
+    return res.c_str();
 }
 
 
 
 const char * Utils::WCSToUTF8(const wchar_t * str)
 {
-    static UChar valueUni[1024];
-    int32_t length = 0;
-    UErrorCode error = U_ZERO_ERROR;
-    u_strFromWCS(valueUni, 1024, &length, str, -1, &error);
-
-    error = U_ZERO_ERROR;
-    static char value[1024];
-    u_strToUTF8(value, 1024, &length, valueUni, -1, &error);
-
-    return value;
+    static std::string res;
+    res.clear();
+    utf8::unchecked::utf16to8(str, str + wcslen(str), std::back_inserter(res));
+    return res.c_str();
 }
 
 
