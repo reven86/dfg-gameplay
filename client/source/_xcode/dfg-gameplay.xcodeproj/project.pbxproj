@@ -536,7 +536,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"../../../third_party/libsigc++/include",
 					"$(GAMEPLAY_PATH)/gameplay/src",
 					"$(GAMEPLAY_PATH)/external-deps/include",
 					../,
@@ -556,7 +555,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"../../../third_party/libsigc++/include",
 					"$(GAMEPLAY_PATH)/gameplay/src",
 					"$(GAMEPLAY_PATH)/external-deps/include",
 					../,

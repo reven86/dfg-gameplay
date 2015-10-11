@@ -6,7 +6,7 @@
 
 #if defined (WIN32)
 #include <Rpc.h>
-#elif defined (__ANDROID__)
+#elif defined (__ANDROID__) || defined (__EMSCRIPTEN__)
 #include <uuidlib/uuid.h>
 #else
 #include <uuid/uuid.h>

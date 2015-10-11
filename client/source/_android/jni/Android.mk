@@ -169,12 +169,11 @@ LOCAL_CFLAGS    := -O3 -D__ANDROID__ -Wno-psabi -fpermissive -fexceptions \
     -DHAVE_SYS_PARAM_H \
     -DHAVE_SYSCONF \
     -D_GLIBCXX_USE_C99_STDINT_TR1 \
-    -DU_DISABLE_RENAMING=1 \
     -DGP_USE_SOCIAL \
     -DGP_USE_STOREFRONT \
 
 LOCAL_CPPFLAGS := -std=c++11 -Wno-switch-enum -Wno-switch
-LOCAL_STATIC_LIBRARIES := android_native_app_glue libgameplay-deps libyaml libsigc++ libcurl libicui18n libicuuc libicudata libzip
+LOCAL_STATIC_LIBRARIES := android_native_app_glue libgameplay-deps
 LOCAL_ARM_MODE := arm
 LOCAL_SHARED_LIBRARIES := gameplay
 

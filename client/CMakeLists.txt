@@ -14,6 +14,12 @@ IF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT ANDROID)
     SET(LINUX 1)
 ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT ANDROID)
 
+if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+    SET(EMSCRIPTEN 1)
+endif("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+
+message("Platform: ${CMAKE_SYSTEM_NAME}")
+
 if(NOT ANDROID AND NOT IOS)
     # Skip any introspection for cross-compiling targets
     include(${PROJECT_SOURCE_DIR}/cmake/TargetArch.cmake)

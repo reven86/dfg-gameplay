@@ -83,6 +83,7 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
         SAFE_DELETE(stream);
     }
 
+#ifndef __EMSCRIPTEN__
     _curl = curl_easy_init();
     if (_curl)
     {
@@ -97,6 +98,7 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
         curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
     }
+#endif
 
     if (!_payloadsQueue.empty())
     {
@@ -129,8 +131,10 @@ bool TrackerService::onShutdown()
         _dispatchThread->join();
     }
 
+#ifndef __EMSCRIPTEN__
     if (_curl)
         curl_easy_cleanup(_curl);
+#endif
 
     _payloadsQueue.clear();
 
@@ -273,8 +277,13 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
         timeDiff
         );
 
+
+#ifndef __EMSCRIPTEN__
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, finalRequest);
     CURLcode res = curl_easy_perform(_curl);
+#else
+    CURLcode res = CURLE_OK;
+#endif
 
     if (res == CURLE_OK)
     {

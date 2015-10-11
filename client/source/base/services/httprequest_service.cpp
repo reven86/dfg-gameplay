@@ -27,6 +27,7 @@ bool HTTPRequestService::onInit()
     _taskQueueService = _manager->findService<TaskQueueService>();
     _taskQueueService->createQueue(HTTP_REQUEST_SERVICE_QUEUE);
 
+#ifndef __EMSCRIPTEN__
     _curl = curl_easy_init();
     if (_curl)
     {
@@ -41,6 +42,7 @@ bool HTTPRequestService::onInit()
         curl_easy_setopt(_curl, CURLOPT_WRITEDATA, this);
         curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1);
     }
+#endif
 
     return true;
 }
@@ -56,8 +58,10 @@ bool HTTPRequestService::onShutdown()
     if (_taskQueueService)
         _taskQueueService->removeQueue(HTTP_REQUEST_SERVICE_QUEUE);
 
+#ifndef __EMSCRIPTEN__
     if (_curl)
         curl_easy_cleanup(_curl);
+#endif
 
     return true;
 }
@@ -90,14 +94,18 @@ void HTTPRequestService::sendRequest(const Request& request)
     // make sure curl is used only for one thread in any moment
     std::unique_lock<std::mutex> lock(_requestProcessingMutex);
 
+    _response.clear();
+    
+#ifndef __EMSCRIPTEN__
     curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
     curl_easy_setopt(_curl, CURLOPT_POST, !request.postPayload.empty());
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
 
-    _response.clear();
-
     CURLcode res = curl_easy_perform(_curl);
-
+#else
+    CURLcode res = CURLE_FAILED_INIT;
+#endif
+    
     // response is copied by value since callback is invoked on main thread
     _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, _response));
 }
