@@ -45,7 +45,6 @@ set(UUIDLIB_SRC
 include_directories(
     base
     base/..
-    ../../third_party/libsigc++/include
     ../../../GamePlay/gameplay/src
     ../../../GamePlay/external-deps/include
 )
@@ -58,10 +57,17 @@ add_definitions(${GTK2_CFLAGS_OTHER})
 add_definitions(-D__linux__)
 ENDIF(CMAKE_SYSTEM_NAME MATCHES "Linux")
 
+if(WIN32)
+    add_definitions(-D_ALLOW_KEYWORD_MACROS)
+    add_definitions(-Dnoexcept=)
+endif(WIN32)
+
 add_definitions(-std=c++11)
 add_definitions(-lstdc++)
 add_definitions(-DGP_USE_SOCIAL)
 add_definitions(-DGP_USE_STOREFRONT)
+add_definitions(-DCURL_STATICLIB)
+add_definitions(-DZIP_STATIC)
 
 add_library(dfg-gameplay STATIC
     ${DFGGAMEPLAY_SRC}
