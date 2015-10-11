@@ -17,7 +17,7 @@ ZipPackage::~ZipPackage()
 ZipPackage * ZipPackage::create(const char * zipFile)
 {
     int err = 0;
-    zip * res = zip_open(zipFile, 0, &err);
+    zip * res = zip_open(zipFile, ZIP_RDONLY, &err);
 
     return res == NULL ? nullptr : new ZipPackage(res);
 }

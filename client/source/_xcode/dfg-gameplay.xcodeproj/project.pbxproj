@@ -87,6 +87,10 @@
 /* Begin PBXFileReference section */
 		EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskscheduler_service.cpp; sourceTree = "<group>"; };
 		EB1E5E3D1BB2C8E5007A8C9E /* taskscheduler_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taskscheduler_service.h; sourceTree = "<group>"; };
+		EB67C14E1BC98E3800E2C762 /* checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checked.h; sourceTree = "<group>"; };
+		EB67C14F1BC98E3800E2C762 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
+		EB67C1501BC98E3800E2C762 /* unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unchecked.h; sourceTree = "<group>"; };
+		EB67C1511BC98E3800E2C762 /* utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utf8.h; sourceTree = "<group>"; };
 		EB7790211B75147500E1DDB2 /* dial_button.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dial_button.cpp; path = ui/dial_button.cpp; sourceTree = "<group>"; };
 		EB7790221B75147500E1DDB2 /* dial_button.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dial_button.h; path = ui/dial_button.h; sourceTree = "<group>"; };
 		EB7790231B75147500E1DDB2 /* expanded_tab.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = expanded_tab.cpp; path = ui/expanded_tab.cpp; sourceTree = "<group>"; };
@@ -169,6 +173,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EB67C14D1BC98E3800E2C762 /* utf8 */ = {
+			isa = PBXGroup;
+			children = (
+				EB67C14E1BC98E3800E2C762 /* checked.h */,
+				EB67C14F1BC98E3800E2C762 /* core.h */,
+				EB67C1501BC98E3800E2C762 /* unchecked.h */,
+			);
+			path = utf8;
+			sourceTree = "<group>";
+		};
 		EB7790201B75145300E1DDB2 /* ui */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +296,8 @@
 		EB9F813B1AAB25CD00839018 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				EB67C14D1BC98E3800E2C762 /* utf8 */,
+				EB67C1511BC98E3800E2C762 /* utf8.h */,
 				EB9F813C1AAB25CD00839018 /* curve.h */,
 				EB9F813D1AAB25CD00839018 /* noncopyable.h */,
 				EB9F813E1AAB25CD00839018 /* priority_signal.h */,
@@ -521,15 +537,13 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"../../../third_party/libsigc++/include",
-					../../../third_party/icu/include,
-					../../../third_party/libcurl/include,
-					../../../third_party/zip/include,
 					"$(GAMEPLAY_PATH)/gameplay/src",
 					"$(GAMEPLAY_PATH)/external-deps/include",
 					../,
 					../base,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -543,15 +557,13 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"../../../third_party/libsigc++/include",
-					../../../third_party/icu/include,
-					../../../third_party/libcurl/include,
-					../../../third_party/zip/include,
 					"$(GAMEPLAY_PATH)/gameplay/src",
 					"$(GAMEPLAY_PATH)/external-deps/include",
 					../,
 					../base,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
