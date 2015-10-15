@@ -40,7 +40,7 @@ void InputService::injectTouchEvent(const gameplay::Touch::TouchEvent& ev, int x
             break;
 }
 
-bool InputService::injectMouseEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, int wheelDelta)
+bool InputService::injectMouseEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, float wheelDelta)
 {
     for (auto it = _manager->signals.inputMouseEvent.signal.slots().begin(), end_it = _manager->signals.inputMouseEvent.signal.slots().end(); it != end_it; it++)
         if ((*it)(ev, x, y, wheelDelta))

@@ -50,7 +50,7 @@ protected:
 
     void keyEvent(gameplay::Keyboard::KeyEvent evt, int key);
     void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex);
-    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta);
+    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta);
     void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 
     /**

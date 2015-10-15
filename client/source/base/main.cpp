@@ -155,7 +155,7 @@ void DfgGame::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned
         _inputService->injectTouchEvent(evt, x, y, contactIndex);
 }
 
-bool DfgGame::mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, int wheelDelta)
+bool DfgGame::mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta)
 {
     if (_inputService)
         return _inputService->injectMouseEvent(evt, x, y, wheelDelta);

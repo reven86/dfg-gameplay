@@ -36,7 +36,7 @@ struct Signals : Noncopyable
 
     priority_signal< sigc::signal< bool, gameplay::Keyboard::KeyEvent, int > > inputKeyEvent;
     priority_signal< sigc::signal< bool, gameplay::Touch::TouchEvent, int, int, unsigned > > inputTouchEvent;
-    priority_signal< sigc::signal< bool, gameplay::Mouse::MouseEvent, int, int, int > > inputMouseEvent;
+    priority_signal< sigc::signal< bool, gameplay::Mouse::MouseEvent, int, int, float > > inputMouseEvent;
     priority_signal< sigc::signal< bool, int, int, float, int > > inputGesturePinchEvent;
     priority_signal< sigc::signal< bool, int, int, int > > inputGestureSwipeEvent;
 
