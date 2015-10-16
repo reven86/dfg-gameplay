@@ -4,8 +4,13 @@
 #include "main.h"
 #include "curl/curl.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 
+
+const char * __endpoint = "http://www.google-analytics.com/collect";
 
 bool TrackerService::_threadForceQuit = false;
 int TrackerService::_dispatchPeriod = 1000;
@@ -87,8 +92,7 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
     _curl = curl_easy_init();
     if (_curl)
     {
-        const char * endpoint = "http://www.google-analytics.com/collect";
-        curl_easy_setopt(_curl, CURLOPT_URL, endpoint);
+        curl_easy_setopt(_curl, CURLOPT_URL, __endpoint);
         curl_easy_setopt(_curl, CURLOPT_POST, 1);
         curl_easy_setopt(_curl, CURLOPT_USERAGENT, gameplay::Game::getInstance()->getUserAgentString());
         //curl_easy_setopt( _curl, CURLOPT_DNS_CACHE_TIMEOUT, -1 );
@@ -114,7 +118,9 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
 
 bool TrackerService::onInit()
 {
+#ifndef __EMSCRIPTEN__
     _dispatchThread.reset(new std::thread(&TrackerService::dispatchThreadProc, this));
+#endif
     return true;
 }
 
@@ -143,6 +149,7 @@ bool TrackerService::onShutdown()
 
 void TrackerService::flushPayloads()
 {
+#ifndef __EMSCRIPTEN__
     std::string filename = std::string(static_cast<DfgGame *>(gameplay::Game::getInstance())->getUserDataFolder()) + "/payloads.dat";
     gameplay::Stream * stream(gameplay::FileSystem::open(filename.c_str(), gameplay::FileSystem::WRITE));
 
@@ -172,6 +179,7 @@ void TrackerService::flushPayloads()
 
         SAFE_DELETE(stream);
     }
+#endif
 }
 
 bool TrackerService::onTick()
@@ -181,6 +189,7 @@ bool TrackerService::onTick()
 
 void TrackerService::forceDispatch()
 {
+#ifndef __EMSCRIPTEN__
     _dispatchMutex.lock();
 
     // if thread is forced to quit, _payloadsQueue may be invalid
@@ -203,6 +212,7 @@ void TrackerService::forceDispatch()
         _payloadQueueMutex.unlock();
     }
     _dispatchMutex.unlock();
+#endif
 }
 
 void TrackerService::endSession(const char * viewName)
@@ -279,10 +289,18 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
 
 
 #ifndef __EMSCRIPTEN__
+    
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, finalRequest);
+    
     CURLcode res = curl_easy_perform(_curl);
+    
 #else
+    
+    emscripten_async_wget2_data(__endpoint, "POST", finalRequest, NULL, 1, NULL, NULL, NULL);
+    
+    // do not wait for response
     CURLcode res = CURLE_OK;
+
 #endif
 
     if (res == CURLE_OK)
@@ -432,10 +450,14 @@ void TrackerService::sendData(const char * format, ...)
     payload.params = request;
     payload.createTime = static_cast<float>(gameplay::Game::getInstance()->getAbsoluteTime());
 
+#ifndef __EMSCRIPTEN__
     _payloadQueueMutex.lock();
     _payloadsQueue.push_back(payload);
     _payloadQueueMutex.unlock();
-
+#else
+    dispatch(payload);
+#endif
+    
     memset(_customMetrics, 0, sizeof(_customMetrics));
     for (i = 0; i < MAX_CUSTOM_DIMENSIONS; i++)
         _customDimensions[i].clear();
