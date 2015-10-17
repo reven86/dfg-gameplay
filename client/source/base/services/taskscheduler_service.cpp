@@ -42,6 +42,8 @@ bool TaskSchedulerService::onTick()
 
 unsigned TaskSchedulerService::scheduleTask(float time, const std::function<void()>& func)
 {
+    GP_ASSERT(time >= gameplay::Game::getGameTime());
+
     _nextTaskHandle++;
     _taskQueue.emplace(TaskType(time, _nextTaskHandle, func));
 

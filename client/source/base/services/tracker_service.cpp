@@ -458,9 +458,9 @@ void TrackerService::sendData(const char * format, ...)
     dispatch(payload);
 #endif
     
-    memset(_customMetrics, 0, sizeof(_customMetrics));
-    for (i = 0; i < MAX_CUSTOM_DIMENSIONS; i++)
-        _customDimensions[i].clear();
+    //memset(_customMetrics, 0, sizeof(_customMetrics));
+    //for (i = 0; i < MAX_CUSTOM_DIMENSIONS; i++)
+    //    _customDimensions[i].clear();
 }
 
 const char * TrackerService::urlEncode(const char * str)

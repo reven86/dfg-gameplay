@@ -36,7 +36,8 @@ ZipStream * ZipStream::create(const char * packageName, const char * fileName)
     ZipStream * res = new ZipStream();
     res->_fileContent.reset(new uint8_t[st.size]);
 
-    zip_fread(f, res->_fileContent.get(), st.size);
+    if (zip_fread(f, res->_fileContent.get(), st.size) != (int)st.size)
+        GP_WARN("Can't read file %s:%s", packageName, fileName);
     zip_fclose(f);
 
     res->_underlyingStream.reset(MemoryStream::create(res->_fileContent.get(), st.size));
