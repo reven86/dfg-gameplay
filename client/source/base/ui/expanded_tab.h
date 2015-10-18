@@ -122,7 +122,7 @@ protected:
     /**
      * Constant used as a timer to wait for double click event.
      */
-    static const int ANIMATE_DOUBLE_CLICK = 10;
+    static const int ANIMATE_DOUBLE_CLICK = 11;
 
     /**
      * @see Control#controlEvent

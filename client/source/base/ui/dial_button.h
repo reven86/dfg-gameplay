@@ -128,12 +128,12 @@ protected:
     /**
      * Constant used to scroll container to fixed offset.
      */
-    static const int ANIMATE_SCROLL_TO_ITEM = 9;
+    static const int ANIMATE_SCROLL_TO_ITEM = 10;
 
     /**
      * Constant used to animate button expanding process.
      */
-    static const int ANIMATE_BUTTON_EXPANDING = 10;
+    static const int ANIMATE_BUTTON_EXPANDING = 11;
 
 
     /**
