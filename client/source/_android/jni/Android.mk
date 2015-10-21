@@ -21,73 +21,18 @@ GAMEPLAY_LOCAL_PATH = ../../../GamePlay/
 GAMEPLAY_PATH := $(SAMPLE_PATH)$(GAMEPLAY_LOCAL_PATH)
 GAMEPLAY_DEPS := $(SAMPLE_PATH)$(GAMEPLAY_LOCAL_PATH)external-deps/lib/android/$(TARGET_ARCH_ABI)
 
-LIBYAML_PATH := $(GAMEPLAY_PATH)external-deps/lib/android/$(TARGET_ARCH_ABI)
-LIBSIGCPP_PATH := $(SAMPLE_PATH)../../third_party/libsigc++/lib/android/$(TARGET_ARCH_ABI)
-LIBCURL_PATH := $(SAMPLE_PATH)../../third_party/libcurl/lib/android/$(TARGET_ARCH_ABI)
-LIBICU_PATH := $(SAMPLE_PATH)../../third_party/icu/lib/android/$(TARGET_ARCH_ABI)
-LIBZIP_PATH := $(SAMPLE_PATH)../../third_party/zip/lib/android/$(TARGET_ARCH_ABI)
-
 # gameplay
-LOCAL_PATH := $(GAMEPLAY_PATH)gameplay/android/libs/$(TARGET_ARCH_ABI)
+LOCAL_PATH := $(GAMEPLAY_PATH)gameplay/android/obj/local/$(TARGET_ARCH_ABI)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := libgameplay
-LOCAL_SRC_FILES := libgameplay.so
-include $(PREBUILT_SHARED_LIBRARY)
+LOCAL_SRC_FILES := libgameplay.a
+include $(PREBUILT_STATIC_LIBRARY)
 
 # libgameplay-deps
 LOCAL_PATH := $(GAMEPLAY_DEPS)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := libgameplay-deps 
 LOCAL_SRC_FILES := libgameplay-deps.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libyaml
-LOCAL_PATH := $(LIBYAML_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libyaml
-LOCAL_SRC_FILES := libyaml.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libsigc++
-LOCAL_PATH := $(LIBSIGCPP_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libsigc++
-LOCAL_SRC_FILES := libsigc++.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libcurl
-LOCAL_PATH := $(LIBCURL_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libcurl
-LOCAL_SRC_FILES := libcurl.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libicu
-LOCAL_PATH := $(LIBICU_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libicuuc
-LOCAL_SRC_FILES := libicuuc.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libicu
-LOCAL_PATH := $(LIBICU_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libicui18n
-LOCAL_SRC_FILES := libicui18n.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libicu
-LOCAL_PATH := $(LIBICU_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libicudata
-LOCAL_SRC_FILES := libicudata.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libzip
-LOCAL_PATH := $(LIBZIP_PATH)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libzip
-LOCAL_SRC_FILES := libzip.a
 include $(PREBUILT_STATIC_LIBRARY)
 
 # dfg-gameplay
@@ -173,9 +118,8 @@ LOCAL_CFLAGS    := -O3 -D__ANDROID__ -Wno-psabi -fpermissive -fexceptions \
     -DGP_USE_STOREFRONT \
 
 LOCAL_CPPFLAGS := -std=c++11 -Wno-switch-enum -Wno-switch
-LOCAL_STATIC_LIBRARIES := android_native_app_glue libgameplay-deps
+LOCAL_STATIC_LIBRARIES := android_native_app_glue libgameplay-deps gameplay
 LOCAL_ARM_MODE := arm
-LOCAL_SHARED_LIBRARIES := gameplay
 
 
 #include $(BUILD_SHARED_LIBRARY)            # uncomment this line to build a shared library
