@@ -25,6 +25,13 @@ public:
      */
     virtual bool fileExists(const char* filePath);
 
+    /**
+     * Set password to access zip package content.
+     *
+     * @param password Password. Set to NULL to unset password.
+     */
+    void setPassword(const char * password);
+
 protected:
     ZipPackage(struct zip * zipFile);
 

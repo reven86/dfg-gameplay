@@ -58,3 +58,9 @@ bool ZipPackage::fileExists(const char * path)
     zip_stat_init(&st);
     return zip_stat(_zipFile.get(), fullPath.c_str(), 0, &st) == 0;
 }
+
+void ZipPackage::setPassword(const char * password)
+{
+    GP_ASSERT(_zipFile.get());
+    zip_set_default_password(_zipFile.get(), password);
+}
