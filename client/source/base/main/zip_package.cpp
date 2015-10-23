@@ -32,7 +32,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     //Search for the file of given name
     struct zip_stat st;
     zip_stat_init(&st);
-    if (zip_stat(_zipFile.get(), fullPath.c_str(), 0, &st) != 0)
+    if (zip_stat(_zipFile.get(), fullPath.c_str(), ZIP_FL_NOCASE, &st) != 0)
         return NULL;
 
     //Alloc memory for its uncompressed contents
@@ -40,7 +40,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     std::unique_ptr< uint8_t[] >contents(new uint8_t[fileSize]);
 
     //Read the compressed file
-    zip_file *f = zip_fopen(_zipFile.get(), fullPath.c_str(), 0);
+    zip_file *f = zip_fopen(_zipFile.get(), fullPath.c_str(), ZIP_FL_NOCASE);
     if (!f)
         return NULL;
 
@@ -56,7 +56,7 @@ bool ZipPackage::fileExists(const char * path)
 
     struct zip_stat st;
     zip_stat_init(&st);
-    return zip_stat(_zipFile.get(), fullPath.c_str(), 0, &st) == 0;
+    return zip_stat(_zipFile.get(), fullPath.c_str(), ZIP_FL_NOCASE, &st) == 0;
 }
 
 void ZipPackage::setPassword(const char * password)

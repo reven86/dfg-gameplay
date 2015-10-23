@@ -16,7 +16,14 @@ class ZipStream : public gameplay::Stream
 public:
     virtual ~ZipStream();
 
-    static ZipStream * create(const char * packageName, const char * fileName);
+    /**
+     * Creates ZipStream for given package and fileName.
+     * If package is not given (empty or NULL), creates gameplay::Stream for fileName.
+     *
+     * @param packageName Zip package filename.
+     * @param fileName File inside the package.
+     */
+    static gameplay::Stream * create(const char * packageName, const char * fileName);
 
     /**
      * Returns true if this stream can perform read operations.

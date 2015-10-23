@@ -9,6 +9,9 @@ std::unordered_map< std::string, std::shared_ptr< zip > > ZipPackagesCache::_pac
 
 zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
 {
+    if (packageName == NULL || *packageName == '\0')
+        return NULL;
+    
     auto package = _packages.find(packageName);
     if (package == _packages.end())
     {
@@ -24,7 +27,7 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
 
         if (!res)
         {
-            GP_WARN("Can't open vehicles package %s", packageName);
+            GP_WARN("Can't open package %s", packageName);
             return NULL;
         }
 
@@ -39,7 +42,7 @@ bool ZipPackagesCache::hasFile(const char * packageName, const char * filename)
 {
     zip * package = findOrOpenPackage(packageName);
     if (!package)
-        return false;
+        return gameplay::FileSystem::fileExists(filename);
 
     return zip_name_locate(package, filename, ZIP_FL_ENC_GUESS | ZIP_FL_NOCASE) >= 0;
 }

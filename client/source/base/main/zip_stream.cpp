@@ -13,8 +13,11 @@ ZipStream::~ZipStream()
 {
 }
 
-ZipStream * ZipStream::create(const char * packageName, const char * fileName)
+gameplay::Stream * ZipStream::create(const char * packageName, const char * fileName)
 {
+    if (packageName == NULL || *packageName == '\0')
+        return gameplay::FileSystem::open(fileName, gameplay::FileSystem::READ);
+    
     zip * package = ZipPackagesCache::findOrOpenPackage(packageName);
     if (!package)
         return NULL;
