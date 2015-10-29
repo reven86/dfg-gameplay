@@ -110,6 +110,14 @@ static void deserializeString(gameplay::Stream * stream, std::string * str);
 static void scaleUIControl(gameplay::Control * control, float kx, float ky);
 
 
+
+/**
+ * Calculate total width and height of all visible children in the container.
+ * This matches scrollable width/height.
+ */
+static void measureChildrenBounds(gameplay::Container * container, float * width, float * height);
+
+
 };
 
 

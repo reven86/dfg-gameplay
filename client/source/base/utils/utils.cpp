@@ -254,3 +254,34 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
             scaleUIControl(children[j], kx, ky);
     }
 }
+
+
+void Utils::measureChildrenBounds(gameplay::Container * container, float * width, float * height)
+{
+    // Calculate total width and height.
+    float totalWidth = 0.0f, totalHeight = 0.0f;
+    const std::vector<gameplay::Control*>& controls = container->getControls();
+    for (size_t i = 0, count = controls.size(); i < count; ++i)
+    {
+        gameplay::Control* control = controls[i];
+
+        if (!control->isVisible())
+            continue;
+
+        const gameplay::Rectangle& bounds = control->getBounds();
+        const gameplay::Theme::Margin& margin = control->getMargin();
+
+        float newWidth = bounds.x + bounds.width + margin.right;
+        if (newWidth > totalWidth)
+            totalWidth = newWidth;
+
+        float newHeight = bounds.y + bounds.height + margin.bottom;
+        if (newHeight > totalHeight)
+            totalHeight = newHeight;
+    }
+
+    if (width)
+        *width = totalWidth;
+    if (height)
+        *height = totalHeight;
+}
