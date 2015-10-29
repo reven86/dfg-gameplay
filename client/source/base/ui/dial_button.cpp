@@ -13,8 +13,8 @@ DialButton::DialButton()
     , _expandingFactor(0.0f)
     , _targetScrollPositionOnExpand(0.0f)
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
-    , _animationWaitDuration(1000)
-    , _animationDuration(1000)
+    , _animationWaitDuration(700)
+    , _animationDuration(500)
     , _currentItemBeforeTouch(INVALID_ITEM_INDEX)
     , _startScrollingPosition(0.0f, 0.0f)
     , _itemScrollingClip(NULL)
@@ -302,6 +302,7 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
                 {
                     // break expanding
                     _expandingFactor = 0.0f;
+                    buttonExpandingSignal(_expandingFactor);
                     if (_expandAnimationClip)
                     {
                         _expandAnimationClip->stop();
@@ -323,6 +324,8 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
                 setDirty(DIRTY_BOUNDS);
                 setChildrenDirty(DIRTY_BOUNDS, true);
             }
+
+            buttonExpandingSignal(_expandingFactor);
         }
         break;
     default:
@@ -375,7 +378,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
             _expandAnimationClip = NULL;
         }
 
-        float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
+        float from = _heightExpanded > _heightCollapsed ? (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed) : 1.0f;
         gameplay::Animation * animation = NULL;
         if (evt == gameplay::Touch::TOUCH_PRESS)
         {
@@ -489,7 +492,7 @@ void DialButton::transitionToMenu()
         _expandAnimationClip = NULL;
     }
 
-    float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
+    float from = _heightExpanded > _heightCollapsed ? (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed) : 0.0f;
     float to = 1.0f;
     unsigned times[] = { 0, _animationDuration };
     float values[] = { from, to };
@@ -525,7 +528,7 @@ void DialButton::controlEvent(gameplay::Control::Listener::EventType evt)
             _expandAnimationClip = NULL;
         }
 
-        float from = (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed);
+        float from = _heightExpanded > _heightCollapsed ? (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed) : 1.0f;
         float to = 0.0f;
         unsigned times[] = { 0, _animationDuration };
         float values[] = { from, to };
