@@ -40,6 +40,11 @@ struct Signals : Noncopyable
     priority_signal< sigc::signal< bool, int, int, float, int > > inputGesturePinchEvent;
     priority_signal< sigc::signal< bool, int, int, int > > inputGestureSwipeEvent;
 
+    // global events are fired even after UI has consumed them
+    priority_signal< sigc::signal< bool, gameplay::Keyboard::KeyEvent, int > > inputKeyGlobalEvent;
+    priority_signal< sigc::signal< bool, gameplay::Touch::TouchEvent, int, int, unsigned > > inputTouchGlobalEvent;
+    priority_signal< sigc::signal< bool, gameplay::Mouse::MouseEvent, int, int, float > > inputMouseGlobalEvent;
+
     //
     // StorefrontService
     //

@@ -162,7 +162,7 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
             }
             break;
         case gameplay::Touch::TOUCH_PRESS:
-            _currentItemBeforeTouch = _currentItemIndex;
+            _currentItemBeforeTouch = _currentItemIndex == INVALID_ITEM_INDEX ? 0 : _currentItemIndex;
             break;
         }
     }
@@ -538,5 +538,18 @@ void DialButton::controlEvent(gameplay::Control::Listener::EventType evt)
         _expandAnimationClip = animation->getClip();
         _expandAnimationClip->addEndListener(this);
         _expandAnimationClip->play();
+    }
+}
+
+void DialButton::setEnabled(bool enabled)
+{
+    gameplay::Container::setEnabled(enabled);
+
+    if (!enabled)
+    {
+        // reset any behavior related to user input
+        stopScrolling();
+        if (_currentItemBeforeTouch != INVALID_ITEM_INDEX)
+            _currentItemBeforeTouch = INVALID_ITEM_INDEX;
     }
 }

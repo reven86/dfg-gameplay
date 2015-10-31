@@ -98,6 +98,18 @@ public:
      */
     virtual void transitionToMenu();
 
+    /**
+     * Is button is in menu state?
+     */
+    bool getMenuState() const { return _menuState; };
+
+	/**
+	 * Enables/Disables a control. 
+	 *
+	 * @param enabled true if the control is enabled; false if disabled.
+	 */
+	virtual void setEnabled(bool enabled);
+
 protected:
 
     /**

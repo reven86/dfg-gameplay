@@ -28,22 +28,45 @@ bool InputService::onShutdown()
 
 void InputService::injectKeyEvent(const gameplay::Keyboard::KeyEvent& ev, int key)
 {
-    for (auto it = _manager->signals.inputKeyEvent.signal.slots().begin(), end_it = _manager->signals.inputKeyEvent.signal.slots().end(); it != end_it; it++)
-        if ((*it)(ev, key))
+    for (auto& it : _manager->signals.inputKeyEvent.signal.slots())
+        if (it(ev, key))
             break;
 }
 
 void InputService::injectTouchEvent(const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex)
 {
-    for (auto it = _manager->signals.inputTouchEvent.signal.slots().begin(), end_it = _manager->signals.inputTouchEvent.signal.slots().end(); it != end_it; it++)
-        if ((*it)(ev, x, y, contactIndex))
+    for (auto& it : _manager->signals.inputTouchEvent.signal.slots())
+        if (it(ev, x, y, contactIndex))
             break;
 }
 
 bool InputService::injectMouseEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, float wheelDelta)
 {
-    for (auto it = _manager->signals.inputMouseEvent.signal.slots().begin(), end_it = _manager->signals.inputMouseEvent.signal.slots().end(); it != end_it; it++)
-        if ((*it)(ev, x, y, wheelDelta))
+    for (auto& it : _manager->signals.inputMouseEvent.signal.slots())
+        if (it(ev, x, y, wheelDelta))
+            return true;
+
+    return false;
+}
+
+void InputService::injectKeyGlobalEvent(const gameplay::Keyboard::KeyEvent& ev, int key)
+{
+    for (auto& it : _manager->signals.inputKeyGlobalEvent.signal.slots())
+        if (it(ev, key))
+            break;
+}
+
+void InputService::injectTouchGlobalEvent(const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex)
+{
+    for (auto& it : _manager->signals.inputTouchGlobalEvent.signal.slots())
+        if (it(ev, x, y, contactIndex))
+            break;
+}
+
+bool InputService::injectMouseGlobalEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, float wheelDelta)
+{
+    for (auto& it : _manager->signals.inputMouseGlobalEvent.signal.slots())
+        if (it(ev, x, y, wheelDelta))
             return true;
 
     return false;

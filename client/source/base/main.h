@@ -48,9 +48,9 @@ protected:
      */
     void setGameLocale(const char * newLocale = NULL);
 
-    void keyEvent(gameplay::Keyboard::KeyEvent evt, int key);
-    void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex);
-    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta);
+    void keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed);
+    void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex, bool processed);
+    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta, bool processed);
     void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 
     /**

@@ -22,6 +22,10 @@ public:
     bool injectMouseEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, float wheelDelta);
     void injectGesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 
+    void injectKeyGlobalEvent(const gameplay::Keyboard::KeyEvent& ev, int key);
+    void injectTouchGlobalEvent(const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex);
+    bool injectMouseGlobalEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, float wheelDelta);
+
     /**
      * Inject Gesture::SWIPE event to be signals system.
      *
