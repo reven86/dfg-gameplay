@@ -217,6 +217,7 @@ protected:
 
 private:
     unsigned findClosestControlIndex(float localY, bool exitOnPositiveOffset) const;
+    void unsetConsumeInputEvents(gameplay::Control * control);
 
     unsigned _currentItemIndex;
     unsigned _currentItemBeforeTouch;

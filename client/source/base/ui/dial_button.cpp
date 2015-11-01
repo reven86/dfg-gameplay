@@ -69,7 +69,7 @@ void DialButton::initialize(const char* typeName, gameplay::Theme::Style* style,
     setConsumeInputEvents(true);
 
     for (gameplay::Control * child : getControls())
-        child->setConsumeInputEvents(false);
+        unsetConsumeInputEvents(child);
 }
 
 unsigned int DialButton::draw(gameplay::Form * form) const
@@ -471,14 +471,14 @@ void DialButton::removeControl(unsigned int index)
 unsigned int DialButton::addControl(gameplay::Control * control)
 {
     unsigned int res = gameplay::Container::addControl(control);
-    control->setConsumeInputEvents(false);
+    unsetConsumeInputEvents(control);
     return res;
 }
 
 void DialButton::insertControl(gameplay::Control * control, unsigned int index)
 {
     gameplay::Container::insertControl(control, index);
-    control->setConsumeInputEvents(false);
+    unsetConsumeInputEvents(control);
 }
 
 void DialButton::transitionToMenu()
@@ -552,4 +552,13 @@ void DialButton::setEnabled(bool enabled)
         if (_currentItemBeforeTouch != INVALID_ITEM_INDEX)
             _currentItemBeforeTouch = INVALID_ITEM_INDEX;
     }
+}
+
+void DialButton::unsetConsumeInputEvents(gameplay::Control * control)
+{
+    control->setConsumeInputEvents(false);
+
+    if (control->isContainer())
+        for (gameplay::Control * child : static_cast<gameplay::Container*>(control)->getControls())
+            unsetConsumeInputEvents(child);
 }
