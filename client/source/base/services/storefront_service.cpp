@@ -80,9 +80,9 @@ void StorefrontService::paymentTransactionInProcessEvent(const char * productID,
     _manager->signals.storefrontTransactionInProcessEvent(productID, quantity);
 }
 
-bool StorefrontService::paymentTransactionSucceededEvent(const char * productID, int quantity, double timestamp, const char * transactionID)
+void StorefrontService::paymentTransactionSucceededEvent(const char * productID, int quantity, double timestamp, const char * transactionID, void * transactionObject)
 {
-    return _manager->signals.storefrontTransactionSucceededEvent(productID, quantity, timestamp, transactionID);
+    _manager->signals.storefrontTransactionSucceededEvent(productID, quantity, timestamp, transactionID, transactionObject);
 }
 
 void StorefrontService::paymentTransactionFailedEvent(const char * productID, int quantity, int errorCode, const char * error)
@@ -91,9 +91,9 @@ void StorefrontService::paymentTransactionFailedEvent(const char * productID, in
     _manager->signals.storefrontTransactionFailedEvent(productID, quantity, errorCode, error);
 }
 
-bool StorefrontService::paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID)
+void StorefrontService::paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID, void * transactionObject)
 {
-    return _manager->signals.storefrontTransactionRestoredEvent(productID, quantity, timestamp, transactionID);
+    _manager->signals.storefrontTransactionRestoredEvent(productID, quantity, timestamp, transactionID, transactionObject);
 }
 
 bool StorefrontService::isProductConsumable(const char * productID)

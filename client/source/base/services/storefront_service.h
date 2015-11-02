@@ -61,7 +61,7 @@ protected:
     /**
      * @see gameplay::StoreListener::paymentTransactionSucceededEvent
      */
-    virtual bool paymentTransactionSucceededEvent(const char * productID, int quantity, double timestamp, const char * transactionID);
+    virtual void paymentTransactionSucceededEvent(const char * productID, int quantity, double timestamp, const char * transactionID, void * transactionObject);
 
     /**
      * @see gameplay::StoreListener::paymentTransactionFailedEvent
@@ -71,7 +71,7 @@ protected:
     /**
      * @see gameplay::StoreListener::paymentTransactionRestoredEvent
      */
-    virtual bool paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID);
+    virtual void paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID, void * transactionObject);
 
     /**
     * @see gameplay::StoreListener::isProductConsumable

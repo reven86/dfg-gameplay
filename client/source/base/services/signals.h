@@ -53,8 +53,8 @@ struct Signals : Noncopyable
     sigc::signal< void, int, const char * > storefrontGetProductsFailedEvent;
     sigc::signal< void, const char *, int > storefrontTransactionInProcessEvent;
     sigc::signal< void, const char *, int, int, const char * > storefrontTransactionFailedEvent;
-    sigc::signal< bool, const char *, int, double, const char * >::accumulated< interruptable_accumulator > storefrontTransactionSucceededEvent;
-    sigc::signal< bool, const char *, int, double, const char * >::accumulated< interruptable_accumulator > storefrontTransactionRestoredEvent;
+    sigc::signal< void, const char *, int, double, const char *, void * > storefrontTransactionSucceededEvent;
+    sigc::signal< void, const char *, int, double, const char *, void * > storefrontTransactionRestoredEvent;
     sigc::signal< bool, const char * >::accumulated< interruptable_accumulator > storefrontIsProductConsumable;
 
     //
