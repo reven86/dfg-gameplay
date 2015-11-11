@@ -58,11 +58,20 @@ bool TaskQueueService::onTick()
 {
     if (!_queue.empty())
     {
-        std::unique_lock<std::mutex> lock(_queueMutex);
+        _queueMutex.lock();
         if (!_queue.empty())
         {
-            _queue.front()();
+            // copy functor
+            auto fn = _queue.front();
             _queue.pop_front();
+            _queueMutex.unlock();
+
+            // make sure functor is executed while mutex is not acquired
+            fn();
+        }
+        else
+        {
+            _queueMutex.unlock();
         }
     }
 
@@ -103,7 +112,7 @@ void TaskQueueService::removeQueue(const char * name)
 
 int TaskQueueService::addWorkItem(const char * queue, const std::function<void()>& func)
 {
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
     // emscripten does not fully support multithreading and conditional variables
     runOnMainThread(func);
     return -1;
