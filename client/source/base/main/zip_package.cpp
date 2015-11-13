@@ -35,6 +35,8 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     if (zip_stat(_zipFile.get(), fullPath.c_str(), ZIP_FL_NOCASE, &st) != 0)
         return NULL;
 
+    std::unique_lock<std::mutex> lock(_zipMutex);
+
     //Alloc memory for its uncompressed contents
     size_t fileSize = static_cast<size_t>(st.size);
     std::unique_ptr< uint8_t[] >contents(new uint8_t[fileSize]);
@@ -44,7 +46,10 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     if (!f)
         return NULL;
 
-    zip_fread(f, contents.get(), fileSize);
+    if (zip_fread(f, contents.get(), fileSize) != fileSize)
+    {
+        GP_WARN("Can't read from zip package, file %s", path);
+    }
     zip_fclose(f);
 
     return MemoryStream::create(contents, fileSize);
