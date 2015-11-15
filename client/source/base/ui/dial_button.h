@@ -21,6 +21,7 @@ public:
     sigc::signal<bool>::accumulated<interruptable_accumulator> buttonIsAboutToExpandSignal;
     sigc::signal<void> buttonIsCollapsedSignal;
     sigc::signal<void, float> buttonExpandingSignal;
+    sigc::signal<bool, unsigned>::accumulated<interruptable_accumulator> newItemIsAboutToBeSet;
 
     static const unsigned int INVALID_ITEM_INDEX = 0xffffffff;
 

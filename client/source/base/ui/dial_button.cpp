@@ -157,7 +157,12 @@ bool DialButton::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y,
                 _currentItemIndex = closestControlIndex;
                 scrollToItem(closestControlIndex);
                 if (_currentItemBeforeTouch != _currentItemIndex)
-                    notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+                {
+                    if (newItemIsAboutToBeSet(_currentItemIndex))
+                        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+                    else
+                        _currentItemIndex = _currentItemBeforeTouch;
+                }
                 _currentItemBeforeTouch = INVALID_ITEM_INDEX;
             }
             break;
@@ -211,8 +216,19 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
     unsigned int lastItem = _currentItemIndex;
     if (_currentItemIndex != itemIndex)
     {
+        if (!newItemIsAboutToBeSet(itemIndex))
+            return;
+
         _currentItemIndex = itemIndex;
         notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+
+        // controls count may change after notifying listeners
+        if (_currentItemIndex >= getControlCount())
+        {
+            _currentItemIndex = INVALID_ITEM_INDEX;
+            notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+            return;
+        }
     }
 
     if (!immediately && lastItem < getControlCount())
@@ -424,8 +440,13 @@ void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::Animati
 {
     GP_ASSERT(type == gameplay::AnimationClip::Listener::END);
     _menuState = false;
-    if (_currentItemBeforeTouch != _currentItemIndex)
-        notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+    if (isEnabled() && _currentItemBeforeTouch != _currentItemIndex)
+    {
+        if (newItemIsAboutToBeSet(_currentItemIndex))
+            notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
+        else
+            _currentItemIndex = _currentItemBeforeTouch;
+    }
     _currentItemBeforeTouch = INVALID_ITEM_INDEX;
     buttonIsCollapsedSignal();
 }
