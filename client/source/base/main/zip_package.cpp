@@ -46,7 +46,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     if (!f)
         return NULL;
 
-    if (zip_fread(f, contents.get(), fileSize) != fileSize)
+    if (zip_fread(f, contents.get(), fileSize) != (int)fileSize)
     {
         GP_WARN("Can't read from zip package, file %s", path);
     }
