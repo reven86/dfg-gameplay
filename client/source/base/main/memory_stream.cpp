@@ -66,6 +66,9 @@ MemoryStream * MemoryStream::create(std::unique_ptr< uint8_t[] >& buffer, size_t
 
 size_t MemoryStream::read(void* ptr, size_t size, size_t count)
 {
+    if (size == 0)
+        return 0;
+
     size_t maxReadBytes = std::min(_bufferSize - _cursor, size * count);
     size_t maxReadElements = maxReadBytes / size;
 
