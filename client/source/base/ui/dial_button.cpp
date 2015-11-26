@@ -47,6 +47,8 @@ void DialButton::initialize(const char* typeName, gameplay::Theme::Style* style,
 
     _heightCollapsed = getHeight();
     _heightExpanded = properties->getFloat("heightExpanded");
+    if (_heightExpanded <= _heightCollapsed)
+        _heightExpanded = 2.0f * _heightCollapsed;
 
     const char * interpolator = properties->getString("animationInterpolator");
     if (interpolator)
@@ -455,6 +457,7 @@ unsigned int DialButton::drawBorder(gameplay::Form * form) const
 {
     unsigned int drawCalls = gameplay::Container::drawBorder(form);
 
+#if 0
     if (getControlCount() > 0 && _currentItemIndex != INVALID_ITEM_INDEX)
     {
         gameplay::SpriteBatch* batch = _style->getTheme()->getSpriteBatch();
@@ -472,6 +475,7 @@ unsigned int DialButton::drawBorder(gameplay::Form * form) const
 
         finishBatch(form, batch);
     }
+#endif
 
     return drawCalls;
 }
