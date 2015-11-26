@@ -112,7 +112,7 @@ void TaskQueueService::removeQueue(const char * name)
 
 int TaskQueueService::addWorkItem(const char * queue, const std::function<void()>& func)
 {
-#if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
+#if defined(__EMSCRIPTEN__)
     // emscripten does not fully support multithreading and conditional variables
     runOnMainThread(func);
     return -1;
