@@ -144,24 +144,102 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const
 {
     static std::wstring result;
 
+    float textw = 0, texth = 0;
+    font->measureText(text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
+
+    if (textw < width || width <= 0.0f)
+        return text;
+
     result = text;
+
+    result.erase(result.end() - 1, result.end());
+    result.push_back('.');
+    result.push_back('.');
+    result.push_back('.');
+    do
+    {
+        result.erase(result.end() - 4, result.end());
+        result.push_back('.');
+        result.push_back('.');
+        result.push_back('.');
+        font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
+    } while (result.size() > 3 && textw >= width);
+
+    return result.c_str();
+}
+
+const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize)
+{
+    static std::wstring result;
 
     float textw = 0, texth = 0;
     font->measureText(text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
-    if (textw >= width && width > 0)
+    if (textw < width && texth < height || width <= 0.0f || height <= 0.0f )
+        return text;
+
+    if (height < fontSize)
+        return L"";
+
+    float verticalAdvance = floorf(fontSize * (1.0f + font->getLineSpacing()));
+    if (height < verticalAdvance * 2.0f)
+        return clipTextToBounds(text, width, font, fontSize);
+
+    const wchar_t* token = text;
+    const gameplay::Font::Glyph * spaceGlyph = font->getGlyphByCode(' ');
+    const gameplay::Font::Glyph * dotGlyph = font->getGlyphByCode('.');
+    float scale = fontSize / font->getSize(0);
+    float spaceAdvance = spaceGlyph ? spaceGlyph->advance * scale : fontSize * 0.5f;
+    float dotsWidth = dotGlyph ? dotGlyph->advance * scale * 3.0f : 0.0f;
+
+    result.clear();
+
+    float xPos = 0.0f, yPos = verticalAdvance;
+    while (*token != 0)
     {
-        result.erase(result.end() - 1, result.end());
-        result.push_back('.');
-        result.push_back('.');
-        result.push_back('.');
-        do
+        const gameplay::Font::Glyph * glyph = font->getGlyphByCode(token[0]);
+        if (!glyph)
         {
-            result.erase(result.end() - 4, result.end());
-            result.push_back('.');
-            result.push_back('.');
-            result.push_back('.');
-            font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
-        } while (result.size() > 3 && textw >= width);
+            token++;
+            continue;
+        }
+
+        switch (*token)
+        {
+        case L' ':
+            xPos += spaceAdvance;
+            break;
+        case L'\r':
+        case L'\n':
+            yPos += verticalAdvance;
+            xPos = 0.0f;
+            break;
+        case L'\t':
+            xPos += spaceAdvance * 4;
+            break;
+        default:
+            xPos += glyph->advance * scale;
+            break;
+        }
+
+        if (yPos > height)
+            return result.c_str();
+
+        if (height - yPos < verticalAdvance && xPos + dotsWidth > width)
+        {
+            result.push_back(L'...');
+            return result.c_str();
+        }
+
+        if (xPos > width)
+        {
+            xPos = 0.0f;
+            yPos += verticalAdvance;
+            result.push_back(L'\n');
+        }
+
+        result.push_back(token[0]);
+
+        token++;
     }
 
     return result.c_str();
@@ -248,6 +326,7 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
     if (control->isContainer())
     {
         gameplay::Container * container = static_cast<gameplay::Container *>(control);
+        container->setScrollScale(container->getScrollScale() * ky);
 
         const std::vector< gameplay::Control * >& children = container->getControls();
         for (unsigned j = 0; j < children.size(); j++)

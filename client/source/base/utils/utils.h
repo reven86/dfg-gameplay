@@ -86,8 +86,28 @@ static const char * urlEncode(const char * src);
 
 /**
  * Clip text to bounds inserting '...' if text is too long.
+ * Works with single line text.
+ *
+ * @param text Input text.
+ * @param width Width to clip text by.
+ * @param font Font.
+ * @param fontSize Size of the font;
  */
 static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize);
+
+/**
+ * Clip text to bounds inserting '...' if text is too long.
+ * This is multiline version of previous clipTextToBounds function.
+ * If any token inside the string is longer than desired width, it's wrapped
+ * by symbol by symbol.
+ *
+ * @param text Input text.
+ * @param width Width to clip text by.
+ * @param height Height to clip text by.
+ * @param font Font.
+ * @param fontSize Size of the font;
+ */
+static const wchar_t * clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize);
 
 
 
