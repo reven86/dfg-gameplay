@@ -327,6 +327,9 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
                         _expandAnimationClip = NULL;
                     }
                     _menuState = false;
+
+                    // scroll to nearest item
+                    scrollToItem(_currentItemIndex);
                     break;
                 }
 
