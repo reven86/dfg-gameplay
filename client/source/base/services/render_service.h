@@ -56,8 +56,10 @@ class RenderStep : Noncopyable
 public:
     /**
      * Signals is invoked when RenderStep is about to be drawn.
+     * Return true to processed to rendering, of false otherwise.
+     * Post-render signal won't be called when rendering is interrupted.
      */
-    sigc::signal<void, const RenderStep *> preRenderSignal;
+    sigc::signal<bool, const RenderStep *>::accumulated< interruptable_accumulator > preRenderSignal;
 
     /**
     * Signals is invoked when RenderStep has been drawn.

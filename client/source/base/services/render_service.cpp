@@ -122,7 +122,9 @@ void RenderStep::addRenderClick(RenderClick * click, RenderClick * insertAfter)
 
 void RenderStep::render() const
 {
-    preRenderSignal(this);
+    if (!preRenderSignal(this))
+        return;
+
     for (RenderClicksType::const_iterator it = _renderClicks.begin(), end_it = _renderClicks.end(); it != end_it; it++)
         if ((*it)->isActive())
             (*it)->render();
