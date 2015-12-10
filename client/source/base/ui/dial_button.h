@@ -42,8 +42,8 @@ public:
 
     /**
      * Scroll to item. 
-     * The current item index is changed immediately to itemIndex.
-     * Duration of scroll is dependant on scroll distance.
+     * The current item index is changed immediately to itemIndex,
+     * the animation is happend after.
      *
      * @param itemIndex Index of item to scroll to.
      * @param immediately Set current item without scrolling. 
@@ -128,7 +128,7 @@ protected:
      *
      * Child controls should override this function to return the correct type name.
      *
-     * @return The type name of this class: "ExpandedTab"
+     * @return The type name of this class: "DialButton"
      * @see ScriptTarget::getTypeName()
      */
     const char* getTypeName() const;
@@ -202,11 +202,6 @@ protected:
      * Handles when animation event occurs.
      */
     virtual void animationEvent(gameplay::AnimationClip* clip, gameplay::AnimationClip::Listener::EventType type);
-
-    /**
-     * @see Control::drawBorder.
-     */
-    virtual unsigned int drawBorder(gameplay::Form* form) const;
 
     /**
      * Called when a control event is fired for this control, before external

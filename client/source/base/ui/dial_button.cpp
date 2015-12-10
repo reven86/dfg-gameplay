@@ -456,33 +456,6 @@ void DialButton::animationEvent(gameplay::AnimationClip* clip, gameplay::Animati
     buttonIsCollapsedSignal();
 }
 
-unsigned int DialButton::drawBorder(gameplay::Form * form) const
-{
-    unsigned int drawCalls = gameplay::Container::drawBorder(form);
-
-#if 0
-    if (getControlCount() > 0 && _currentItemIndex != INVALID_ITEM_INDEX)
-    {
-        gameplay::SpriteBatch* batch = _style->getTheme()->getSpriteBatch();
-        startBatch(form, batch);
-
-        gameplay::Control * currentItem = getControl(_currentItemIndex);
-        gameplay::Rectangle itemBounds;
-
-        gameplay::Rectangle::intersect(currentItem->getAbsoluteBounds(), _viewportClipBounds, &itemBounds);
-
-        // TODO: Use normal UV coords from skin settings
-        batch->draw(itemBounds.x, itemBounds.y, itemBounds.width, itemBounds.height,
-            175.0f / 256.0f, 1.0f - 20.0f / 256.0f, 175.0f / 256.0f, 1.0f - 20.0f / 256.0f, gameplay::Vector4(1.0f, 1.0f, 1.0f, 0.33f), _viewportClipBounds);
-        ++drawCalls;
-
-        finishBatch(form, batch);
-    }
-#endif
-
-    return drawCalls;
-}
-
 void DialButton::removeControl(unsigned int index)
 {
     gameplay::Container::removeControl(index);

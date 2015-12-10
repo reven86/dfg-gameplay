@@ -16,6 +16,7 @@ ExpandedTab::ExpandedTab()
     , _stateChangeClip(NULL)
     , _clickWaitClip(NULL)
 {
+    __tabs.push_back(this);
 }
 
 ExpandedTab::~ExpandedTab()
@@ -86,7 +87,6 @@ gameplay::Control * ExpandedTab::create(gameplay::Theme::Style * style, gameplay
 {
     ExpandedTab* tab = new ExpandedTab();
     tab->initialize(tab->getTypeName(), style, properties);
-    __tabs.push_back(tab);
     return tab;
 }
 
