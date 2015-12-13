@@ -43,6 +43,14 @@ protected:
      */
     void bindControlEvent(gameplay::Control* control, gameplay::Control::Listener::EventType evt, std::function<void(gameplay::Control*)> fn);
 
+    /**
+     * Unbind control.
+     *
+     * @param control Control to listening events for.
+     * @param ent Event type.
+     */
+    void unbindControlEvent(gameplay::Control * control, gameplay::Control::Listener::EventType evt);
+
 private:
     virtual void controlEvent(gameplay::Control* control, gameplay::Control::Listener::EventType evt);
 

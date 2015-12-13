@@ -20,6 +20,12 @@ void ControlEventHandler::bindControlEvent(gameplay::Control * control, gameplay
     _controlEventHandlers.insert(std::make_pair(std::make_pair(control, evt), fn));
 }
 
+void ControlEventHandler::unbindControlEvent(gameplay::Control * control, gameplay::Control::Listener::EventType evt)
+{
+    control->removeListener(this);
+    _controlEventHandlers.erase(std::make_pair(control, evt));
+}
+
 void ControlEventHandler::controlEvent(gameplay::Control* control, gameplay::Control::Listener::EventType evt)
 {
     if (!_handlingEvents)
