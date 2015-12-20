@@ -131,7 +131,7 @@ void DfgGame::update(float elapsedTime)
 
 void DfgGame::render(float /*elapsedTime*/)
 {
-    if (ServiceManager::getInstance()->getState() == Service::RUNNING)
+    if (_renderService)
         _renderService->renderFrame();
 }
 
