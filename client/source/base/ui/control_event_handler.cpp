@@ -16,6 +16,8 @@ ControlEventHandler::~ControlEventHandler()
 
 void ControlEventHandler::bindControlEvent(gameplay::Control * control, gameplay::Control::Listener::EventType evt, std::function<void(gameplay::Control *)> fn)
 {
+    GP_ASSERT(_controlEventHandlers.find(std::make_pair(control, evt)) == _controlEventHandlers.end());
+
     control->addListener(this, evt);
     _controlEventHandlers.insert(std::make_pair(std::make_pair(control, evt), fn));
 }

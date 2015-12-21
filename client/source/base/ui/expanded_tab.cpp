@@ -31,11 +31,11 @@ ExpandedTab::~ExpandedTab()
 
 void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
 {
-    if (state == MAXIMIZED)
-        ExpandedTab::minimizeAll(_groupId);
-
     if (_state == state)
         return;
+
+    if (state == MAXIMIZED)
+        ExpandedTab::minimizeAll(_groupId);
 
     _state = state;
     notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
@@ -61,7 +61,7 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
         gameplay::Animation * animation = createAnimationFromTo("tab-change-state", gameplay::Control::ANIMATE_SIZE_WIDTH, &from, &to[_state], _animationInterpolator, _animationDuration);
         _stateChangeClip = animation->getClip();
 
-        if (_state == HIDDEN)
+        if (_state == HIDDEN || _state == MINIMIZED && _widthMinimized <= 0.0f)
             _stateChangeClip->addEndListener(this);
 
         _stateChangeClip->play();
@@ -76,9 +76,9 @@ void ExpandedTab::animationEvent(gameplay::AnimationClip * clip, gameplay::Anima
     {
         gameplay::Container::notifyListeners(gameplay::Control::Listener::CLICK);
     }
-    else
+    else if (clip == _stateChangeClip)  // if we stop previous _stateChangeClip we should not react on its END event
     {
-        if (_state == HIDDEN)
+        if (_state == HIDDEN || _state == MINIMIZED && _widthMinimized <= 0.0f)
             setVisible(false);
     }
 }
@@ -158,18 +158,13 @@ void ExpandedTab::minimizeAll(const std::string& groupId)
 void ExpandedTab::controlEvent(Control::Listener::EventType evt)
 {
     Container::controlEvent(evt);
-
-    switch (evt)
-    {
-    case Control::Listener::CLICK:
-        if (_state == MINIMIZED)
-            setState(MAXIMIZED);
-        break;
-    }
 }
 
 void ExpandedTab::notifyListeners(gameplay::Control::Listener::EventType eventType)
 {
+#if 0
+    // NOTE: double click is not yet properly working in case we want to show/hide tab by clicking on empty space once
+
     // delay actual click event if we're waiting for double click
     if (eventType == gameplay::Control::Listener::CLICK)
     {
@@ -193,6 +188,7 @@ void ExpandedTab::notifyListeners(gameplay::Control::Listener::EventType eventTy
             _clickWaitClip->play();
         }
     }
+#endif
 
     gameplay::Container::notifyListeners(eventType);
 }
