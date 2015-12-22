@@ -298,8 +298,8 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
     switch (propertyId)
     {
     case ANIMATE_SCROLL_TO_ITEM:
+        if (_currentItemIndex < getControlCount())
         {
-            GP_ASSERT(_currentItemIndex < getControlCount());
             gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
             gameplay::Vector2 desiredScrollPosition(0.0f, -(itemToScrollTo->getY() - itemToScrollTo->getMargin().top));
 
