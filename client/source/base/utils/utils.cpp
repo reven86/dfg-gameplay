@@ -226,7 +226,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
 
         if (height - yPos < verticalAdvance && xPos + dotsWidth > width)
         {
-            result.push_back(L'...');
+            result.push_back(L'.');
             return result.c_str();
         }
 

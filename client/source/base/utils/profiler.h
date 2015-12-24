@@ -50,9 +50,9 @@ public:
      *
      *	@note Use this method each frame with current frame time to calculate results within 1 second.
      *
-     *	@param[in] dt Frame time (in seconds).
+     *	@param[in] dt Frame time (in milliseconds).
      */
-    void setFrameTime(const float& dt) { _frameDelta = dt; };
+    void setFrameTime(const float& frameTimeMS) { _frameDelta = frameTimeMS * 0.001f; };
 
     /** @brief Get group statistics.
      *

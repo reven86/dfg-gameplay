@@ -37,9 +37,8 @@ bool DebugService::onPreInit()
 bool DebugService::onTick()
 {
 #ifndef __DISABLE_PROFILER__
-    unsigned framesCount = gameplay::Game::getInstance( )->getFrameRate( );
     Profiler::getInstance()->saveProfilerResults( );
-    Profiler::getInstance()->setFrameTime( _manager->getFrameTime() );
+    Profiler::getInstance()->setFrameTime( _manager->getFrameElapsedTime() );
 #endif
     return false;
 }

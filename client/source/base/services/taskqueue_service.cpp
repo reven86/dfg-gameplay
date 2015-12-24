@@ -56,6 +56,7 @@ bool TaskQueueService::onInit()
 
 bool TaskQueueService::onTick()
 {
+    PROFILE("TaskQueueService::onTick", "Application");
     if (!_queue.empty())
     {
         _queueMutex.lock();

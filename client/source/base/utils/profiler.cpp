@@ -19,7 +19,7 @@ Profiler::Profiler()
     : _parentsCount(0)
     , _registeredGroupsCount(0)
     , _registeredObjectsCount(0)
-    , _frameDelta(0.01f)
+    , _frameDelta(0.1f)
 {
     __dfg_profile_id_unprofiled_code = registerProfilerObject("Unprofiled", "General");
     startProfiler(__dfg_profile_id_unprofiled_code);
@@ -78,14 +78,14 @@ void Profiler::startProfiler(const unsigned& profile_object_id)
     if (_parentsCount >= MAX_OBJECTS)
         return;
 
-    float time = static_cast<float>(gameplay::Game::getInstance()->getAbsoluteTime());
+    float time = static_cast<float>(gameplay::Game::getInstance()->getPlatformTime());
 
     _currentParents[_parentsCount++] = std::make_pair(profile_object_id, time);
 }
 
 void Profiler::stopProfiler()
 {
-    float time = static_cast<float>(gameplay::Game::getInstance()->getAbsoluteTime());
+    float time = static_cast<float>(gameplay::Game::getInstance()->getPlatformTime());
 
     GP_ASSERT(_parentsCount > 0);
 
