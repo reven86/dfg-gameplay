@@ -80,6 +80,9 @@
     <ClCompile Include="..\base\services\taskscheduler_service.cpp">
       <Filter>base\services</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\carousel.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="..\base\utils\utf8\unchecked.h">
       <Filter>base\utils\utf8</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ui\carousel.h">
+      <Filter>base\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

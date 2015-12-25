@@ -30,6 +30,7 @@
 #include "services/taskqueue_service.h"
 #include "services/taskscheduler_service.h"
 #include "services/tracker_service.h"
+#include "ui/carousel.h"
 #include "ui/control_event_handler.h"
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
