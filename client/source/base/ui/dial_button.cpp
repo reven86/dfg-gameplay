@@ -552,6 +552,9 @@ void DialButton::setEnabled(bool enabled)
         stopScrolling();
         if (_currentItemBeforeTouch != INVALID_ITEM_INDEX)
             _currentItemBeforeTouch = INVALID_ITEM_INDEX;
+
+        if (_expandAnimationClip && _expandAnimationClip->isPlaying())
+            _expandAnimationClip->removeEndListener(this);
     }
 }
 
