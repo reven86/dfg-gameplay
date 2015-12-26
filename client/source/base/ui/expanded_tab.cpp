@@ -53,6 +53,8 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
     if (immediately)
     {
         setWidth(to[_state]);
+        if (to[_state] <= 0.0f)
+            setVisible(false);
     }
     else
     {
