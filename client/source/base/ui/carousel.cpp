@@ -222,8 +222,10 @@ void Carousel::setAnimationPropertyValue(int propertyId, gameplay::AnimationValu
     switch (propertyId)
     {
     case ANIMATE_SCROLL_TO_ITEM:
+        if (_currentItemIndex < getControlCount())
         {
-            GP_ASSERT(_currentItemIndex < getControlCount());
+            updateChildBounds();
+            updateBounds();
             gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
             gameplay::Vector2 desiredScrollPosition(-(itemToScrollTo->getX() - itemToScrollTo->getMargin().left), 0.0f);
 
