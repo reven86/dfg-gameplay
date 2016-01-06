@@ -258,14 +258,12 @@ void Carousel::removeControl(unsigned int index)
 unsigned int Carousel::addControl(gameplay::Control * control)
 {
     unsigned int res = gameplay::Container::addControl(control);
-    unsetConsumeInputEvents(control);
     return res;
 }
 
 void Carousel::insertControl(gameplay::Control * control, unsigned int index)
 {
     gameplay::Container::insertControl(control, index);
-    unsetConsumeInputEvents(control);
 }
 
 void Carousel::setEnabled(bool enabled)
