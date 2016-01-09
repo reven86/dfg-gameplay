@@ -245,8 +245,18 @@ void Carousel::setAnimationPropertyValue(int propertyId, gameplay::AnimationValu
 void Carousel::removeControl(unsigned int index)
 {
     gameplay::Container::removeControl(index);
-    if (_currentItemIndex != INVALID_ITEM_INDEX && _currentItemIndex >= getControlCount())
+    if (_currentItemIndex != INVALID_ITEM_INDEX && _currentItemIndex >= index)
+    {
         _currentItemIndex--;
+        if (getControlCount() > 0 && _currentItemIndex < getControlCount())
+        {
+            updateChildBounds();
+            updateBounds();
+            gameplay::Control * itemToScrollTo = getControl(_currentItemIndex);
+            gameplay::Vector2 desiredScrollPosition(-(itemToScrollTo->getX() - itemToScrollTo->getMargin().left), 0.0f);
+            setScrollPosition(desiredScrollPosition);
+        }
+    }
 
     if (_currentItemIndex >= getControlCount())
     {
