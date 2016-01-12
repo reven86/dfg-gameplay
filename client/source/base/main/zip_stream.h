@@ -166,6 +166,7 @@ protected:
 private:
     std::unique_ptr<MemoryStream> _underlyingStream;
     std::unique_ptr< uint8_t[] > _fileContent;
+    static std::mutex _zipReadMutex;
 };
 
 

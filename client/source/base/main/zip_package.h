@@ -33,11 +33,10 @@ public:
     void setPassword(const char * password);
 
 protected:
-    ZipPackage(struct zip * zipFile);
+    ZipPackage(const char * packageName);
 
 private:
-    std::shared_ptr< struct zip > _zipFile;
-    std::mutex _zipMutex; // make sure zip file is accessed only from one thread at the moment
+    std::string _packageName;
 };
 
 

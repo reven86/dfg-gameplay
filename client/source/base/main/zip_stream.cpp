@@ -5,6 +5,8 @@
 
 
 
+std::mutex ZipStream::_zipReadMutex;
+
 ZipStream::ZipStream()
 {
 }
@@ -22,13 +24,16 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
     if (!package)
         return NULL;
 
-    if (zip_name_locate(package, fileName, ZIP_FL_ENC_GUESS | ZIP_FL_NOCASE) < 0)
-        return NULL;
-
     //Search for the file of given name
     struct zip_stat st;
     zip_stat_init(&st);
-    zip_stat(package, fileName, ZIP_FL_NOCASE, &st);
+    if (zip_stat(package, fileName, ZIP_FL_NOCASE, &st) != 0)
+        return NULL;
+
+    // make sure we access any zip file only from one thread
+    // hint: it would be more convinient to use one mutex per 
+    // zip * structure, not one mutex for all zips
+    std::unique_lock<std::mutex> guard(_zipReadMutex);
 
     //Read the compressed file
     zip_file *f = zip_fopen(package, fileName, ZIP_FL_NOCASE);
