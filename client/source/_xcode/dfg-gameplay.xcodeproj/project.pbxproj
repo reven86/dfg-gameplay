@@ -59,6 +59,8 @@
 		EB9F81591AAB25CD00839018 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81441AAB25CD00839018 /* utils.cpp */; };
 		EBC5B34B1B77C8FE008076C1 /* control_event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */; };
 		EBC5B34C1B77C8FE008076C1 /* control_event_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */; };
+		EBC66C9C1C3B1E2F006AABBA /* carousel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC66C9A1C3B1E2F006AABBA /* carousel.cpp */; };
+		EBC66C9D1C3B1E2F006AABBA /* carousel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC66C9A1C3B1E2F006AABBA /* carousel.cpp */; };
 		EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
 		EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
 /* End PBXBuildFile section */
@@ -149,6 +151,8 @@
 		EB9F81451AAB25CD00839018 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = control_event_handler.cpp; path = ui/control_event_handler.cpp; sourceTree = "<group>"; };
 		EBC5B34A1B77C8FE008076C1 /* control_event_handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_event_handler.h; path = ui/control_event_handler.h; sourceTree = "<group>"; };
+		EBC66C9A1C3B1E2F006AABBA /* carousel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = carousel.cpp; path = ui/carousel.cpp; sourceTree = "<group>"; };
+		EBC66C9B1C3B1E2F006AABBA /* carousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = carousel.h; path = ui/carousel.h; sourceTree = "<group>"; };
 		EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = httprequest_service.cpp; sourceTree = "<group>"; };
 		EBD4BEDB1B45A0C0001AA0D6 /* httprequest_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httprequest_service.h; sourceTree = "<group>"; };
 		EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskqueue_service.cpp; sourceTree = "<group>"; };
@@ -186,6 +190,8 @@
 		EB7790201B75145300E1DDB2 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EBC66C9A1C3B1E2F006AABBA /* carousel.cpp */,
+				EBC66C9B1C3B1E2F006AABBA /* carousel.h */,
 				EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */,
 				EBC5B34A1B77C8FE008076C1 /* control_event_handler.h */,
 				EB7790211B75147500E1DDB2 /* dial_button.cpp */,
@@ -412,6 +418,7 @@
 				EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */,
 				EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */,
 				EB7991461B70C63F00A30C9F /* pch.cpp in Sources */,
+				EBC66C9D1C3B1E2F006AABBA /* carousel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +453,7 @@
 				EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */,
 				EB9F81541AAB25CD00839018 /* social_service.cpp in Sources */,
 				EB9F81111AAB21EE00839018 /* pch.cpp in Sources */,
+				EBC66C9C1C3B1E2F006AABBA /* carousel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
