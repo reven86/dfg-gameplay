@@ -98,8 +98,6 @@ static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const
 /**
  * Clip text to bounds inserting '...' if text is too long.
  * This is multiline version of previous clipTextToBounds function.
- * If any token inside the string is longer than desired width, it's wrapped
- * by symbol by symbol.
  *
  * @param text Input text.
  * @param width Width to clip text by.

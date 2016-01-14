@@ -79,6 +79,7 @@
     <ClCompile Include="..\base\services\taskscheduler_service.cpp" />
     <ClCompile Include="..\base\services\tracker_service.cpp" />
     <ClCompile Include="..\base\ui\carousel.cpp" />
+    <ClCompile Include="..\base\ui\clip_label.cpp" />
     <ClCompile Include="..\base\ui\control_event_handler.cpp" />
     <ClCompile Include="..\base\ui\dial_button.cpp" />
     <ClCompile Include="..\base\ui\expanded_tab.cpp" />
@@ -114,6 +115,7 @@
     <ClInclude Include="..\base\services\taskscheduler_service.h" />
     <ClInclude Include="..\base\services\tracker_service.h" />
     <ClInclude Include="..\base\ui\carousel.h" />
+    <ClInclude Include="..\base\ui\clip_label.h" />
     <ClInclude Include="..\base\ui\control_event_handler.h" />
     <ClInclude Include="..\base\ui\dial_button.h" />
     <ClInclude Include="..\base\ui\expanded_tab.h" />

@@ -83,6 +83,9 @@
     <ClCompile Include="..\base\ui\carousel.cpp">
       <Filter>base\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\clip_label.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -196,6 +199,9 @@
       <Filter>base\utils\utf8</Filter>
     </ClInclude>
     <ClInclude Include="..\base\ui\carousel.h">
+      <Filter>base\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ui\clip_label.h">
       <Filter>base\ui</Filter>
     </ClInclude>
   </ItemGroup>

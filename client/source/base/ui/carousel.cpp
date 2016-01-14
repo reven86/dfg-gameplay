@@ -35,7 +35,8 @@ void Carousel::initialize(const char* typeName, gameplay::Theme::Style* style, g
 {
     gameplay::Container::initialize(typeName, style, properties);
 
-    _freeSliding = properties->getBool("freeSliding");
+    if (properties)
+        _freeSliding = properties->getBool("freeSliding");
 
     setReceiveInputEvents(true);
 

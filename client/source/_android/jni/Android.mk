@@ -72,6 +72,7 @@ LOCAL_SRC_FILES := \
     base/services/taskscheduler_service.cpp \
     base/services/tracker_service.cpp \
     base/ui/carousel.cpp \
+    base/ui/clip_label.cpp \
     base/ui/control_event_handler.cpp \
     base/ui/dial_button.cpp \
     base/ui/expanded_tab.cpp \
