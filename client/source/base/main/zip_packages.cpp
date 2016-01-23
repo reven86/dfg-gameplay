@@ -7,6 +7,29 @@
 std::unordered_map< std::string, std::shared_ptr< zip > > ZipPackagesCache::_packages;
 
 
+/**
+ * Gets the fully resolved path.
+ * If the path is relative then it will be prefixed with the resource path.
+ * Aliases will be converted to a relative path.
+ * 
+ * @param path The path to resolve.
+ * @param fullPath The full resolved path. (out param)
+ */
+static void getFullPath(const char* path, std::string& fullPath)
+{
+    if (gameplay::FileSystem::isAbsolutePath(path))
+    {
+        fullPath.assign(path);
+    }
+    else
+    {
+        fullPath.assign(gameplay::FileSystem::getResourcePath());
+        fullPath += gameplay::FileSystem::resolvePath(path);
+    }
+}
+
+
+
 zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
 {
     if (packageName == NULL || *packageName == '\0')
@@ -16,8 +39,8 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
     if (package == _packages.end())
     {
 #ifndef __ANDROID__
-        std::string fullPath(gameplay::FileSystem::getResourcePath());
-        fullPath += packageName;
+        std::string fullPath;
+        getFullPath(packageName, fullPath);
 #else
         std::string fullPath(packageName);
 #endif

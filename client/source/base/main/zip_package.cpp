@@ -17,6 +17,9 @@ ZipPackage::~ZipPackage()
 
 ZipPackage * ZipPackage::create(const char * zipFile)
 {
+    if (!gameplay::FileSystem::fileExists(zipFile))
+        return NULL;
+
     return new ZipPackage(zipFile);
 }
 
