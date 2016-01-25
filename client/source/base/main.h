@@ -54,6 +54,11 @@ protected:
     void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
 
     /**
+     * @see Game::resizeEvent;
+     */
+    void resizeEvent(unsigned int width, unsigned int height) override;
+
+    /**
      * Gesture callback on Gesture::SWIPE events.
      *
      * @param x The x-coordinate of the start of the swipe.

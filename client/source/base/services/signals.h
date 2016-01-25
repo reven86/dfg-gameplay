@@ -15,8 +15,9 @@ struct Signals : Noncopyable
     // System-wide signals
     //
 
-    sigc::signal< void > pauseEvent;
-    sigc::signal< void > resumeEvent;
+    sigc::signal<void> pauseEvent;
+    sigc::signal<void> resumeEvent;
+    sigc::signal<void, unsigned, unsigned> resizeEvent;
 
     //
     // ServiceManager

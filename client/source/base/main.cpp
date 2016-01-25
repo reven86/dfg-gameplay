@@ -287,3 +287,8 @@ void DfgGame::preventFromSleeping(bool prevent)
         ANativeActivity_setWindowFlags(activity, 0, AWINDOW_FLAG_KEEP_SCREEN_ON);
 #endif
 }
+
+void DfgGame::resizeEvent(unsigned int width, unsigned int height)
+{
+    ServiceManager::getInstance()->signals.resizeEvent(width, height);
+}
