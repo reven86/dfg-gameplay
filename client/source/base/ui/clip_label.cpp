@@ -69,7 +69,15 @@ void ClipLabel::updateState(State state)
 
 void ClipLabel::clipText()
 {
-    _clippedText = _font ? Utils::clipTextToBounds(_text.c_str(), _textBounds.width, _textBounds.height, _font, getFontSize(getState())) : _text;
+    if (!_font)
+    {
+        _clippedText = _text;
+        return;
+    }
+
+    gameplay::Control::State state = getState();
+
+    _clippedText = Utils::clipTextToBounds(_text.c_str(), _textBounds.width, _textBounds.height, _font, getFontSize(state), getCharacterSpacing(state), getLineSpacing(state));
 }
 
 unsigned int ClipLabel::drawText(gameplay::Form * form) const

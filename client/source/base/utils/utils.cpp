@@ -140,7 +140,7 @@ const char * Utils::urlEncode(const char * src)
 
 
 
-const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize)
+const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, float characterSpacing)
 {
     static std::wstring result;
 
@@ -148,7 +148,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const
         return L"";
 
     float textw = 0, texth = 0;
-    font->measureText(text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
+    font->measureText(text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth, characterSpacing);
 
     if (textw < width)
         return text;
@@ -165,13 +165,14 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const
         result.push_back('.');
         result.push_back('.');
         result.push_back('.');
-        font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth);
+        font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth, characterSpacing);
     } while (result.size() > 3 && textw >= width);
 
     return result.c_str();
 }
 
-const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize)
+const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize,
+    float characterSpacing, float lineSpacing)
 {
     static std::wstring result;
 
@@ -181,7 +182,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
     gameplay::Rectangle clip(width, height);
     gameplay::Rectangle out;
 
-    font->measureText(text, clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true);
+    font->measureText(text, clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
 
     if (out.width < width && out.height < height)
         return text;
@@ -198,7 +199,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
         result.push_back('.');
         result.push_back('.');
         result.push_back('.');
-        font->measureText(result.c_str(), clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true);
+        font->measureText(result.c_str(), clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
     } while (result.size() > 3 && (out.width >= width || out.height >= height));
 
     return result.c_str();

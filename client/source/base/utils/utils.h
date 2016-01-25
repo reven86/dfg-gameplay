@@ -91,9 +91,11 @@ static const char * urlEncode(const char * src);
  * @param text Input text.
  * @param width Width to clip text by.
  * @param font Font.
- * @param fontSize Size of the font;
+ * @param fontSize Size of the font.
+ * @param characterSpacing Additional spacing between character, in pixels.
  */
-static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize);
+static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, 
+    float characterSpacing = 0.0f);
 
 /**
  * Clip text to bounds inserting '...' if text is too long.
@@ -103,9 +105,12 @@ static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const
  * @param width Width to clip text by.
  * @param height Height to clip text by.
  * @param font Font.
- * @param fontSize Size of the font;
+ * @param fontSize Size of the font.
+ * @param characterSpacing Additional spacing between character, in pixels.
+ * @param line Additional spacing between lines, in pixels.
  */
-static const wchar_t * clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize);
+static const wchar_t * clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize, 
+    float characterSpacing = 0.0f, float lineSpacing = 0.0f);
 
 
 
