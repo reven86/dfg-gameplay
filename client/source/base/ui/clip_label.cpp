@@ -85,7 +85,8 @@ unsigned int ClipLabel::drawText(gameplay::Form * form) const
 
         gameplay::SpriteBatch* batch = _font->getSpriteBatch(fontSize);
         startBatch(form, batch);
-        _font->drawText(_clippedText.c_str(), _textBounds, _textColor, fontSize, getTextAlignment(state), true, getTextDrawingFlags(state), _viewportClipBounds);
+        _font->drawText(_clippedText.c_str(), _textBounds, _textColor, fontSize, getTextAlignment(state), true, getTextDrawingFlags(state), _viewportClipBounds,
+            getCharacterSpacing(state), getLineSpacing(state));
         finishBatch(form, batch);
 
         return 1;

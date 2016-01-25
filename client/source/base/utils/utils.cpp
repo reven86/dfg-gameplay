@@ -257,6 +257,8 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
     control->setPadding(padding.top * ky, padding.bottom * ky, padding.left * kx, padding.right * kx);
 
     control->setFontSize(ky * control->getFontSize());
+    control->setCharacterSpacing(ky * control->getCharacterSpacing());
+    control->setLineSpacing(ky * control->getLineSpacing());
 
     if (strcmp(control->getTypeName(), "Slider") == 0)
         static_cast<gameplay::Slider *>(control)->setScaleFactor(ky);
