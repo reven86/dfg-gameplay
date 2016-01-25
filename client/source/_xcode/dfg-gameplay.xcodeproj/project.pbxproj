@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		EB1E5E3E1BB2C8E5007A8C9E /* taskscheduler_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */; };
 		EB1E5E3F1BB2C8E5007A8C9E /* taskscheduler_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */; };
+		EB30DDF11C493ECF00B01597 /* clip_label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB30DDEF1C493ECF00B01597 /* clip_label.cpp */; };
+		EB30DDF21C493ECF00B01597 /* clip_label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB30DDEF1C493ECF00B01597 /* clip_label.cpp */; };
 		EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790211B75147500E1DDB2 /* dial_button.cpp */; };
 		EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790211B75147500E1DDB2 /* dial_button.cpp */; };
 		EB7790271B75147500E1DDB2 /* expanded_tab.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790231B75147500E1DDB2 /* expanded_tab.cpp */; };
@@ -89,6 +91,8 @@
 /* Begin PBXFileReference section */
 		EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskscheduler_service.cpp; sourceTree = "<group>"; };
 		EB1E5E3D1BB2C8E5007A8C9E /* taskscheduler_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taskscheduler_service.h; sourceTree = "<group>"; };
+		EB30DDEF1C493ECF00B01597 /* clip_label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clip_label.cpp; path = ui/clip_label.cpp; sourceTree = "<group>"; };
+		EB30DDF01C493ECF00B01597 /* clip_label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clip_label.h; path = ui/clip_label.h; sourceTree = "<group>"; };
 		EB67C14E1BC98E3800E2C762 /* checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checked.h; sourceTree = "<group>"; };
 		EB67C14F1BC98E3800E2C762 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		EB67C1501BC98E3800E2C762 /* unchecked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unchecked.h; sourceTree = "<group>"; };
@@ -190,6 +194,8 @@
 		EB7790201B75145300E1DDB2 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EB30DDEF1C493ECF00B01597 /* clip_label.cpp */,
+				EB30DDF01C493ECF00B01597 /* clip_label.h */,
 				EBC66C9A1C3B1E2F006AABBA /* carousel.cpp */,
 				EBC66C9B1C3B1E2F006AABBA /* carousel.h */,
 				EBC5B3491B77C8FE008076C1 /* control_event_handler.cpp */,
@@ -416,6 +422,7 @@
 				EB7991431B70C63F00A30C9F /* service.cpp in Sources */,
 				EB7991441B70C63F00A30C9F /* zip_package.cpp in Sources */,
 				EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */,
+				EB30DDF21C493ECF00B01597 /* clip_label.cpp in Sources */,
 				EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */,
 				EB7991461B70C63F00A30C9F /* pch.cpp in Sources */,
 				EBC66C9D1C3B1E2F006AABBA /* carousel.cpp in Sources */,
@@ -451,6 +458,7 @@
 				EB9F81521AAB25CD00839018 /* service.cpp in Sources */,
 				EB9F814A1AAB25CD00839018 /* zip_package.cpp in Sources */,
 				EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */,
+				EB30DDF11C493ECF00B01597 /* clip_label.cpp in Sources */,
 				EB9F81541AAB25CD00839018 /* social_service.cpp in Sources */,
 				EB9F81111AAB21EE00839018 /* pch.cpp in Sources */,
 				EBC66C9C1C3B1E2F006AABBA /* carousel.cpp in Sources */,
