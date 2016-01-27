@@ -20,6 +20,8 @@ set(DFGGAMEPLAY_SRC
     base/services/taskqueue_service.cpp
     base/services/taskscheduler_service.cpp
     base/services/tracker_service.cpp
+    base/ui/carousel.cpp
+    base/ui/clip_label.cpp
     base/ui/control_event_handler.cpp
     base/ui/dial_button.cpp
     base/ui/expanded_tab.cpp
