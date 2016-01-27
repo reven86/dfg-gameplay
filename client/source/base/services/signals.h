@@ -57,6 +57,7 @@ struct Signals : Noncopyable
     sigc::signal< void, const char *, int, double, const char *, void * > storefrontTransactionSucceededEvent;
     sigc::signal< void, const char *, int, double, const char *, void * > storefrontTransactionRestoredEvent;
     sigc::signal< bool, const char * >::accumulated< interruptable_accumulator > storefrontIsProductConsumable;
+    sigc::signal< void, void *, int, const char * > storefrontReceiptRequestedEvent;
 
     //
     // TaskQueueService

@@ -100,3 +100,11 @@ bool StorefrontService::isProductConsumable(const char * productID)
 {
     return _manager->signals.storefrontIsProductConsumable(productID);
 }
+
+void StorefrontService::receiptRequested(void * receiptData, int errorCode, const char * errorUTF8)
+{
+    if (errorCode != 0)
+        GP_WARN("Refresh receipt failed: %d", errorCode);
+
+    _manager->signals.storefrontReceiptRequestedEvent(receiptData, errorCode, errorUTF8);
+}
