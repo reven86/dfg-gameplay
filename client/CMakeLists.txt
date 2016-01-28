@@ -40,5 +40,7 @@ if(NOT ANDROID AND NOT IOS)
     ENDIF(APPLE)
 endif(NOT ANDROID AND NOT IOS)
 
+message("Architecture: ${ARCH}")
+
 # gameplay library
 add_subdirectory(source)
