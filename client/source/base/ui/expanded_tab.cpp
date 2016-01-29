@@ -49,7 +49,7 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
     if (_state != HIDDEN)
         setVisible(true);
 
-    float to[] = { 0.0f, _widthMinimized, _widthMaximized };
+    float to[] = { 0.0f, _widthMaximized > 0.0f ? _widthMinimized / _widthMaximized : 0.0f, 1.0f };
     if (immediately)
     {
         setWidth(to[_state]);
@@ -58,9 +58,9 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
     }
     else
     {
-        float from = getWidth();
+        float from = _widthMaximized > 0.0f ? getWidth() / _widthMaximized : 1.0f;
 
-        gameplay::Animation * animation = createAnimationFromTo("tab-change-state", gameplay::Control::ANIMATE_SIZE_WIDTH, &from, &to[_state], _animationInterpolator, _animationDuration);
+        gameplay::Animation * animation = createAnimationFromTo("tab-change-state", ExpandedTab::ANIMATE_EXPANDING, &from, &to[_state], _animationInterpolator, _animationDuration);
         _stateChangeClip = animation->getClip();
 
         if (_state == HIDDEN || _state == MINIMIZED && _widthMinimized <= 0.0f)
@@ -200,6 +200,7 @@ unsigned int ExpandedTab::getAnimationPropertyComponentCount(int propertyId) con
     switch (propertyId)
     {
     case ANIMATE_DOUBLE_CLICK:
+    case ANIMATE_EXPANDING:
         return 1;
     default:
         return Container::getAnimationPropertyComponentCount(propertyId);
@@ -215,6 +216,9 @@ void ExpandedTab::getAnimationPropertyValue(int propertyId, gameplay::AnimationV
     case ANIMATE_DOUBLE_CLICK:
         value->setFloat(0, 0.0f);
         break;
+    case ANIMATE_EXPANDING:
+        value->setFloat(0, _widthMaximized > 0.0f ? getWidth() / _widthMaximized : 0.0f);
+        break;
     default:
         gameplay::Container::getAnimationPropertyValue(propertyId, value);
         break;
@@ -228,6 +232,9 @@ void ExpandedTab::setAnimationPropertyValue(int propertyId, gameplay::AnimationV
     switch (propertyId)
     {
     case ANIMATE_DOUBLE_CLICK:
+        break;
+    case ANIMATE_EXPANDING:
+        setWidth(_widthMaximized * gameplay::Curve::lerp(blendWeight, 1.0f, value->getFloat(0)), isWidthPercentage());
         break;
     default:
         gameplay::Container::setAnimationPropertyValue(propertyId, value, blendWeight);

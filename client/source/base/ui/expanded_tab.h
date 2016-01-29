@@ -125,6 +125,12 @@ protected:
     static const int ANIMATE_DOUBLE_CLICK = 100;
 
     /**
+     * Constant used to animate expanding animation. We don't use ANIMATE_SIZE_WIDTH
+     * to be able to change widthMaximized during the process os expanding.
+     */
+    static const int ANIMATE_EXPANDING = 101;
+
+    /**
      * @see Control#controlEvent
      */
     void controlEvent(Control::Listener::EventType evt);
