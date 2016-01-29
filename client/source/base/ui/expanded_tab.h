@@ -77,12 +77,12 @@ public:
     /**
      * Set control's width in maximized state.
      */
-    void setWidthMaximized(float width) { _widthMaximized = width; };
+    void setWidthMaximized(float width);
     
     /**
      * Set control's width in minimized state.
      */
-    void setWidthMinimized(float width) { _widthMinimized = width; };
+    void setWidthMinimized(float width);
     
     /**
      * Minimize all tabs in the given group.

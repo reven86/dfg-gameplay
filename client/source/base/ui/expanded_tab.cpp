@@ -241,3 +241,17 @@ void ExpandedTab::setAnimationPropertyValue(int propertyId, gameplay::AnimationV
         break;
     }
 }
+
+void ExpandedTab::setWidthMaximized(float width)
+{
+    _widthMaximized = width;
+    if (_state == ExpandedTab::MAXIMIZED && (!_stateChangeClip || !_stateChangeClip->isPlaying()))
+        setWidth(width);
+}
+
+void ExpandedTab::setWidthMinimized(float width)
+{
+    _widthMinimized = width;
+    if (_state == ExpandedTab::MINIMIZED && (!_stateChangeClip || !_stateChangeClip->isPlaying()))
+        setWidth(width);
+}
