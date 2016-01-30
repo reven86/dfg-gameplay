@@ -12,6 +12,10 @@
 #include <sys/stat.h>
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #ifdef __APPLE__
 #import <Foundation/Foundation.h>
 #if TARGET_OS_IPHONE
