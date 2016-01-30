@@ -36,9 +36,7 @@ DfgGame::DfgGame()
 {
 #ifdef __EMSCRIPTEN__
     _hasIndexedDB = EM_ASM_INT_V({
-        if (typeof window == = 'object' && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB))
-            return 1;
-        return 0;
+        return typeof window === 'object' && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB) ? 1 : 0;
     });
 #endif
 }
