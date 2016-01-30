@@ -33,6 +33,13 @@ public:
      */
     virtual void preventFromSleeping(bool prevent);
 
+#ifdef __EMSCRIPTEN__
+    /**
+     * Whether or not browser supports persistent IndexedDB storage.
+     */
+    bool hasIndexedDB() const { return _hasIndexedDB; };
+#endif
+
 protected:
     void initialize();
     void finalize();
@@ -81,6 +88,10 @@ private:
     std::string _userFolder;
     std::string _gameLocale;
     bool _hyperKeyPressed;  // WinKey (win), Command (osx)
+
+#ifdef __EMSCRIPTEN__
+    bool _hasIndexedDB;
+#endif
 };
 
 

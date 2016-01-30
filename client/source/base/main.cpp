@@ -30,6 +30,13 @@ extern struct android_app* __state;
 DfgGame::DfgGame()
     : _hyperKeyPressed(false)
 {
+#ifdef __EMSCRIPTEN__
+    _hasIndexedDB = EM_ASM_INT_V({
+        if (typeof window == = 'object' && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB))
+            return 1;
+        return 0;
+    });
+#endif
 }
 
 void DfgGame::initialize()
