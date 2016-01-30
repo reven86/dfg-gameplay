@@ -11,9 +11,42 @@ class MemoryStream : public gameplay::Stream
 public:
     virtual ~MemoryStream();
 
+    /**
+     * Create read-only MemoryStream stream, passing pointer to buffer of constant data.
+     *
+     * @param buffer Buffer used to read data from.
+     * @param bufferSize Size of the buffer.
+     * @return Newly created MemoryStream.
+     */
     static MemoryStream * create(const void * buffer, size_t bufferSize);
+
+    /**
+     * Create read-write MemoryStream stream, passing pointer to buffer of data.
+     *
+     * @param buffer Buffer used to read data from and write data to.
+     * @param bufferSize Size of the buffer.
+     * @return Newly created MemoryStream.
+     */
     static MemoryStream * create(void * buffer, size_t bufferSize);
-    static MemoryStream * create(std::unique_ptr< uint8_t[] >& buffer, size_t bufferSize);
+
+    /**
+     * Create read-write MemoryStream stream, passing smart pointer to buffer of data.
+     *
+     * @param buffer Buffer used to read data from. Ownership of memory allocated is transferred to MemoryStream.
+     * @param bufferSize Size of the buffer.
+     * @return Newly created MemoryStream.
+     */
+    static MemoryStream * create(std::unique_ptr<uint8_t[]>& buffer, size_t bufferSize);
+
+    /**
+     * Create read-write MemoryStream stream, that automatically reallocates memory when trying to write beyond buffer's end.
+     * This type of stream is useful when you need to serialize some structure in memory but
+     * don't know how much space it would occupy. You can call write methods on this type of
+     * stream and then get the pointer to result buffer when you finish all writing operations.
+     *
+     * @return Newly created MemoryStream.
+     */
+    static MemoryStream * create();
 
     /**
      * Returns true if this stream can perform read operations.
@@ -27,7 +60,7 @@ public:
      *
      * @return True if the stream can write, false otherwise.
      */
-    virtual bool canWrite() { return _writeBuffer != nullptr; };
+    virtual bool canWrite() { return _writeBuffer != nullptr || _canAllocate; };
 
     /**
      * Returns true if this stream can seek.
@@ -150,6 +183,11 @@ public:
      */
     virtual bool rewind() { _cursor = 0; return true; };
 
+    /**
+     * Get pointer to start of write buffer.
+     */
+    const uint8_t * getWriteBuffer() const { return _writeBuffer; };
+
 protected:
     MemoryStream();
 
@@ -158,7 +196,10 @@ private:
     uint8_t * _writeBuffer;
     size_t _cursor;
     size_t _bufferSize;
-    std::unique_ptr< uint8_t[] > _ownedBuffer;
+    std::unique_ptr<uint8_t[]> _ownedBuffer;
+
+    bool _canAllocate;
+    std::vector<uint8_t> _autoBuffer;
 };
 
 

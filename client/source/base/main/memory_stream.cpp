@@ -19,6 +19,7 @@ void MemoryStream::close()
     _readBuffer = nullptr;
     _writeBuffer = nullptr;
     _cursor = _bufferSize = 0;
+    _autoBuffer.clear();
 }
 
 MemoryStream * MemoryStream::create(const void * buffer, size_t bufferSize)
@@ -28,9 +29,10 @@ MemoryStream * MemoryStream::create(const void * buffer, size_t bufferSize)
 
     MemoryStream * res = new MemoryStream();
     res->_readBuffer = reinterpret_cast<const uint8_t *>(buffer);
-    res->_writeBuffer = NULL;
+    res->_writeBuffer = nullptr;
     res->_bufferSize = bufferSize;
     res->_cursor = 0;
+    res->_canAllocate = false;
 
     return res;
 }
@@ -45,6 +47,7 @@ MemoryStream * MemoryStream::create(void * buffer, size_t bufferSize)
     res->_writeBuffer = reinterpret_cast<uint8_t *>(buffer);
     res->_bufferSize = bufferSize;
     res->_cursor = 0;
+    res->_canAllocate = false;
 
     return res;
 }
@@ -60,6 +63,19 @@ MemoryStream * MemoryStream::create(std::unique_ptr< uint8_t[] >& buffer, size_t
     res->_writeBuffer = reinterpret_cast<uint8_t *>(res->_ownedBuffer.get());
     res->_bufferSize = bufferSize;
     res->_cursor = 0;
+    res->_canAllocate = false;
+
+    return res;
+}
+
+MemoryStream * MemoryStream::create()
+{
+    MemoryStream * res = new MemoryStream();
+    res->_readBuffer = nullptr;
+    res->_writeBuffer = nullptr;
+    res->_bufferSize = 0;
+    res->_cursor = 0;
+    res->_canAllocate = true;
 
     return res;
 }
@@ -112,11 +128,18 @@ size_t MemoryStream::write(const void* ptr, size_t size, size_t count)
     if (!canWrite())
         return 0;
 
-    size_t maxWriteBytes = std::min(_bufferSize - _cursor, size * count);
+    size_t maxWriteBytes = _canAllocate ? size * count : std::min(_bufferSize - _cursor, size * count);
     size_t maxWriteElements = maxWriteBytes / size;
 
     if (maxWriteBytes == 0)
         return 0;
+
+    if (_canAllocate && _cursor + maxWriteBytes > _bufferSize)
+    {
+        _bufferSize = _cursor + maxWriteBytes;
+        _autoBuffer.resize(_bufferSize);
+        _readBuffer = _writeBuffer = &_autoBuffer.front();
+    }
 
     maxWriteBytes = maxWriteElements * size;
     memcpy(_writeBuffer + _cursor, ptr, maxWriteBytes);
