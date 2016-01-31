@@ -24,6 +24,8 @@
 #include <random>
 
 
+
+
 #pragma warning( disable: 4100 )	// unreferenced formal parameter
 #pragma warning( disable: 4127 )	// conditional expression is constant
 #pragma warning( disable: 4201 )	// nameless struct/union
@@ -48,6 +50,13 @@
 #include "main/cache.h"
 #include "main/gameplay_assets.h"
 #include "main/dictionary.h"
+
+
+
+
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 
 
