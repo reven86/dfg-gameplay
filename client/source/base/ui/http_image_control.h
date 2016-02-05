@@ -36,6 +36,17 @@ public:
      */
     void setImage(const char* path) override;
 
+    /**
+     * Set to automatically preserve aspect ration when one of 
+     * width or height are set relative to a parent, but not both.
+     */
+    void setPreserveAspect(bool set);
+
+    /**
+     * Get whether aspect ration is preserved or not.
+     */
+    bool getPreserveAspect() const { return _preserveAspect; };
+
 protected:
     /**
      * Constructor.
@@ -67,11 +78,17 @@ protected:
      */
     unsigned int drawImages(gameplay::Form* form) const override;
 
+    /**
+     * @see Control::updateBounds
+     */
+    void updateBounds();
+
 private:
 
     void imageDownloadedCallback(int curlCode, const std::vector<uint8_t>& response, const std::string& path);
 
     class HTTPRequestService * _httpRequestService;
+    bool _preserveAspect;
 };
 
 

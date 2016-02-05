@@ -8,6 +8,7 @@
 
 HTTPImageControl::HTTPImageControl()
     : _httpRequestService(NULL)
+    , _preserveAspect(true)
 {
 }
 
@@ -39,6 +40,8 @@ void HTTPImageControl::initialize(const char * typeName, gameplay::Theme::Style 
         {
             setImage(path.c_str());
         }
+
+        _preserveAspect = properties->getBool("preserveAspect", true);
     }
 }
 
@@ -52,13 +55,18 @@ void HTTPImageControl::setImage(const char * path)
     if (gameplay::FileSystem::fileExists(path))
         return gameplay::ImageControl::setImage(path);
 
+    // make sure instance is present while callback is scheduled
+    this->addRef();
     _httpRequestService->makeRequestAsync(path, NULL, std::bind(&HTTPImageControl::imageDownloadedCallback, this, std::placeholders::_1, std::placeholders::_2, std::string(path)));
 }
 
 void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<uint8_t>& response, const std::string& path)
 {
     if (curlCode != 0)
+    {
+        this->release();
         return;
+    }
 
     // create temporary file with an extension from original request
     std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpnam(NULL) + gameplay::FileSystem::getExtension(path.c_str());
@@ -67,4 +75,29 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<u
     stream.reset();
 
     gameplay::ImageControl::setImage(filename.c_str());
+    if (_preserveAspect)
+        setDirty(DIRTY_BOUNDS);
+
+    remove(filename.c_str());
+
+    this->release();
+}
+
+void HTTPImageControl::setPreserveAspect(bool set)
+{
+    _preserveAspect = set;
+    setDirty(DIRTY_BOUNDS);
+}
+
+void HTTPImageControl::updateBounds()
+{
+    gameplay::ImageControl::updateBounds();
+
+    if (_preserveAspect && _tw > 0.0f && _th > 0.0f)
+    {
+        if (isWidthPercentage() && !isHeightPercentage())
+            setHeight(_bounds.width * _tw / _th);
+        else if (!isWidthPercentage() && isHeightPercentage())
+            setWidth(_bounds.height * _th / _tw);
+    }
 }
