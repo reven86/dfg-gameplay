@@ -86,6 +86,9 @@
     <ClCompile Include="..\base\ui\clip_label.cpp">
       <Filter>base\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\http_image_control.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -202,6 +205,9 @@
       <Filter>base\ui</Filter>
     </ClInclude>
     <ClInclude Include="..\base\ui\clip_label.h">
+      <Filter>base\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ui\http_image_control.h">
       <Filter>base\ui</Filter>
     </ClInclude>
   </ItemGroup>

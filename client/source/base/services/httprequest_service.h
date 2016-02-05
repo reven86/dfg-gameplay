@@ -39,7 +39,7 @@ public:
      * @param[in] responseCallback Callback functor when response is received.
      * @return Work item handle.
      */
-    int makeRequestAsync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback);
+    int makeRequestAsync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback);
 
     /** 
      * Create HTTP request and execute it immediately from calling thread.
@@ -48,7 +48,7 @@ public:
      * @param[in] payload Payload for POST requests or NULL.
      * @param[in] responseCallback Callback functor when response is received.
      */
-    void makeRequestSync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback);
+    void makeRequestSync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback);
 
 protected:
     HTTPRequestService(const ServiceManager * manager);
@@ -63,7 +63,7 @@ private:
     {
         std::string url;
         std::string postPayload;
-        std::function<void(int, const std::string&)> responseCallback;
+        std::function<void(int, std::vector<uint8_t>)> responseCallback;
     };
 
     void sendRequest(const Request& request);
@@ -72,7 +72,6 @@ private:
     void * _curl;
 
     TaskQueueService * _taskQueueService;
-    std::string _response;
     std::mutex _requestProcessingMutex;
 };
 

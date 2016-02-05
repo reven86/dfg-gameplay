@@ -25,6 +25,7 @@ set(DFGGAMEPLAY_SRC
     base/ui/control_event_handler.cpp
     base/ui/dial_button.cpp
     base/ui/expanded_tab.cpp
+    base/ui/http_image_control.cpp
     base/utils/profiler.cpp
     base/utils/singleton.cpp
     base/utils/utils.cpp

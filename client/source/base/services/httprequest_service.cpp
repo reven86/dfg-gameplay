@@ -39,7 +39,6 @@ bool HTTPRequestService::onInit()
         curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
         curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
-        curl_easy_setopt(_curl, CURLOPT_WRITEDATA, this);
         curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1);
     }
 #endif
@@ -66,7 +65,7 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequestAsync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback)
+int HTTPRequestService::makeRequestAsync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback)
 {
     Request request;
     request.url = url;
@@ -78,7 +77,7 @@ int HTTPRequestService::makeRequestAsync(const char * url, const char * payload,
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request));
 }
 
-void HTTPRequestService::makeRequestSync(const char * url, const char * payload, const std::function<void(int, const std::string&)>& responseCallback)
+void HTTPRequestService::makeRequestSync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback)
 {
     Request request;
     request.url = url;
@@ -94,12 +93,13 @@ void HTTPRequestService::sendRequest(const Request& request)
     // make sure curl is used only for one thread in any moment
     std::unique_lock<std::mutex> lock(_requestProcessingMutex);
 
-    _response.clear();
+    std::vector<uint8_t> response;
     
 #ifndef __EMSCRIPTEN__
     curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
     curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &response);
 
     CURLcode res = curl_easy_perform(_curl);
 #else
@@ -107,15 +107,15 @@ void HTTPRequestService::sendRequest(const Request& request)
 #endif
     
     // response is copied by value since callback is invoked on main thread
-    _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, _response));
+    _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, response));
 }
 
 size_t HTTPRequestService::writeFunction(void *contents, size_t size, size_t nmemb, void *userp)
 {
     size_t realSize = size * nmemb;
-    HTTPRequestService * _this = reinterpret_cast<HTTPRequestService *>(userp);
+    std::vector<uint8_t> * response = reinterpret_cast<std::vector<uint8_t> *>(userp);
 
-    _this->_response += std::string(reinterpret_cast<const char *>(contents), realSize);
+    response->insert(response->end(), reinterpret_cast<uint8_t*>(contents), reinterpret_cast<uint8_t*>(contents)+realSize);
 
     return realSize;
 }
