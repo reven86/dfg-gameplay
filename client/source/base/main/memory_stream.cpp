@@ -120,7 +120,9 @@ char* MemoryStream::readLine(char* str, int num)
         maxReadBytes--;
     }
 
-    return nullptr;
+    if (str - strSave < num)
+        *str++ = '\0';
+    return strSave;
 }
 
 size_t MemoryStream::write(const void* ptr, size_t size, size_t count)
