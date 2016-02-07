@@ -69,9 +69,16 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<u
     }
 
     // create temporary file with an extension from original request
-    std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpnam(NULL) + gameplay::FileSystem::getExtension(path.c_str());
+#ifdef WIN32
+    const char * tmpFilename = tmpname();
+#else
+    char tmpFilename[] = "tmp.XXXXX";
+    mktemp(tmpFilename);
+#endif
+    std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpFilename + gameplay::FileSystem::getExtension(path.c_str());
     std::unique_ptr<gameplay::Stream> stream(gameplay::FileSystem::open(filename.c_str(), gameplay::FileSystem::WRITE));
-    stream->write(&response.front(), response.size(), 1);
+    if (stream)
+        stream->write(&response.front(), response.size(), 1);
     stream.reset();
 
     gameplay::ImageControl::setImage(filename.c_str());
