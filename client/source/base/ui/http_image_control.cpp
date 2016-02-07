@@ -70,7 +70,7 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<u
 
     // create temporary file with an extension from original request
 #ifdef WIN32
-    const char * tmpFilename = tmpname();
+    const char * tmpFilename = tmpnam(NULL);
 #else
     char tmpFilename[] = "tmp.XXXXX";
     mktemp(tmpFilename);
