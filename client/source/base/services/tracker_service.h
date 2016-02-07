@@ -54,6 +54,11 @@ public:
     void setUserId(const char * userId);
     const char * getUserId() const { return _userId.c_str(); };
 
+    /**
+     * Get Client ID used in all tracker events.
+     */
+    const char * getClientId() const { return _clientId.c_str(); };
+
     /** 
      * Immediately send all payloads to analytics server
      */
