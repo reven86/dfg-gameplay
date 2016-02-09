@@ -285,6 +285,18 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
         tab->setWidthMaximized(kx * tab->getWidthMaximized());
     }
 
+    if (strcmp(control->getTypeName(), "RadioButton") == 0)
+    {
+        gameplay::RadioButton * button = static_cast<gameplay::RadioButton *>(control);
+        button->setIconScale(button->getIconScale() * ky);
+    }
+
+    if (strcmp(control->getTypeName(), "CheckBox") == 0)
+    {
+        gameplay::CheckBox * button = static_cast<gameplay::CheckBox *>(control);
+        button->setIconScale(button->getIconScale() * ky);
+    }
+
     if (control->isContainer())
     {
         gameplay::Container * container = static_cast<gameplay::Container *>(control);
