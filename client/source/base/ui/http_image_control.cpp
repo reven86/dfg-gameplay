@@ -72,7 +72,7 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<u
 #ifdef WIN32
     const char * tmpFilename = tmpnam(NULL);
 #else
-    char tmpFilename[] = "tmp.XXXXX";
+    char tmpFilename[] = "tmp.XXXXXX";
     mktemp(tmpFilename);
 #endif
     std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpFilename + gameplay::FileSystem::getExtension(path.c_str());
