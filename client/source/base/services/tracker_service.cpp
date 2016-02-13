@@ -15,6 +15,14 @@ const char * __endpoint = "http://www.google-analytics.com/collect";
 bool TrackerService::_threadForceQuit = false;
 int TrackerService::_dispatchPeriod = 1000;
 
+
+size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    return size * nmemb;
+}
+
+
+
 TrackerService::TrackerService(const ServiceManager * manager)
     : Service(manager)
     , _trackingId()
@@ -101,6 +109,7 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
         curl_easy_setopt(_curl, CURLOPT_CONNECTTIMEOUT, 2);
         curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
+        curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
     }
 #endif
 
