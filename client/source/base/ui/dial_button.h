@@ -45,7 +45,7 @@ public:
      * The current item index is changed immediately to itemIndex,
      * the animation is happend after.
      *
-     * @param itemIndex Index of item to scroll to.
+     * @param itemIndex Index of item to scroll to or INVALID_ITEM_INDEX.
      * @param immediately Set current item without scrolling. 
      */
     void scrollToItem(unsigned itemIndex, bool immediately = false);

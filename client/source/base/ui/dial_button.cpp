@@ -206,7 +206,7 @@ unsigned DialButton::findClosestControlIndex(float localY, bool exitOnPositiveOf
 
 void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
 {
-    if (itemIndex >= getControlCount())
+    if (itemIndex >= getControlCount() && itemIndex != INVALID_ITEM_INDEX)
         return;
 
     if (_itemScrollingClip && _itemScrollingClip->isPlaying())
@@ -245,7 +245,7 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
         _itemScrollingClip = animation->getClip();
         _itemScrollingClip->play();
     }
-    else
+    else if (itemIndex < getControlCount())
     {
         updateChildBounds();
         updateBounds();
