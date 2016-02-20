@@ -192,16 +192,20 @@ void DfgGame::pause()
 {
     ServiceManager::getInstance()->signals.pauseEvent();
 
+#ifndef _DEBUG
     TrackerService * trackerService = ServiceManager::getInstance()->findService< TrackerService >();
     if (trackerService)
         trackerService->endSession("Pause");
 
     gameplay::Game::pause();
+#endif
 }
 
 void DfgGame::resume()
 {
+#ifndef _DEBUG
     gameplay::Game::resume();
+#endif
 
     ServiceManager::getInstance()->signals.resumeEvent();
 }
