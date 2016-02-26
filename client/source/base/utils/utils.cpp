@@ -338,3 +338,10 @@ void Utils::measureChildrenBounds(gameplay::Container * container, float * width
     if (height)
         *height = totalHeight;
 }
+
+
+
+float Utils::luminosity(const gameplay::Vector4& color)
+{
+    return 0.3f * color.x + 0.59f * color.y + 0.11f * color.z;
+}

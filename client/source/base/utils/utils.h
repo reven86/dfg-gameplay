@@ -141,6 +141,16 @@ static void scaleUIControl(gameplay::Control * control, float kx, float ky);
 static void measureChildrenBounds(gameplay::Container * container, float * width, float * height);
 
 
+
+/**
+ * Get luminosity level of color.
+ *
+ * @param color Incoming color. Alpha component is not used.
+ * @return Luminosity level, from 0 to 1;
+ */
+static float luminosity(const gameplay::Vector4& color);
+
+
 };
 
 
