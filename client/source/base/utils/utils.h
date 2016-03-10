@@ -151,6 +151,26 @@ static void measureChildrenBounds(gameplay::Container * container, float * width
 static float luminosity(const gameplay::Vector4& color);
 
 
+/**
+ * Convert Hue, Saturation, Luminosity to Red, Green, Blue. Alpha component stays the same.
+ *
+ * @param hsl Color in HSL format. Note: All components are in rage [0, 1].
+ * @return Color in RGB format.
+ * @see RGBToHSL
+ */
+static gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
+
+
+/**
+ * Convert Red, Green, Blue to Hue, Saturation, Luminosity. Alpha component stays the same.
+ *
+ * @param rgb Color in RGB format.
+ * @return Color in HSL format.  Note: All components are in rage [0, 1].
+ * @see HSLToRGB
+ */
+static gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
+
+
 };
 
 

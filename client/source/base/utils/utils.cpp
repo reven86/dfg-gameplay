@@ -345,3 +345,44 @@ float Utils::luminosity(const gameplay::Vector4& color)
 {
     return 0.3f * color.x + 0.59f * color.y + 0.11f * color.z;
 }
+
+float HueToRGB(float p, float q, float t) {
+    if (t < 0.0f) t += 1.0f;
+    if (t > 1.0f) t -= 1.0f;
+    if (t < 1.0f / 6.0f) return p + (q - p) * 6.0f * t;
+    if (t < 1.0f / 2.0f) return q;
+    if (t < 2.0f / 3.0f) return p + (q - p) * (2.0f / 3.0f - t) * 6.0f;
+    return p;
+}
+
+gameplay::Vector4 Utils::HSLToRGB(const gameplay::Vector4& hsl)
+{
+    if (hsl.y == 0.0f)
+        return gameplay::Vector4(1.0f, 1.0f, 1.0f, hsl.w);
+
+    float q = hsl.z < 0.5f ? hsl.z * (1.0f + hsl.y) : hsl.z + hsl.y - hsl.z * hsl.y;
+    float p = 2 * hsl.z - q;
+    return gameplay::Vector4(HueToRGB(p, q, hsl.x + 1.0f / 3.0f), HueToRGB(p, q, hsl.x), HueToRGB(p, q, hsl.x - 1.0f / 3.0f), 1.0f);
+}
+
+gameplay::Vector4 Utils::RGBToHSL(const gameplay::Vector4& rgb)
+{
+    float max = std::max(std::max(rgb.x, rgb.y), rgb.z);
+    float min = std::min(std::min(rgb.x, rgb.y), rgb.z);
+    float h, s, l = (max + min) / 2;
+
+    if (max == min)
+        return gameplay::Vector4(0.0f, 0.0f, 0.0f, rgb.w);
+
+    float d = max - min;
+    s = l > 0.5f ? d / (2.0f - max - min) : d / (max + min);
+    if (max == rgb.x)
+        h = (rgb.y - rgb.z) / d + (rgb.y < rgb.z ? 6.0f : 0.0f);
+    else if (max == rgb.y)
+        h = (rgb.z - rgb.x) / d + 2.0f;
+    else
+        h = (rgb.x - rgb.y) / d + 4.0f;
+    h *= 1.0f / 6.0f;
+
+    return gameplay::Vector4(h, s, l, 1.0f);
+}
