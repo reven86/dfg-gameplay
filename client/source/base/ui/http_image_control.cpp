@@ -77,14 +77,16 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<u
 #endif
     std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpFilename + gameplay::FileSystem::getExtension(path.c_str());
     std::unique_ptr<gameplay::Stream> stream(gameplay::FileSystem::open(filename.c_str(), gameplay::FileSystem::WRITE));
-    if (stream)
-        stream->write(&response.front(), response.size(), 1);
+    if (stream && stream->write(&response.front(), response.size(), 1) == 1)
+    {
+        stream.reset();
+
+        gameplay::ImageControl::setImage(filename.c_str());
+        if (_preserveAspect)
+            setDirty(DIRTY_BOUNDS);
+    }
+
     stream.reset();
-
-    gameplay::ImageControl::setImage(filename.c_str());
-    if (_preserveAspect)
-        setDirty(DIRTY_BOUNDS);
-
     remove(filename.c_str());
 
     this->release();
