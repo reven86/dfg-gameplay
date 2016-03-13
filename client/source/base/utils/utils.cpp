@@ -176,7 +176,10 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
 {
     static std::wstring result;
 
-    if (width <= 0.0f || height <= fontSize)
+    if (height < fontSize)
+        height = fontSize;
+
+    if (width <= 0.0f || height <= 0.0f)
         return L"";
     
     gameplay::Rectangle clip(width, height);
@@ -184,7 +187,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
 
     font->measureText(text, clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
 
-    if (out.width < width && out.height < height)
+    if (out.width <= width && out.height <= height)
         return text;
 
     result = text;
@@ -200,7 +203,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
         result.push_back('.');
         result.push_back('.');
         font->measureText(result.c_str(), clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
-    } while (result.size() > 3 && (out.width >= width || out.height >= height));
+    } while (result.size() > 3 && (out.width > width || out.height > height));
 
     return result.c_str();
 }
