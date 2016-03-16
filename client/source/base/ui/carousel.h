@@ -100,6 +100,11 @@ protected:
      */
     void initialize(const char* typeName, gameplay::Theme::Style* style, gameplay::Properties* properties);
 
+    /**
+     * @see Control::updateBounds
+     */
+    void updateBounds() override;
+
 protected:
     /**
      * Constant used to scroll container to fixed offset.
@@ -135,6 +140,11 @@ protected:
      * @see AnimationTarget::setAnimationProperty
      */
     virtual void setAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value, float blendWeight = 1.0f);
+
+    /**
+     * @see Control::notifyListeners
+     */
+    void notifyListeners(gameplay::Control::Listener::EventType eventType) override;
 
 private:
     unsigned findClosestControlIndex(float localY, bool exitOnPositiveOffset) const;

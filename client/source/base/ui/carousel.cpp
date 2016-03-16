@@ -100,9 +100,8 @@ bool Carousel::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y, u
             }
             break;
         case gameplay::Touch::TOUCH_PRESS:
-            if (getControl(closestControlIndex)->getBounds().height > y)
-                if (_currentItemIndex != INVALID_ITEM_INDEX)
-                    _currentItemBeforeTouch = _currentItemIndex;
+            if (_currentItemIndex != INVALID_ITEM_INDEX)
+                _currentItemBeforeTouch = _currentItemIndex;
             break;
         }
     }
@@ -297,4 +296,35 @@ void Carousel::unsetConsumeInputEvents(gameplay::Control * control)
     if (control->isContainer())
         for (gameplay::Control * child : static_cast<gameplay::Container*>(control)->getControls())
             unsetConsumeInputEvents(child);
+}
+
+void Carousel::updateBounds()
+{
+    // calculate bounds as usual
+    Container::updateBounds();
+
+    // if we're not scrolling the carousel, update our bounds to currently selected child's bounds
+    if ((_autoSize & AUTO_SIZE_HEIGHT) != 0 && _currentItemIndex != INVALID_ITEM_INDEX &&
+        (!_itemScrollingClip || !_itemScrollingClip->isPlaying()) && _currentItemBeforeTouch == INVALID_ITEM_INDEX)
+    {
+        gameplay::Control * currentItem = getControl(_currentItemIndex);
+        GP_ASSERT(currentItem);
+
+        // Size ourself to tightly fit the height of our children
+        float height = currentItem->getHeight() + currentItem->getMargin().bottom + currentItem->getY();
+        height += getBorder(NORMAL).top + getBorder(NORMAL).bottom + getPadding().top + getPadding().bottom;
+        setHeightInternal(height);
+
+        // compute total bounds of container
+        Control::updateBounds();
+    }
+}
+
+void Carousel::notifyListeners(gameplay::Control::Listener::EventType eventType)
+{
+    // don't send a click event when we're rotating carousel
+    if (eventType == gameplay::Control::Listener::CLICK && _currentItemBeforeTouch != INVALID_ITEM_INDEX && (_rawScrollPosition - _scrollPosition).lengthSquared() > 25.0f)
+        return;
+
+    Container::notifyListeners(eventType);
 }
