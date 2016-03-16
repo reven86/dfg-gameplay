@@ -39,7 +39,19 @@ public:
     /**
      * @see Label::setText
      */
-    virtual void setText(const wchar_t* text);
+    void setText(const wchar_t* text) override;
+
+    /**
+     * Enable or disable text clipping (enabled by default).
+     *
+     * @param enable Set to true to enable text clipping.
+     */
+    void enableClipping(bool enable);
+
+    /**
+     * Is text clipping enabled?
+     */
+    bool isClippingEnabled() const { return _clippingActive; };
 
 protected:
 
@@ -87,6 +99,7 @@ private:
     void clipText();
 
     std::wstring _clippedText;
+    bool _clippingActive;
 };
 
 

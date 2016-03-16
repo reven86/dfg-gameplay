@@ -5,6 +5,7 @@
 
 
 ClipLabel::ClipLabel()
+    : _clippingActive(true)
 {
 }
 
@@ -69,7 +70,7 @@ void ClipLabel::updateState(State state)
 
 void ClipLabel::clipText()
 {
-    if (!_font)
+    if (!_font || !_clippingActive)
     {
         _clippedText = _text;
         return;
@@ -101,4 +102,9 @@ unsigned int ClipLabel::drawText(gameplay::Form * form) const
     }
 
     return 0;
+}
+
+void ClipLabel::enableClipping(bool enable)
+{
+    _clippingActive = enable;
 }

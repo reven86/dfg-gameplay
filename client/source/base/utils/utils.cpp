@@ -176,11 +176,11 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
 {
     static std::wstring result;
 
-    if (height < fontSize)
-        height = fontSize;
-
     if (width <= 0.0f || height <= 0.0f)
         return L"";
+
+    if (height < fontSize)
+        height = fontSize;
     
     gameplay::Rectangle clip(width, height);
     gameplay::Rectangle out;
