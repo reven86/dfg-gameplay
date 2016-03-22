@@ -73,6 +73,16 @@ public:
      */
     virtual void setEnabled(bool enabled);
 
+    /**
+     * Get absolute touch's X position when scrolling starts.
+     */
+    int getTouchPressX() const { return _touchPressX; };
+
+    /**
+     * Get absolute touch's Y position when scrolling starts.
+     */
+    int getTouchPressY() const { return _touchPressY; };
+
 protected:
 
     /**
@@ -120,7 +130,7 @@ protected:
      * @param y The y position of the touch in pixels. Top edge is zero.
      * @param contactIndex The order of occurrence for multiple touch contacts starting at zero.
      *
-     *  @return Whether the touch event was consumed by scrolling within this container.
+     * @return Whether the touch event was consumed by scrolling within this container.
      *
      * @see Container::touchEventScroll
      */
@@ -157,6 +167,8 @@ private:
     gameplay::AnimationClip * _itemScrollingClip;
     bool _freeSliding;
     gameplay::Vector2 _rawScrollPosition;
+    int _touchPressX;
+    int _touchPressY;
 };
 
 

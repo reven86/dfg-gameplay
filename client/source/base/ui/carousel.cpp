@@ -12,6 +12,8 @@ Carousel::Carousel()
     , _itemScrollingClip(NULL)
     , _rawScrollPosition(0, 0)
     , _freeSliding(false)
+    , _touchPressX(0)
+    , _touchPressY(0)
 {
 }
 
@@ -102,6 +104,8 @@ bool Carousel::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y, u
         case gameplay::Touch::TOUCH_PRESS:
             if (_currentItemIndex != INVALID_ITEM_INDEX)
                 _currentItemBeforeTouch = _currentItemIndex;
+            _touchPressX = _absoluteClipBounds.x + x;
+            _touchPressY = _absoluteClipBounds.y + y;
             break;
         }
     }
