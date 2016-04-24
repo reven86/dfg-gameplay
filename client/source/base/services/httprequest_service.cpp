@@ -66,26 +66,14 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequestAsync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback)
+int HTTPRequestService::makeRequestAsync(const Request& request)
 {
-    Request request;
-    request.url = url;
-    if (payload)
-        request.postPayload = payload;
-    request.responseCallback = responseCallback;
-
     // note: request is copied by value
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request));
 }
 
-void HTTPRequestService::makeRequestSync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback)
+void HTTPRequestService::makeRequestSync(const Request& request)
 {
-    Request request;
-    request.url = url;
-    if (payload)
-        request.postPayload = payload;
-    request.responseCallback = responseCallback;
-
     sendRequest(request);
 }
 
@@ -102,7 +90,16 @@ void HTTPRequestService::sendRequest(const Request& request)
     curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
     curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &response);
 
+    struct curl_slist *list = NULL;
+    if (!request.headers.empty())
+    {
+        for (auto& h : request.headers)
+            list = curl_slist_append(list, (h.first + ": " + h.second).c_str());
+    }
+    curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, list);
+
     CURLcode res = curl_easy_perform(_curl);
+    curl_slist_free_all(list);
 #else
     CURLcode res = CURLE_FAILED_INIT;
 #endif

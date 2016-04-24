@@ -21,6 +21,19 @@ class HTTPRequestService : public Service
     friend class ServiceManager;
 
 public:
+    /**
+     * Request structure used to send HTTP requests.
+     */
+    struct Request
+    {
+        typedef std::vector<std::pair<std::string, std::string> > HeadersList;
+
+        std::string url;
+        std::string postPayload;
+        HeadersList headers;
+        std::function<void(int, std::vector<uint8_t>)> responseCallback;
+    };
+
     static const char * getTypeName() { return "HTTPRequestService"; };
 
     /** 
@@ -34,21 +47,18 @@ public:
      * Note: Response callback is called from the main thread, so
      * there is no need to use synchonization primitives.
      *
-     * @param[in] url URL to send request to.
-     * @param[in] payload Payload for POST requests or NULL.
-     * @param[in] responseCallback Callback functor when response is received.
+     * @param[in] request Request data.
      * @return Work item handle.
      */
-    int makeRequestAsync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback);
+    int makeRequestAsync(const Request& request);
 
     /** 
      * Create HTTP request and execute it immediately from calling thread.
      *
-     * @param[in] url URL to send request to.
-     * @param[in] payload Payload for POST requests or NULL.
+     * @param[in] request Request data.
      * @param[in] responseCallback Callback functor when response is received.
      */
-    void makeRequestSync(const char * url, const char * payload, const std::function<void(int, std::vector<uint8_t>)>& responseCallback);
+    void makeRequestSync(const Request& request);
 
 protected:
     HTTPRequestService(const ServiceManager * manager);
@@ -59,13 +69,6 @@ protected:
     virtual bool onShutdown();
 
 private:
-    struct Request
-    {
-        std::string url;
-        std::string postPayload;
-        std::function<void(int, std::vector<uint8_t>)> responseCallback;
-    };
-
     void sendRequest(const Request& request);
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
 

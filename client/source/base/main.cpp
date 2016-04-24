@@ -137,7 +137,11 @@ void DfgGame::update(float elapsedTime)
 void DfgGame::render(float /*elapsedTime*/)
 {
     if (_renderService)
+    {
+        ServiceManager::getInstance()->signals.framePreRender();
         _renderService->renderFrame();
+        ServiceManager::getInstance()->signals.framePostRender();
+    }
 }
 
 void DfgGame::keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed)
@@ -215,9 +219,9 @@ void DfgGame::reportError(bool isFatal, const char * errorMessage, ...)
     va_list args;
     va_start(args, errorMessage);
 
-    char exceptionDesc[150];
-    vsnprintf(exceptionDesc, 149, errorMessage, args);
-    exceptionDesc[149] = '\0';
+    char exceptionDesc[1024];
+    vsnprintf(exceptionDesc, 1023, errorMessage, args);
+    exceptionDesc[1023] = '\0';
 
     if (isFatal)
     {
@@ -231,6 +235,7 @@ void DfgGame::reportError(bool isFatal, const char * errorMessage, ...)
     if (!trackerService)
         return;
 
+    exceptionDesc[149] = '\0';
     trackerService->sendException(exceptionDesc, isFatal);
 
     if (isFatal)

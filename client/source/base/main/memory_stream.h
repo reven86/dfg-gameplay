@@ -41,7 +41,7 @@ public:
     /**
      * Create read-write MemoryStream stream, that automatically reallocates memory when trying to write beyond buffer's end.
      * This type of stream is useful when you need to serialize some structure in memory but
-     * don't know how much space it would occupy. You can call write methods on this type of
+     * don't know how much space it would need. You can call write methods on this type of
      * stream and then get the pointer to result buffer when you finish all writing operations.
      *
      * @return Newly created MemoryStream.
