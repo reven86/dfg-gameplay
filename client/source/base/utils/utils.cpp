@@ -47,6 +47,8 @@ std::string Utils::generateUUID( )
 
 const wchar_t * Utils::UTF8ToWCS(const char * str)
 {
+    GP_ASSERT(str);
+
     static std::wstring res;
     res.clear();
     utf8::unchecked::utf8to16(str, str + strlen(str), std::back_inserter(res));
@@ -57,6 +59,8 @@ const wchar_t * Utils::UTF8ToWCS(const char * str)
 
 const char * Utils::WCSToUTF8(const wchar_t * str)
 {
+    GP_ASSERT(str);
+
     static std::string res;
     res.clear();
     utf8::unchecked::utf16to8(str, str + wcslen(str), std::back_inserter(res));
@@ -388,4 +392,52 @@ gameplay::Vector4 Utils::RGBToHSL(const gameplay::Vector4& rgb)
     h *= 1.0f / 6.0f;
 
     return gameplay::Vector4(h, s, l, 1.0f);
+}
+
+
+
+void Utils::base64Encode(const uint8_t * in, const unsigned& len, std::string * out)
+{
+    if (!out)
+        return;
+
+    int val = 0, valb = -6;
+    for (const uint8_t * c = in; c < in + len; c++)
+    {
+        val = (val << 8) + *c;
+        valb += 8;
+        while (valb >= 0)
+        {
+            out->push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[(val >> valb) & 0x3F]);
+            valb -= 6;
+        }
+    }
+    if (valb > -6)
+        out->push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[((val << 8) >> (valb + 8)) & 0x3F]);
+    while (out->size() % 4)
+        out->push_back('=');
+}
+
+void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * out)
+{
+    if (!out)
+        return;
+
+    std::vector<int> T(256, -1);
+    for (int i = 0; i<64; i++) 
+        T["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i]] = i;
+
+    int val = 0, valb = -8;
+    for (uint8_t c : in)
+    {
+        if (T[c] == -1)
+            break;
+        val = (val << 6) + T[c];
+        valb += 6;
+        if (valb >= 0)
+        {
+            out->push_back(uint8_t((val >> valb) & 0xFF));
+            valb -= 8;
+        }
+    }
 }
