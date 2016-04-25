@@ -100,6 +100,9 @@ void HTTPRequestService::sendRequest(const Request& request)
 
     CURLcode res = curl_easy_perform(_curl);
     curl_slist_free_all(list);
+    
+    if (res != CURLE_OK)
+        GP_LOG("Failed to perform HTTP request: error %d - %s", res, request.url.c_str());
 #else
     CURLcode res = CURLE_FAILED_INIT;
 #endif

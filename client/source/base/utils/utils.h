@@ -87,12 +87,12 @@ static const char * urlEncode(const char * src);
 /**
  * Encode binary data to base64 string.
  */
-static void Utils::base64Encode(const uint8_t * in, const unsigned& len, std::string * out);
+static void base64Encode(const uint8_t * in, const unsigned& len, std::string * out);
 
 /**
  * Decode base64 string to binary data.
  */
-static void Utils::base64Decode(const std::string& in, std::vector<uint8_t> * out);
+static void base64Decode(const std::string& in, std::vector<uint8_t> * out);
 
 
 
