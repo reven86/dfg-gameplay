@@ -33,6 +33,13 @@ public:
      */
     virtual void preventFromSleeping(bool prevent);
 
+    /**
+     * Copy text to clipboard.
+     *
+     * @param textUTF8 Text to be copied to clipboard (UTF-8).
+     */
+    virtual void copyToClipboard(const char * textUTF8) const;
+
 #ifdef __EMSCRIPTEN__
     /**
      * Whether or not browser supports persistent IndexedDB storage.

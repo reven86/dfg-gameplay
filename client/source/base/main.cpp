@@ -306,3 +306,31 @@ void DfgGame::resizeEvent(unsigned int width, unsigned int height)
 {
     ServiceManager::getInstance()->signals.resizeEvent(width, height);
 }
+
+void DfgGame::copyToClipboard(const char * textUTF8) const
+{
+#if defined(WIN32)
+
+    const wchar_t * wstring = Utils::UTF8ToWCS(textUTF8);
+    const size_t len = wcslen(wstring) + 1;
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(wchar_t));
+    memcpy(GlobalLock(hMem), wstring, len * sizeof(wchar_t));
+    GlobalUnlock(hMem);
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(CF_UNICODETEXT, hMem);
+    CloseClipboard(); 
+
+#elif defined(__APPLE__)
+
+    UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+    pasteboard.string = [NSString stringWithUTF8String:textUTF8];
+
+#elif defined(__ANDROID__)
+
+    ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+    ClipData clip = ClipData.newPlainText("your_text_to_be_copied");
+    clipboard.setPrimaryClip(clip); 
+
+#endif
+}
