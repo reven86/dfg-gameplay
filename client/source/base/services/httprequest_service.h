@@ -60,6 +60,14 @@ public:
      */
     void makeRequestSync(const Request& request);
 
+    /**
+     * Get error string for error codes.
+     *
+     * @param[in] code Error code.
+     * @return Error string.
+     */
+    const char * getErrorString(int code) const;
+
 protected:
     HTTPRequestService(const ServiceManager * manager);
     virtual ~HTTPRequestService();
