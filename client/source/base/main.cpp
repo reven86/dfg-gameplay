@@ -328,9 +328,31 @@ void DfgGame::copyToClipboard(const char * textUTF8) const
 
 #elif defined(__ANDROID__)
 
-    ClipboardManager clipboard = (ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
-    ClipData clip = ClipData.newPlainText("your_text_to_be_copied");
-    clipboard.setPrimaryClip(clip); 
+    android_app* app = __state;
+    JNIEnv* env = app->activity->env;
+    JavaVM* vm = app->activity->vm;
+    vm->AttachCurrentThread(&env, NULL);
+
+    jclass looperClass = env->FindClass("android/os/Looper");
+    jmethodID prepareMethodID = env->GetStaticMethodID(looperClass, "prepare", "()V");
+    env->CallStaticVoidMethod(looperClass, prepareMethodID);
+
+    jclass clsContext = env->FindClass("android/content/Context");
+    jmethodID getSystemService = env->GetMethodID(clsContext, "getSystemService", "(Ljava/lang/String;)Ljava/lang/Object;");
+    jfieldID CLIPBOARD_SERVICE_ID = env->GetStaticFieldID(clsContext, "CLIPBOARD_SERVICE", "Ljava/lang/String;");
+    jstring CLIPBOARD_SERVICE = (jstring)env->GetStaticObjectField(clsContext, CLIPBOARD_SERVICE_ID);
+    jobject clipboard = env->CallObjectMethod(app->activity->clazz, getSystemService, CLIPBOARD_SERVICE);
+
+    jclass clsClipData = env->FindClass("android/content/ClipData");
+    jmethodID methodNewPlainText = env->GetStaticMethodID(clsClipData, "newPlainText", "(Ljava/lang/CharSequence;Ljava/lang/CharSequence;)Landroid/content/ClipData;");
+    jstring text = env->NewStringUTF(textUTF8);
+    jobject clipData = env->CallStaticObjectMethod(clsClipData, methodNewPlainText, text, text);
+
+    jclass clsClipboardManager = env->FindClass("android/content/ClipboardManager");
+    jmethodID methodSetPrimaryClip = env->GetMethodID(clsClipboardManager, "setPrimaryClip", "(Landroid/content/ClipData;)V");
+    env->CallVoidMethod(clipboard, methodSetPrimaryClip, clipData);
+
+    vm->DetachCurrentThread();
 
 #endif
 }
