@@ -48,7 +48,7 @@ public:
      *
      * @return The index assigned to the new Control.
      */
-    virtual unsigned int addControl(gameplay::Control* control);
+    virtual unsigned int addControl(gameplay::Control* control) override;
 
     /**
      * Inserts a control at a specific index.
@@ -56,14 +56,14 @@ public:
      * @param control The control to insert.
      * @param index The index at which to insert the control.
      */
-    virtual void insertControl(gameplay::Control* control, unsigned int index);
+    virtual void insertControl(gameplay::Control* control, unsigned int index) override;
 
     /**
      * Remove a control at a specific index.
      *
      * @param index The index from which to remove the control.
      */
-    virtual void removeControl(unsigned int index);
+    virtual void removeControl(unsigned int index) override;
     using gameplay::Container::removeControl;
 
     /**
@@ -71,7 +71,7 @@ public:
      *
      * @param enabled true if the control is enabled; false if disabled.
      */
-    virtual void setEnabled(bool enabled);
+    virtual void setEnabled(bool enabled) override;
 
     /**
      * Get absolute touch's X position when scrolling starts.
@@ -134,22 +134,22 @@ protected:
      *
      * @see Container::touchEventScroll
      */
-    virtual bool touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex);
+    virtual bool touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex) override;
 
     /**
      * @see AnimationTarget::getAnimationPropertyComponentCount
      */
-    virtual unsigned int getAnimationPropertyComponentCount(int propertyId) const;
+    virtual unsigned int getAnimationPropertyComponentCount(int propertyId) const  override;
 
     /**
      * @see AnimationTarget::getAnimationProperty
      */
-    virtual void getAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value);
+    virtual void getAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value) override;
 
     /**
      * @see AnimationTarget::setAnimationProperty
      */
-    virtual void setAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value, float blendWeight = 1.0f);
+    virtual void setAnimationPropertyValue(int propertyId, gameplay::AnimationValue* value, float blendWeight = 1.0f) override;
 
     /**
      * @see Control::notifyListeners
@@ -166,6 +166,7 @@ private:
 
     gameplay::AnimationClip * _itemScrollingClip;
     bool _freeSliding;
+    bool _passiveState;
     gameplay::Vector2 _rawScrollPosition;
     int _touchPressX;
     int _touchPressY;

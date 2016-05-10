@@ -12,6 +12,7 @@ Carousel::Carousel()
     , _itemScrollingClip(NULL)
     , _rawScrollPosition(0, 0)
     , _freeSliding(false)
+    , _passiveState(false)
     , _touchPressX(0)
     , _touchPressY(0)
 {
@@ -38,17 +39,23 @@ void Carousel::initialize(const char* typeName, gameplay::Theme::Style* style, g
     gameplay::Container::initialize(typeName, style, properties);
 
     if (properties)
-        _freeSliding = properties->getBool("freeSliding");
+    {
+        _freeSliding = properties->getBool("freeSliding", false);
+        _passiveState = properties->getBool("passive", false);
+    }
 
-    setReceiveInputEvents(true);
+    if (!_passiveState)
+    {
+        setReceiveInputEvents(true);
 
-    for (gameplay::Control * child : getControls())
-        unsetConsumeInputEvents(child);
+        for (gameplay::Control * child : getControls())
+            unsetConsumeInputEvents(child);
+    }
 }
 
 bool Carousel::touchEventScroll(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex)
 {
-    if (evt != gameplay::Touch::TOUCH_PRESS && _currentItemBeforeTouch == INVALID_ITEM_INDEX)
+    if (evt != gameplay::Touch::TOUCH_PRESS && _currentItemBeforeTouch == INVALID_ITEM_INDEX || _passiveState)
         return false;
 
     // using _currentItemBeforeTouch also as a flag that touch is still pressed (INVALID_ITEM_INDEX)
