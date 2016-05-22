@@ -170,6 +170,8 @@ private:
     gameplay::Vector2 _rawScrollPosition;
     int _touchPressX;
     int _touchPressY;
+    gameplay::Curve::InterpolationType _animationInterpolator;
+    unsigned int _animationDuration;
 };
 
 

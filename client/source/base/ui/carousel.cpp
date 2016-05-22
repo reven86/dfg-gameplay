@@ -15,6 +15,8 @@ Carousel::Carousel()
     , _passiveState(false)
     , _touchPressX(0)
     , _touchPressY(0)
+    , _animationDuration(200)
+    , _animationInterpolator(gameplay::Curve::QUADRATIC_IN)
 {
 }
 
@@ -42,6 +44,18 @@ void Carousel::initialize(const char* typeName, gameplay::Theme::Style* style, g
     {
         _freeSliding = properties->getBool("freeSliding", false);
         _passiveState = properties->getBool("passive", false);
+
+        const char * interpolator = properties->getString("animationInterpolator");
+        if (interpolator)
+        {
+            int type = gameplay::Curve::getInterpolationType(interpolator);
+            if (type != -1)
+                _animationInterpolator = static_cast<gameplay::Curve::InterpolationType>(type);
+        }
+
+        int duration = properties->getInt("animationDuration");
+        if (duration > 0)
+            _animationDuration = static_cast<unsigned>(duration);
     }
 
     if (!_passiveState)
@@ -181,7 +195,7 @@ void Carousel::scrollToItem(unsigned itemIndex, bool immediately)
         _startScrollingPosition = _scrollPosition;
 
         gameplay::Animation * animation = createAnimationFromTo("scrollbar-scroll-to-item", ANIMATE_SCROLL_TO_ITEM, &from, &to,
-            gameplay::Curve::QUADRATIC_IN, 200);
+            _animationInterpolator, _animationDuration);
         _itemScrollingClip = animation->getClip();
         _itemScrollingClip->play();
     }
