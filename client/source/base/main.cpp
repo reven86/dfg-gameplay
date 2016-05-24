@@ -16,6 +16,27 @@
 #import <Foundation/Foundation.h>
 #if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+
+@interface KeyboardNotifications : NSObject
+@end
+
+@implementation KeyboardNotifications
+// Called when the UIKeyboardDidShowNotification is sent.
+- (void)keyboardWasShown:(NSNotification*)aNotification
+{
+    NSDictionary* info = [aNotification userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+
+    GP_LOG("keyboard up %d %d", kbSize.width, kbSize.height);
+}
+
+// Called when the UIKeyboardWillHideNotification is sent
+-(void)keyboardWillBeHidden:(NSNotification*)aNotification
+{
+    GP_LOG("keyboard down");
+}
+@end
+
 #endif
 #endif
 
@@ -71,6 +92,20 @@ void DfgGame::initialize()
     // set default resources locale
     _gameLocale = getConfig()->getString("language");
     setGameLocale();
+
+#ifdef __APPLE__
+#if TARGET_OS_IPHONE
+    KeyboardNotifications * keyEvents = [[KeyboardNotifications alloc] init];
+
+    [[NSNotificationCenter defaultCenter] addObserver:keyEvents
+        selector:@selector(keyboardWasShown:)
+           name:UIKeyboardDidShowNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:keyEvents
+        selector:@selector(keyboardWillBeHidden:)
+           name:UIKeyboardWillHideNotification object:nil];
+#endif
+#endif
 }
 
 void DfgGame::setGameLocale(const char * newLocale)
