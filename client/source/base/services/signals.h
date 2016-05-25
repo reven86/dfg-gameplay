@@ -18,6 +18,7 @@ struct Signals : Noncopyable
     sigc::signal<void> pauseEvent;
     sigc::signal<void> resumeEvent;
     sigc::signal<void, unsigned, unsigned> resizeEvent;
+    sigc::signal<void, float, float> virtualKeyboardSizeChanged;    // passing (0,0) when keyboard is hidden
 
     //
     // ServiceManager
