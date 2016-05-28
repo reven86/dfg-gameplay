@@ -309,6 +309,9 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
         gameplay::Container * container = static_cast<gameplay::Container *>(control);
         container->setScrollScale(container->getScrollScale() * ky);
 
+        const gameplay::Vector2& scrollPos = container->getScrollPosition();
+        container->setScrollPosition(gameplay::Vector2(scrollPos.x * kx, scrollPos.y * ky));
+
         const std::vector< gameplay::Control * >& children = container->getControls();
         for (unsigned j = 0; j < children.size(); j++)
             scaleUIControl(children[j], kx, ky);
