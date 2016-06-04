@@ -4,6 +4,7 @@
 #include "services/render_service.h"
 #include "services/input_service.h"
 #include "services/tracker_service.h"
+#include <curl/curl.h>
 
 #ifdef WIN32
 #include <direct.h>
@@ -39,8 +40,10 @@ DfgGame::DfgGame()
 
 void DfgGame::initialize()
 {
-    // create services
+    // initialize curl before any servers get created
+    curl_global_init(CURL_GLOBAL_ALL);
 
+    // create services
     _inputService = ServiceManager::getInstance()->registerService< InputService >(NULL);
 
     Service * render_dep[] = { _inputService, NULL };
@@ -141,6 +144,9 @@ void DfgGame::finalize()
 {
     ServiceManager::getInstance()->shutdown();
     Caches::getInstance()->destroyAll();
+
+    // free any curl resources after it's no longer used.
+    curl_global_cleanup();
 }
 
 void DfgGame::update(float elapsedTime)
