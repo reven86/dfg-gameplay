@@ -10,7 +10,7 @@
 
 
 
-const char * __endpoint = "http://www.google-analytics.com/collect";
+static const char * __endpoint = "http://www.google-analytics.com/collect";
 
 bool TrackerService::_threadForceQuit = false;
 int TrackerService::_dispatchPeriod = 1000;
