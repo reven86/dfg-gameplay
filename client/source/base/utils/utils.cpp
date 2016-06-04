@@ -3,6 +3,7 @@
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
 #include "utf8.h"
+#include <openssl/md5.h>
 
 #if defined (WIN32)
 #include <Rpc.h>
@@ -443,4 +444,12 @@ void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * out)
             valb -= 8;
         }
     }
+}
+
+void Utils::MD5(const uint8_t* data, unsigned length, unsigned char outDigest[16])
+{
+    MD5_CTX context;
+    MD5_Init(&context);
+    MD5_Update(&context, data, length);
+    MD5_Final(outDigest, &context);
 }

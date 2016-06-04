@@ -183,6 +183,17 @@ static gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
 static gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
 
 
+
+/**
+ * Computes MD5 hash for data.
+ *
+ * @param data Input data buffer.
+ * @param length Length of the buffer.
+ * @param outDigest Buffer to save digest to.
+ */
+static void MD5(const uint8_t* data, unsigned length, unsigned char outDigest[16]);
+
+
 };
 
 
