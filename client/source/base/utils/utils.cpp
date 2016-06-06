@@ -446,7 +446,7 @@ void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * out)
     }
 }
 
-void Utils::MD5(const uint8_t* data, unsigned length, unsigned char outDigest[16])
+void Utils::MD5(const void* data, unsigned length, unsigned char outDigest[16])
 {
     MD5_CTX context;
     MD5_Init(&context);

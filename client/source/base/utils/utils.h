@@ -191,7 +191,7 @@ static gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
  * @param length Length of the buffer.
  * @param outDigest Buffer to save digest to.
  */
-static void MD5(const uint8_t* data, unsigned length, unsigned char outDigest[16]);
+static void MD5(const void* data, unsigned length, unsigned char outDigest[16]);
 
 
 };
