@@ -66,7 +66,7 @@ public:
      * @param[in] code Error code.
      * @return Error string.
      */
-    const char * getErrorString(int code) const;
+    static const char * getErrorString(int code);
 
 protected:
     HTTPRequestService(const ServiceManager * manager);

@@ -126,7 +126,7 @@ const char * HTTPRequestService::getTaskQueueName() const
     return HTTP_REQUEST_SERVICE_QUEUE;
 }
 
-const char * HTTPRequestService::getErrorString(int code) const
+const char * HTTPRequestService::getErrorString(int code)
 {
     return curl_easy_strerror((CURLcode)code);
 }
