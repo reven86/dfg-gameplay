@@ -40,8 +40,10 @@ DfgGame::DfgGame()
 
 void DfgGame::initialize()
 {
+#ifndef __EMSCRIPTEN__
     // initialize curl before any servers get created
     curl_global_init(CURL_GLOBAL_ALL);
+#endif
 
     // create services
     _inputService = ServiceManager::getInstance()->registerService< InputService >(NULL);
@@ -145,8 +147,10 @@ void DfgGame::finalize()
     ServiceManager::getInstance()->shutdown();
     Caches::getInstance()->destroyAll();
 
+#ifndef __EMSCRIPTEN__
     // free any curl resources after it's no longer used.
     curl_global_cleanup();
+#endif
 }
 
 void DfgGame::update(float elapsedTime)
