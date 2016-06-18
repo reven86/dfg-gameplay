@@ -2,6 +2,7 @@
 #include "http_image_control.h"
 #include "services/httprequest_service.h"
 #include "services/service_manager.h"
+#include "main/memory_stream.h"
 
 
 
@@ -58,10 +59,10 @@ void HTTPImageControl::setImage(const char * path)
     // make sure instance is present while callback is scheduled
     this->addRef();
     _httpRequestService->makeRequestAsync({ path, "", HTTPRequestService::Request::HeadersList(),
-        std::bind(&HTTPImageControl::imageDownloadedCallback, this, std::placeholders::_1, std::placeholders::_2, std::string(path)) });
+        std::bind(&HTTPImageControl::imageDownloadedCallback, this, std::placeholders::_1, std::placeholders::_2, std::string(path), std::placeholders::_3) });
 }
 
-void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<uint8_t>& response, const std::string& path)
+void HTTPImageControl::imageDownloadedCallback(int curlCode, MemoryStream * response, const std::string& path, const char * error)
 {
     if (curlCode != 0)
     {
@@ -78,7 +79,7 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, const std::vector<u
 #endif
     std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpFilename + gameplay::FileSystem::getExtension(path.c_str());
     std::unique_ptr<gameplay::Stream> stream(gameplay::FileSystem::open(filename.c_str(), gameplay::FileSystem::WRITE));
-    if (stream && stream->write(&response.front(), response.size(), 1) == 1)
+    if (stream && stream->write(response->getBuffer(), response->length(), 1) == 1)
     {
         stream.reset();
 

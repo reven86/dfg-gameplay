@@ -85,7 +85,7 @@ protected:
 
 private:
 
-    void imageDownloadedCallback(int curlCode, const std::vector<uint8_t>& response, const std::string& path);
+    void imageDownloadedCallback(int curlCode, class MemoryStream * stream, const std::string& path, const char * error);
 
     class HTTPRequestService * _httpRequestService;
     bool _preserveAspect;

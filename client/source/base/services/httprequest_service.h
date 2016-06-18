@@ -23,6 +23,8 @@ class HTTPRequestService : public Service
 public:
     /**
      * Request structure used to send HTTP requests.
+     * Response is returned via responseCallback which accepts error code, a newly created Stream with response data and a error string.
+     * Client application is responsible to deallocate a stream with SAFE_DELETE macro.
      */
     struct Request
     {
@@ -31,7 +33,7 @@ public:
         std::string url;
         std::string postPayload;
         HeadersList headers;
-        std::function<void(int, std::vector<uint8_t>)> responseCallback;
+        std::function<void(int, class MemoryStream *, const char *)> responseCallback;
     };
 
     static const char * getTypeName() { return "HTTPRequestService"; };
@@ -60,14 +62,6 @@ public:
      */
     void makeRequestSync(const Request& request);
 
-    /**
-     * Get error string for error codes.
-     *
-     * @param[in] code Error code.
-     * @return Error string.
-     */
-    static const char * getErrorString(int code);
-
 protected:
     HTTPRequestService(const ServiceManager * manager);
     virtual ~HTTPRequestService();
@@ -79,6 +73,8 @@ protected:
 private:
     void sendRequest(const Request& request);
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
+    static void requestLoadCallback(void * arg, const void *buf, unsigned length);
+    static void requestErrorCallback(void * arg, int errorCode, const char * status);
 
     void * _curl;
 

@@ -184,9 +184,9 @@ public:
     virtual bool rewind() { _cursor = 0; return true; };
 
     /**
-     * Get pointer to start of write buffer.
+     * Get underlying memory buffer.
      */
-    const uint8_t * getWriteBuffer() const { return _writeBuffer; };
+    const uint8_t * getBuffer() const { return _readBuffer; };
 
 protected:
     MemoryStream();
