@@ -73,8 +73,8 @@ protected:
 private:
     void sendRequest(const Request& request);
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
-    static void requestLoadCallback(void * arg, const void *buf, unsigned length);
-    static void requestErrorCallback(void * arg, int errorCode, const char * status);
+    static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length);
+    static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);
 
     void * _curl;
 

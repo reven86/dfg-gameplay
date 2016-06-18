@@ -9,7 +9,10 @@
 
 
 #ifdef __EMSCRIPTEN__
-extern "C" int emscripten_async_wget3_data(const char* url, const char* requesttype, const char* param, const char* additionalHeader, void *arg, int free, em_async_wget2_data_onload_func onload, em_async_wget2_data_onerror_func onerror, em_async_wget2_data_onprogress_func onprogress);
+extern "C"
+{
+    extern int emscripten_async_wget3_data(const char* url, const char* requesttype, const char* param, const char* additionalHeader, void *arg, int free, em_async_wget2_data_onload_func onload, em_async_wget2_data_onerror_func onerror, em_async_wget2_data_onprogress_func onprogress);
+}
 #endif
 
 static char errorBuffer[CURL_ERROR_SIZE];
@@ -81,14 +84,14 @@ void HTTPRequestService::makeRequestSync(const Request& request)
     sendRequest(request);
 }
 
-void HTTPRequestService::requestLoadCallback(void * arg, const void *buf, unsigned length)
+void HTTPRequestService::requestLoadCallback(unsigned, void * arg, void *buf, unsigned length)
 {
     Request * request = reinterpret_cast<Request *>(arg);
     request->responseCallback(CURLE_OK, MemoryStream::create(buf, length), NULL);
     delete request;
 }
 
-void HTTPRequestService::requestErrorCallback(void *arg, int errorCode, const char * status)
+void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode, const char * status)
 {
     Request * request = reinterpret_cast<Request *>(arg);
     GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), errorCode, status);

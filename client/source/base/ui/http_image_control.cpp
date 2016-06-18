@@ -64,7 +64,7 @@ void HTTPImageControl::setImage(const char * path)
 
 void HTTPImageControl::imageDownloadedCallback(int curlCode, MemoryStream * response, const std::string& path, const char * error)
 {
-    if (curlCode != 0)
+    if (curlCode != 0 || response == nullptr)
     {
         this->release();
         return;
