@@ -567,6 +567,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CFLAGS = "-Wno-logical-op-parentheses";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -586,6 +587,7 @@
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				OTHER_CFLAGS = "-Wno-logical-op-parentheses";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

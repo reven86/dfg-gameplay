@@ -87,7 +87,7 @@ static const char * urlEncode(const char * src);
 /**
  * Encode binary data to base64 string.
  */
-static void base64Encode(const uint8_t * in, const unsigned& len, std::string * out);
+static void base64Encode(const uint8_t * in, size_t len, std::string * out);
 
 /**
  * Decode base64 string to binary data.
@@ -191,7 +191,7 @@ static gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
  * @param length Length of the buffer.
  * @param outDigest Buffer to save digest to.
  */
-static void MD5(const void* data, unsigned length, unsigned char outDigest[16]);
+static void MD5(const void* data, size_t length, unsigned char outDigest[16]);
 
 
 };

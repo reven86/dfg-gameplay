@@ -48,7 +48,7 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
         GP_WARN("Can't read file %s:%s", packageName, fileName);
     zip_fclose(f);
 
-    res->_underlyingStream.reset(MemoryStream::create(res->_fileContent.get(), st.size));
+    res->_underlyingStream.reset(MemoryStream::create(res->_fileContent.get(), static_cast<size_t>(st.size)));
 
     return res;
 }

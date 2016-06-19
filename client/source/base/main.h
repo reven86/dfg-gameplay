@@ -48,12 +48,12 @@ public:
 #endif
 
 protected:
-    void initialize();
-    void finalize();
-    void update(float elapsedTime);
-    void render(float elapsedTime);
-    void pause();
-    void resume();
+    virtual void initialize() override;
+    virtual void finalize() override;
+    virtual void update(float elapsedTime) override;
+    virtual void render(float elapsedTime) override;
+    virtual void pause() override;
+    virtual void resume() override;
 
     /**
      * Set game locale, or use system default one.
@@ -62,15 +62,15 @@ protected:
      */
     void setGameLocale(const char * newLocale = NULL);
 
-    void keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed);
-    void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex, bool processed);
-    bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta, bool processed);
-    void gesturePinchEvent(int x, int y, float scale, int numberOfTouches);
+    virtual void keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed) override;
+    virtual void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex, bool processed) override;
+    virtual bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta, bool processed) override;
+    virtual void gesturePinchEvent(int x, int y, float scale, int numberOfTouches) override;
 
     /**
      * @see Game::resizeEvent;
      */
-    void resizeEvent(unsigned int width, unsigned int height) override;
+    virtual void resizeEvent(unsigned int width, unsigned int height) override;
 
     /**
      * Gesture callback on Gesture::SWIPE events.
@@ -84,9 +84,9 @@ protected:
      * @see Gesture::SWIPE_DIRECTION_LEFT
      * @see Gesture::SWIPE_DIRECTION_RIGHT
      */
-    virtual void gestureSwipeEvent(int x, int y, int direction);
+    virtual void gestureSwipeEvent(int x, int y, int direction) override;
 
-    void reportError(bool isFatal, const char * errorMessage, ...);
+    virtual void reportError(bool isFatal, const char * errorMessage, ...) override;
 
     class RenderService * _renderService;
     class InputService * _inputService;

@@ -171,10 +171,12 @@ void DfgGame::render(float /*elapsedTime*/)
 void DfgGame::keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed)
 {
     if (_inputService)
+    {
         if (processed)
             _inputService->injectKeyGlobalEvent(evt, key);
         else
             _inputService->injectKeyEvent(evt, key);
+    }
 
     if (key == gameplay::Keyboard::KEY_HYPER)
         _hyperKeyPressed = evt == gameplay::Keyboard::KEY_PRESS;
@@ -187,21 +189,23 @@ void DfgGame::keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed
 
 void DfgGame::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex, bool processed)
 {
-    if (_inputService)
-        if (processed)
-            _inputService->injectTouchGlobalEvent(evt, x, y, contactIndex);
-        else
-            _inputService->injectTouchEvent(evt, x, y, contactIndex);
+    if (!_inputService)
+        return;
+
+    if (processed)
+        _inputService->injectTouchGlobalEvent(evt, x, y, contactIndex);
+    else
+        _inputService->injectTouchEvent(evt, x, y, contactIndex);
 }
 
 bool DfgGame::mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta, bool processed)
 {
-    if (_inputService)
-        if (processed)
-            return _inputService->injectMouseGlobalEvent(evt, x, y, wheelDelta);
-        else
-            return _inputService->injectMouseEvent(evt, x, y, wheelDelta);
-    return false;
+    if (!_inputService)
+        return false;
+
+    if (processed)
+        return _inputService->injectMouseGlobalEvent(evt, x, y, wheelDelta);
+    return _inputService->injectMouseEvent(evt, x, y, wheelDelta);
 }
 
 void DfgGame::gesturePinchEvent(int x, int y, float scale, int numberOfTouches)

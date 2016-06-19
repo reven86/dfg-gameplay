@@ -73,27 +73,27 @@ protected:
      * @return The type name of this class: "ClipLabel"
      * @see ScriptTarget::getTypeName()
      */
-    const char* getTypeName() const;
+    virtual const char* getTypeName() const override;
 
     /**
      * @see Control::initialize
      */
-    void initialize(const char* typeName, gameplay::Theme::Style* style, gameplay::Properties* properties);
+    virtual void initialize(const char* typeName, gameplay::Theme::Style* style, gameplay::Properties* properties) override;
 
     /**
      * @see Control::drawText
      */
-    virtual unsigned int drawText(gameplay::Form* form) const;
+    virtual unsigned int drawText(gameplay::Form* form) const override;
 
     /**
      * @see Control::updateAbsoluteBounds
      */
-    void updateAbsoluteBounds(const gameplay::Vector2& offset);
+    virtual void updateAbsoluteBounds(const gameplay::Vector2& offset) override;
 
     /**
      * @see Control::updateState
      */
-    void updateState(State state);
+    virtual void updateState(State state) override;
 
 private:
     void clipText();

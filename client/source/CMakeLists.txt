@@ -73,6 +73,7 @@ add_definitions(-DGP_USE_STOREFRONT)
 add_definitions(-DCURL_STATICLIB)
 add_definitions(-DZIP_STATIC)
 add_definitions(-DYAML_DECLARE_STATIC)
+add_definitions(-Wno-logical-op-parentheses)
 
 if(EMSCRIPTEN)
 add_definitions(-DHAVE_INTTYPES_H)
