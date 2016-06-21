@@ -382,5 +382,12 @@ void DfgGame::copyToClipboard(const char * textUTF8) const
 
     vm->DetachCurrentThread();
 
+#elif defined (__EMSCRIPTEN__)
+
+    EM_ASM_({
+        var copyEvent = new ClipboardEvent('copy', { dataType: 'text/plain', data: Module.Pointer_stringify($0) } );
+        document.dispatchEvent(copyEvent);
+    }, textUTF8);
+
 #endif
 }
