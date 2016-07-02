@@ -110,6 +110,7 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
         curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
         curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
+        curl_easy_setopt(_curl, CURLOPT_SSL_VERIFYPEER, 0);
     }
 #endif
 
