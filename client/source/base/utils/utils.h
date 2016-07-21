@@ -57,42 +57,42 @@ static std::string generateUUID();
 /**
  * Convert UTF8 string to wchar_t one.
  */
-static const wchar_t * UTF8ToWCS(const char * str);
+static inline std::wstring UTF8ToWCS(const std::string& str);
 
 
 /**
  * Convert wide-char string to UTF8 one.
  */
-static const char * WCSToUTF8(const wchar_t * str);
+static inline std::string WCSToUTF8(const std::wstring& str);
 
 
 /**
  * Function to map char * string to wchar_t * one. Works ONLY for ANSI characters. Max 2048 chars.
  */
-static const wchar_t * ANSIToWCS(const char * str);
+static inline std::wstring ANSIToWCS(const std::string& str);
 
 
 /**
  * Wrapper around sprintf. Nested calls are not allowed. Max 2048 chars.
  */
-static const char * format(const char * fmt, ...);
+static inline std::string format(const char * fmt, ...);
 
 
 /**
  * UrlEncode string. Nested calls are not allowed.
  */
-static const char * urlEncode(const char * src);
+static inline std::string urlEncode(const std::string& src);
 
 
 /**
  * Encode binary data to base64 string.
  */
-static void base64Encode(const uint8_t * in, size_t len, std::string * out);
+static inline void base64Encode(const uint8_t * in, size_t len, std::string * out);
 
 /**
  * Decode base64 string to binary data.
  */
-static void base64Decode(const std::string& in, std::vector<uint8_t> * out);
+static inline void base64Decode(const std::string& in, std::vector<uint8_t> * out);
 
 
 
@@ -106,7 +106,7 @@ static void base64Decode(const std::string& in, std::vector<uint8_t> * out);
  * @param fontSize Size of the font.
  * @param characterSpacing Additional spacing between character, in pixels.
  */
-static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, 
+static std::wstring clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, 
     float characterSpacing = 0.0f);
 
 /**
@@ -121,7 +121,7 @@ static const wchar_t * clipTextToBounds(const wchar_t * text, float width, const
  * @param characterSpacing Additional spacing between character, in pixels.
  * @param line Additional spacing between lines, in pixels.
  */
-static const wchar_t * clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize, 
+static std::wstring clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize, 
     float characterSpacing = 0.0f, float lineSpacing = 0.0f);
 
 
@@ -160,7 +160,7 @@ static void measureChildrenBounds(gameplay::Container * container, float * width
  * @param color Incoming color. Alpha component is not used.
  * @return Luminosity level, from 0 to 1;
  */
-static float luminosity(const gameplay::Vector4& color);
+static inline float luminosity(const gameplay::Vector4& color);
 
 
 /**
@@ -170,7 +170,7 @@ static float luminosity(const gameplay::Vector4& color);
  * @return Color in RGB format.
  * @see RGBToHSL
  */
-static gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
+static inline gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
 
 
 /**
@@ -180,7 +180,7 @@ static gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
  * @return Color in HSL format.  Note: All components are in rage [0, 1].
  * @see HSLToRGB
  */
-static gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
+static inline gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
 
 
 
@@ -191,10 +191,11 @@ static gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
  * @param length Length of the buffer.
  * @param outDigest Buffer to save digest to.
  */
-static void MD5(const void* data, size_t length, unsigned char outDigest[16]);
+static inline void MD5(const void* data, size_t length, unsigned char outDigest[16]);
 
 
 };
 
+#include "utils.inl"
 
 #endif // __DFG_UTILS__

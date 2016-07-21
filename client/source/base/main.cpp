@@ -339,7 +339,8 @@ void DfgGame::copyToClipboard(const char * textUTF8) const
 {
 #if defined(WIN32)
 
-    const wchar_t * wstring = Utils::UTF8ToWCS(textUTF8);
+    std::wstring str(Utils::UTF8ToWCS(textUTF8));
+    const wchar_t * wstring = &(*str.begin());
     const size_t len = wcslen(wstring) + 1;
     HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(wchar_t));
     memcpy(GlobalLock(hMem), wstring, len * sizeof(wchar_t));

@@ -99,8 +99,6 @@ private:
     void sendData(const char * format, ...);
     bool dispatch(const PayloadInfo& payload);
 
-    const char * urlEncode(const char * str);
-
     static void dispatchThreadProc(void * arg);
 
 

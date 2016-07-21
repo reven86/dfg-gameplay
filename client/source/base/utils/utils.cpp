@@ -2,8 +2,6 @@
 #include "utils.h"
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
-#include "utf8.h"
-#include <openssl/md5.h>
 
 #if defined (WIN32)
 #include <Rpc.h>
@@ -46,108 +44,9 @@ std::string Utils::generateUUID( )
 
 
 
-const wchar_t * Utils::UTF8ToWCS(const char * str)
+std::wstring Utils::clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, float characterSpacing)
 {
-    GP_ASSERT(str);
-
-    static std::wstring res;
-    res.clear();
-    utf8::unchecked::utf8to16(str, str + strlen(str), std::back_inserter(res));
-    return res.c_str();
-}
-
-
-
-const char * Utils::WCSToUTF8(const wchar_t * str)
-{
-    GP_ASSERT(str);
-
-    static std::string res;
-    res.clear();
-    utf8::unchecked::utf16to8(str, str + wcslen(str), std::back_inserter(res));
-    return res.c_str();
-}
-
-
-
-
-const wchar_t * Utils::ANSIToWCS(const char * str)
-{
-    static wchar_t result[2048];
-
-    wchar_t * o = result;
-    while( *str )
-        *o++ = *str++;
-    *o = 0;
-
-    return result;
-}
-
-
-
-
-const char * Utils::format(const char * fmt, ...)
-{
-    static char results[16][2048];
-    static int resInd = 0;
-
-    char * result = results[resInd];
-    resInd = (resInd + 1) & 15;
-
-    va_list args;
-    va_start(args, fmt);
-
-#ifdef WIN32
-    _vsnprintf(result, 2048, fmt, args);
-#else
-    vsnprintf(result, 2048, fmt, args);
-#endif
-
-    va_end(args);
-
-    return result;
-}
-
-
-const char * Utils::urlEncode(const char * src)
-{
-    static std::string res[16];
-    static int resInd = 0;
-
-    std::string& result = res[resInd];
-    resInd = (resInd + 1) & 15;
-
-    result.clear();
-
-    static char hexmap[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
-    size_t max = strlen(src);
-    for (int i = 0; i < max; i++, src++)
-    {
-        if (('0' <= *src && *src <= '9') ||
-            ('A' <= *src && *src <= 'Z') ||
-            ('a' <= *src && *src <= 'z') ||
-            (*src == '~' || *src == '-' || *src == '_' || *src == '.')
-            )
-        {
-            result.push_back(*src);
-        }
-        else
-        {
-            result.push_back('%');
-            result.push_back(hexmap[(unsigned char)(*src) >> 4]);
-            result.push_back(hexmap[*src & 0x0F]);
-        }
-    }
-
-    return result.c_str();
-}
-
-
-
-const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, float characterSpacing)
-{
-    static std::wstring result;
+    std::wstring result;
 
     if (width <= 0.0f)
         return L"";
@@ -173,13 +72,13 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, const
         font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth, characterSpacing);
     } while (result.size() > 3 && textw >= width);
 
-    return result.c_str();
+    return result;
 }
 
-const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize,
+std::wstring Utils::clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize,
     float characterSpacing, float lineSpacing)
 {
-    static std::wstring result;
+    std::wstring result;
 
     if (width <= 0.0f || height <= 0.0f)
         return L"";
@@ -210,7 +109,7 @@ const wchar_t * Utils::clipTextToBounds(const wchar_t * text, float width, float
         font->measureText(result.c_str(), clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
     } while (result.size() > 3 && (out.width > width || out.height > height));
 
-    return result.c_str();
+    return result;
 }
 
 
@@ -350,106 +249,3 @@ void Utils::measureChildrenBounds(gameplay::Container * container, float * width
         *height = totalHeight;
 }
 
-
-
-float Utils::luminosity(const gameplay::Vector4& color)
-{
-    return 0.3f * color.x + 0.59f * color.y + 0.11f * color.z;
-}
-
-float HueToRGB(float p, float q, float t) {
-    if (t < 0.0f) t += 1.0f;
-    if (t > 1.0f) t -= 1.0f;
-    if (t < 1.0f / 6.0f) return p + (q - p) * 6.0f * t;
-    if (t < 1.0f / 2.0f) return q;
-    if (t < 2.0f / 3.0f) return p + (q - p) * (2.0f / 3.0f - t) * 6.0f;
-    return p;
-}
-
-gameplay::Vector4 Utils::HSLToRGB(const gameplay::Vector4& hsl)
-{
-    if (hsl.y == 0.0f)
-        return gameplay::Vector4(1.0f, 1.0f, 1.0f, hsl.w);
-
-    float q = hsl.z < 0.5f ? hsl.z * (1.0f + hsl.y) : hsl.z + hsl.y - hsl.z * hsl.y;
-    float p = 2 * hsl.z - q;
-    return gameplay::Vector4(HueToRGB(p, q, hsl.x + 1.0f / 3.0f), HueToRGB(p, q, hsl.x), HueToRGB(p, q, hsl.x - 1.0f / 3.0f), 1.0f);
-}
-
-gameplay::Vector4 Utils::RGBToHSL(const gameplay::Vector4& rgb)
-{
-    float max = std::max(std::max(rgb.x, rgb.y), rgb.z);
-    float min = std::min(std::min(rgb.x, rgb.y), rgb.z);
-    float h, s, l = (max + min) / 2;
-
-    if (max == min)
-        return gameplay::Vector4(0.0f, 0.0f, 0.0f, rgb.w);
-
-    float d = max - min;
-    s = l > 0.5f ? d / (2.0f - max - min) : d / (max + min);
-    if (max == rgb.x)
-        h = (rgb.y - rgb.z) / d + (rgb.y < rgb.z ? 6.0f : 0.0f);
-    else if (max == rgb.y)
-        h = (rgb.z - rgb.x) / d + 2.0f;
-    else
-        h = (rgb.x - rgb.y) / d + 4.0f;
-    h *= 1.0f / 6.0f;
-
-    return gameplay::Vector4(h, s, l, 1.0f);
-}
-
-
-
-void Utils::base64Encode(const uint8_t * in, size_t len, std::string * out)
-{
-    if (!out)
-        return;
-
-    int val = 0, valb = -6;
-    for (const uint8_t * c = in; c < in + len; c++)
-    {
-        val = (val << 8) + *c;
-        valb += 8;
-        while (valb >= 0)
-        {
-            out->push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[(val >> valb) & 0x3F]);
-            valb -= 6;
-        }
-    }
-    if (valb > -6)
-        out->push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[((val << 8) >> (valb + 8)) & 0x3F]);
-    while (out->size() % 4)
-        out->push_back('=');
-}
-
-void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * out)
-{
-    if (!out)
-        return;
-
-    std::vector<int> T(256, -1);
-    for (int i = 0; i<64; i++) 
-        T["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i]] = i;
-
-    int val = 0, valb = -8;
-    for (uint8_t c : in)
-    {
-        if (T[c] == -1)
-            break;
-        val = (val << 6) + T[c];
-        valb += 6;
-        if (valb >= 0)
-        {
-            out->push_back(uint8_t((val >> valb) & 0xFF));
-            valb -= 8;
-        }
-    }
-}
-
-void Utils::MD5(const void* data, size_t length, unsigned char outDigest[16])
-{
-    MD5_CTX context;
-    MD5_Init(&context);
-    MD5_Update(&context, data, length);
-    MD5_Final(outDigest, &context);
-}

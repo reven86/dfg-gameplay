@@ -234,4 +234,9 @@
       <UniqueIdentifier>{2fe09325-4eb7-4458-8e15-6b71d566f93c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\base\utils\utils.inl">
+      <Filter>base\utils</Filter>
+    </None>
+  </ItemGroup>
 </Project>

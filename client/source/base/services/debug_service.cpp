@@ -76,7 +76,7 @@ void DebugService::drawTextOutline(float x, float y, const gameplay::Vector4& co
 
 void DebugService::drawFPS() const
 {
-    drawTextOutline(1, 1, gameplay::Vector4::one(), Utils::ANSIToWCS(Utils::format("FPS: %d", gameplay::Game::getInstance()->getFrameRate())));
+    drawTextOutline(1, 1, gameplay::Vector4::one(), Utils::ANSIToWCS(Utils::format("FPS: %d", gameplay::Game::getInstance()->getFrameRate())).c_str());
 
 #ifndef __DISABLE_PROFILER__
     if( _showProfiler )

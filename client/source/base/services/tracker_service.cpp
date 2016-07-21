@@ -47,8 +47,8 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
     _trackingId = gaAppId;
     _clientId = clientId;
 
-    _appName = urlEncode(gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("title"));
-    _appVersion = urlEncode(gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("version"));
+    _appName = Utils::urlEncode(gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("title"));
+    _appVersion = Utils::urlEncode(gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("version"));
 
     // load previously saved payloads which weren't sent to server
     std::string filename = std::string(static_cast<DfgGame *>(gameplay::Game::getInstance())->getUserDataFolder()) + "/payloads.dat";
@@ -120,7 +120,7 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
         endSession();
     }
 
-    _currentView = urlEncode(startScreen);
+    _currentView = Utils::urlEncode(startScreen);
     sendData("t=appview&cd=%s",
         _currentView.c_str()
         );
@@ -339,7 +339,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
 
 void TrackerService::sendView(const char * screenName)
 {
-    std::string newView(urlEncode(screenName));
+    std::string newView(Utils::urlEncode(screenName));
     if (_currentView == newView)
         return;
 
@@ -350,9 +350,9 @@ void TrackerService::sendView(const char * screenName)
 void TrackerService::sendEvent(const char * category, const char * action, const char * label, const int& value, bool interactive)
 {
     sendData("t=event&ec=%s&ea=%s&el=%s&ev=%u&ni=%d&cd=%s",
-        urlEncode(category),
-        urlEncode(action),
-        urlEncode(label),
+        Utils::urlEncode(category).c_str(),
+        Utils::urlEncode(action).c_str(),
+        Utils::urlEncode(label).c_str(),
         value,
         interactive ? 0 : 1,
         _currentView.c_str()
@@ -362,9 +362,9 @@ void TrackerService::sendEvent(const char * category, const char * action, const
 void TrackerService::sendSocialEvent(const char * network, const char * action, const char * target)
 {
     sendData("t=social&sn=%s&sa=%s&st=%s&cd=%s",
-        urlEncode(network),
-        urlEncode(action),
-        urlEncode(target),
+        Utils::urlEncode(network).c_str(),
+        Utils::urlEncode(action).c_str(),
+        Utils::urlEncode(target).c_str(),
         _currentView.c_str()
         );
 }
@@ -372,10 +372,10 @@ void TrackerService::sendSocialEvent(const char * network, const char * action, 
 void TrackerService::sendTiming(const char * category, const int& timeMs, const char * name, const char * label)
 {
     sendData("t=timing&utc=%s&utv=%s&utt=%d&utl=%s&cd=%s",
-        urlEncode(category),
-        name == NULL ? "" : urlEncode(name),
+        Utils::urlEncode(category).c_str(),
+        name == NULL ? "" : Utils::urlEncode(name).c_str(),
         timeMs,
-        label == NULL ? "" : urlEncode(label),
+        label == NULL ? "" : Utils::urlEncode(label).c_str(),
         _currentView.c_str()
         );
 }
@@ -383,7 +383,7 @@ void TrackerService::sendTiming(const char * category, const int& timeMs, const 
 void TrackerService::sendException(const char * type, bool isFatal)
 {
     sendData("t=exception&exd=%s&exf=%d&cd=%s",
-        urlEncode(type),
+        Utils::urlEncode(type).c_str(),
         isFatal ? 1 : 0,
         _currentView.c_str()
         );
@@ -392,25 +392,25 @@ void TrackerService::sendException(const char * type, bool isFatal)
 void TrackerService::sendTransaction(const char * transactionID, const char * store, float totalRevenue, float shippingCost, float tax, const char * currencyCode)
 {
     sendData("t=transaction&ti=%s&ta=%s&tr=%.2f&ts=%.2f&tt=%.2f&cu=%s",
-        urlEncode(transactionID),
-        urlEncode(store),
+        Utils::urlEncode(transactionID).c_str(),
+        Utils::urlEncode(store).c_str(),
         totalRevenue,
         shippingCost,
         tax,
-        urlEncode(currencyCode)
+        Utils::urlEncode(currencyCode).c_str()
         );
 }
 
 void TrackerService::sendItem(const char * transactionID, const char * name, float price, int quantity, const char * sku, const char * category, const char * currencyCode)
 {
     sendData("t=item&ti=%s&in=%s&ip=%.2f&iq=%d&ic=%s&iv=%s&cu=%s",
-        urlEncode(transactionID),
-        urlEncode(name),
+        Utils::urlEncode(transactionID).c_str(),
+        Utils::urlEncode(name).c_str(),
         price,
         quantity,
-        urlEncode(sku),
-        urlEncode(category),
-        urlEncode(currencyCode)
+        Utils::urlEncode(sku).c_str(),
+        Utils::urlEncode(category).c_str(),
+        Utils::urlEncode(currencyCode).c_str()
         );
 }
 
@@ -444,7 +444,7 @@ void TrackerService::sendData(const char * format, ...)
         if (!_customDimensions[i].empty())
         {
             char buf[256];
-            sprintf(buf, "&cd%d=%s", i + 1, urlEncode(_customDimensions[i].c_str()));
+            sprintf(buf, "&cd%d=%s", i + 1, Utils::urlEncode(_customDimensions[i]).c_str());
             strncat(request, buf, 4095);
         }
 
@@ -471,11 +471,6 @@ void TrackerService::sendData(const char * format, ...)
     //memset(_customMetrics, 0, sizeof(_customMetrics));
     //for (i = 0; i < MAX_CUSTOM_DIMENSIONS; i++)
     //    _customDimensions[i].clear();
-}
-
-const char * TrackerService::urlEncode(const char * str)
-{
-    return Utils::urlEncode(str);
 }
 
 void TrackerService::setUserId(const char * userId)

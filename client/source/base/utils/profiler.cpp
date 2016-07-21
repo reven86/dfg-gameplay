@@ -216,7 +216,7 @@ void Profiler::drawPerformanceInfo(const gameplay::Font * fnt, gameplay::SpriteB
 
         sprintf(buf, "%s: %.1f", pi.first.c_str(), pi.second * _frameDelta);
 
-        fnt->drawText(Utils::ANSIToWCS(buf), cur_x, cur_y, gameplay::Vector4::one(), fontSize);
+        fnt->drawText(Utils::ANSIToWCS(buf).c_str(), cur_x, cur_y, gameplay::Vector4::one(), fontSize);
 
         cur_y += bar_h + 8.0f;
     }
@@ -233,7 +233,7 @@ void Profiler::drawPerformanceInfo(const gameplay::Font * fnt, gameplay::SpriteB
 
         sprintf(buf, "%s: %.1f", pi.first.c_str(), pi.second * _frameDelta);
 
-        fnt->drawText(Utils::ANSIToWCS(buf), cur_x, cur_y, gameplay::Vector4::one(), fontSize);
+        fnt->drawText(Utils::ANSIToWCS(buf).c_str(), cur_x, cur_y, gameplay::Vector4::one(), fontSize);
 
         cur_y += bar_h + 8.0f;
     }
