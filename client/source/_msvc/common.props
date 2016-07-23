@@ -1,14 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="UserMacros">
+    <GAMEPLAY_PATH>..\..\..\..\GamePlay\</GAMEPLAY_PATH>
+  </PropertyGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir>$(ProjectDir)_$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)_$(Configuration)\obj\</IntDir>
   </PropertyGroup>
+  <ItemGroup>
+    <BuildMacro Include="GAMEPLAY_PATH">
+      <Value>$(GAMEPLAY_PATH)</Value>
+    </BuildMacro>
+  </ItemGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(GAMEPLAY_PATH)gameplay\src;$(GAMEPLAY_PATH)external-deps\include;$(ProjectDir)..\;$(ProjectDir)..\base;$(MSBuildProgramFiles32)\Microsoft DirectX SDK (June 2010)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB;_CRT_NONSTDC_NO_WARNINGS;ZIP_STATIC;noexcept=;_ALLOW_KEYWORD_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;CURL_STATICLIB;_CRT_NONSTDC_NO_WARNINGS;ZIP_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
