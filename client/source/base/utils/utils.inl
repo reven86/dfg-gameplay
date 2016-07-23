@@ -53,6 +53,9 @@ inline std::string Utils::format(const char * fmt, ...)
 
 inline std::string Utils::urlEncode(const std::string& source)
 {
+	if (source.empty())
+		return std::string();
+
     std::string result;
 
     static char hexmap[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
