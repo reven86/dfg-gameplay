@@ -60,11 +60,6 @@ add_definitions(${GTK2_CFLAGS_OTHER})
 add_definitions(-D__linux__)
 ENDIF(LINUX)
 
-if(WIN32)
-    add_definitions(-D_ALLOW_KEYWORD_MACROS)
-    add_definitions(-Dnoexcept=)
-endif(WIN32)
-
 set_source_files_properties(${DFGGAMEPLAY_SRC} PROPERTIES COMPILE_FLAGS "-std=c++11")
 
 add_definitions(-lstdc++)

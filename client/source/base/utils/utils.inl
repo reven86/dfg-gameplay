@@ -62,7 +62,7 @@ inline std::string Utils::urlEncode(const std::string& source)
 
     size_t max = source.size();
     const char * src = &(*source.begin());
-    for (int i = 0; i < max; i++, src++)
+    for (size_t i = 0; i < max; i++, src++)
     {
         if (('0' <= *src && *src <= '9') ||
             ('A' <= *src && *src <= 'Z') ||
