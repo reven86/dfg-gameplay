@@ -65,7 +65,7 @@ bool ZipPackagesCache::hasFile(const char * packageName, const char * filename)
 {
     zip * package = findOrOpenPackage(packageName);
     if (!package)
-        return gameplay::FileSystem::fileExists(filename);
+        return NULL;
 
     return zip_name_locate(package, filename, ZIP_FL_ENC_GUESS | ZIP_FL_NOCASE) >= 0;
 }
