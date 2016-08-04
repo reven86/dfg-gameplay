@@ -13,6 +13,7 @@ ZipPackage::ZipPackage(const char * packageName)
 
 ZipPackage::~ZipPackage()
 {
+    gameplay::FileSystem::unregisterPackage(this);
 }
 
 ZipPackage * ZipPackage::create(const char * zipFile)

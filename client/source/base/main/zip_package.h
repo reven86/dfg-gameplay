@@ -32,6 +32,11 @@ public:
      */
     void setPassword(const char * password);
 
+    /**
+     * Get package name.
+     */
+    const char * getPackageName() const { return _packageName.c_str(); };
+
 protected:
     ZipPackage(const char * packageName);
 
