@@ -87,7 +87,7 @@ void HTTPRequestService::makeRequestSync(const Request& request)
 void HTTPRequestService::requestLoadCallback(unsigned, void * arg, void *buf, unsigned length)
 {
     Request * request = reinterpret_cast<Request *>(arg);
-    request->responseCallback(CURLE_OK, MemoryStream::create(buf, length), NULL);
+    request->responseCallback(CURLE_OK, MemoryStream::create(buf, length), NULL, 200);
     delete request;
 }
 
@@ -95,7 +95,7 @@ void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode
 {
     Request * request = reinterpret_cast<Request *>(arg);
     GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), errorCode, status);
-    request->responseCallback(errorCode, NULL, status);
+    request->responseCallback(errorCode, NULL, status, errorCode);
     delete request;
 }
 
@@ -123,11 +123,14 @@ void HTTPRequestService::sendRequest(const Request& request)
     CURLcode res = curl_easy_perform(_curl);
     curl_slist_free_all(list);
 
+    long httpResponseCode = 0;
+    curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &httpResponseCode);
+
     if (res != CURLE_OK)
         GP_LOG("Failed to perform HTTP request: error %d - %s", res, request.url.c_str());
 
     // response is copied by value since callback is invoked on main thread
-    _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, response, curl_easy_strerror(res)));
+    _taskQueueService->runOnMainThread(std::bind(request.responseCallback, res, response, curl_easy_strerror(res), httpResponseCode));
 
 #else
 

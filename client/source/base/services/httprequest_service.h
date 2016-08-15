@@ -33,7 +33,7 @@ public:
         std::string url;
         std::string postPayload;
         HeadersList headers;
-        std::function<void(int, class MemoryStream *, const char *)> responseCallback;
+        std::function<void(int, class MemoryStream *, const char *, long)> responseCallback;
     };
 
     static const char * getTypeName() { return "HTTPRequestService"; };
