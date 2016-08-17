@@ -73,15 +73,15 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequestAsync(const Request& request)
+int HTTPRequestService::makeRequestAsync(const Request& request, bool headOnly)
 {
     // note: request is copied by value
-    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request));
+    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, headOnly));
 }
 
-void HTTPRequestService::makeRequestSync(const Request& request)
+void HTTPRequestService::makeRequestSync(const Request& request, bool headOnly)
 {
-    sendRequest(request);
+    sendRequest(request, headOnly);
 }
 
 void HTTPRequestService::requestLoadCallback(unsigned, void * arg, void *buf, unsigned length)
@@ -99,7 +99,14 @@ void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode
     delete request;
 }
 
-void HTTPRequestService::sendRequest(const Request& request)
+int progressFunction(void * userp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+{
+    HTTPRequestService::Request * request = reinterpret_cast<HTTPRequestService::Request *>(userp);
+    GP_ASSERT(request->progressCallback);
+    return request->progressCallback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), static_cast<uint64_t>(ultotal), static_cast<uint64_t>(ulnow));
+}
+
+void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
 {
     // make sure curl is used only for one thread in any moment
     std::unique_lock<std::mutex> lock(_requestProcessingMutex);
@@ -111,6 +118,11 @@ void HTTPRequestService::sendRequest(const Request& request)
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
     curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
     curl_easy_setopt(_curl, CURLOPT_WRITEDATA, response);
+    curl_easy_setopt(_curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
+    curl_easy_setopt(_curl, CURLOPT_XFERINFOFUNCTION, &progressFunction);
+    curl_easy_setopt(_curl, CURLOPT_XFERINFODATA, &request);
+    curl_easy_setopt(_curl, CURLOPT_HEADER, headOnly ? 1 : 0);
+    curl_easy_setopt(_curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
 
     struct curl_slist *list = NULL;
     if (!request.headers.empty())

@@ -34,6 +34,10 @@ public:
         std::string postPayload;
         HeadersList headers;
         std::function<void(int, class MemoryStream *, const char *, long)> responseCallback;
+
+        // progress callback, can be invoked from separate thread
+        // agruments and return value match the ones of CURLOPT_XFERINFOFUNCTION
+        std::function<bool(uint64_t, uint64_t, uint64_t, uint64_t)> progressCallback;
     };
 
     static const char * getTypeName() { return "HTTPRequestService"; };
@@ -50,17 +54,19 @@ public:
      * there is no need to use synchonization primitives.
      *
      * @param[in] request Request data.
+     * @param[in] headOnly Make only HEAD request.
      * @return Work item handle.
      */
-    int makeRequestAsync(const Request& request);
+    int makeRequestAsync(const Request& request, bool headOnly = false);
 
     /** 
      * Create HTTP request and execute it immediately from calling thread.
      *
      * @param[in] request Request data.
+     * @param[in] headOnly Make only HEAD request.
      * @param[in] responseCallback Callback functor when response is received.
      */
-    void makeRequestSync(const Request& request);
+    void makeRequestSync(const Request& request, bool headOnly = false);
 
 protected:
     HTTPRequestService(const ServiceManager * manager);
@@ -71,7 +77,7 @@ protected:
     virtual bool onShutdown();
 
 private:
-    void sendRequest(const Request& request);
+    void sendRequest(const Request& request, bool headOnly);
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
     static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length);
     static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);
