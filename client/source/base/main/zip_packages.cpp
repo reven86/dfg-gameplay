@@ -69,3 +69,13 @@ bool ZipPackagesCache::hasFile(const char * packageName, const char * filename)
 
     return zip_name_locate(package, filename, ZIP_FL_ENC_GUESS | ZIP_FL_NOCASE) >= 0;
 }
+
+void ZipPackagesCache::closePackage(const char * packageName)
+{
+    if (packageName == NULL || *packageName == '\0')
+        return;
+
+    auto package = _packages.find(packageName);
+    if (package != _packages.end())
+        _packages.erase(package);
+}

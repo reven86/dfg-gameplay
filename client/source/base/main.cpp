@@ -6,12 +6,6 @@
 #include "services/tracker_service.h"
 #include <curl/curl.h>
 
-#ifdef WIN32
-#include <direct.h>
-#include <Windows.h>
-#else
-#include <sys/stat.h>
-#endif
 
 #ifdef __APPLE__
 #import <Foundation/Foundation.h>

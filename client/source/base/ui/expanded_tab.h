@@ -3,6 +3,8 @@
 #ifndef __DFG_EXPANDED_TAB_H__
 #define __DFG_EXPANDED_TAB_H__
 
+#undef DOUBLE_CLICK
+
 
 
 

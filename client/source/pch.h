@@ -59,6 +59,14 @@
 #include <emscripten.h>
 #endif
 
+#ifdef WIN32
+#include <direct.h>
+#include <Windows.h>
+#else
+#include <sys/stat.h>
+#endif
+
+
 
 
 
