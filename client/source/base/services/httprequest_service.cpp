@@ -99,7 +99,7 @@ void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode
     delete request;
 }
 
-void HTTPRequestService::requestProgressCallback(void * arg, int dlnow, int dltotal)
+void HTTPRequestService::requestProgressCallback(unsigned, void * arg, int dlnow, int dltotal)
 {
     Request * request = reinterpret_cast<Request *>(arg);
     request->progressCallback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), 0, 0);
@@ -151,6 +151,13 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
     _taskQueueService->runOnMainThread([=]() { request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
 
 #else
+    
+    // HEAD request are currently not supported
+    if (headOnly)
+    {
+        request.responseCallback(-1, NULL, "Unsupported", 404);
+        return;
+    }
 
     std::string additionalHeaders;  // headers in JSON format
     if (!request.headers.empty())
