@@ -81,6 +81,7 @@ private:
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
     static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length);
     static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);
+    static void requestProgressCallback(void * arg, int dlnow, int dltotal);
 
     void * _curl;
 

@@ -95,8 +95,14 @@ void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode
 {
     Request * request = reinterpret_cast<Request *>(arg);
     GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), errorCode, status);
-    request->responseCallback(errorCode, NULL, status, errorCode);
+    request->responseCallback(0, NULL, status, errorCode);  // there is no 'curl' error for emscripten callback, errorCode is HTTP status code
     delete request;
+}
+
+void HTTPRequestService::requestProgressCallback(void * arg, int dlnow, int dltotal)
+{
+    Request * request = reinterpret_cast<Request *>(arg);
+    request->progressCallback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), 0, 0);
 }
 
 int progressFunction(void * userp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
@@ -165,7 +171,8 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
     Request * newRequest = new Request(request);
 
     emscripten_async_wget3_data(request.url.c_str(), request.postPayload.empty() ? "GET" : "POST", request.postPayload.c_str(),
-        additionalHeaders.c_str(), newRequest, true, &HTTPRequestService::requestLoadCallback, &HTTPRequestService::requestErrorCallback, NULL);
+        additionalHeaders.c_str(), newRequest, true, &HTTPRequestService::requestLoadCallback, &HTTPRequestService::requestErrorCallback, 
+        request.progressCallback ? &HTTPRequestService::requestProgressCallback : NULL);
 
 #endif
 }
