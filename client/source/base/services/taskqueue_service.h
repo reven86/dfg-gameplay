@@ -5,6 +5,7 @@
 
 #include "service.h"
 #include <condition_variable>
+#include <atomic>
 
 
 
@@ -47,16 +48,18 @@ public:
      * work item's handle which can later be used to remove the work item
      * from the queue in case it's not started yet.
      *
-     * @param[in] queue Task queue name.
+     * @param[in] queue Task queue name. NULL to run on main thread, same as runOnMainThread.
      * @param[in] func Work item functor.
      * @return Work item handle.
+     *
+     * @see runOnMainThread
      */
     int addWorkItem(const char * queue, const std::function<void()>& func);
 
     /** 
      * Remove work item from the task queue.
      *
-     * @param[in] queue Task queue name.
+     * @param[in] queue Task queue name. NULL to remove work item from main thread.
      * @param[in] itemHandle Work item's handle.
      */
     void removeWorkItem(const char * queue, int itemHandle);
@@ -71,8 +74,9 @@ public:
      * items in the queue, only one of them processed in onTick.
      *
      * @param[in] func Work item functor.
+     * @return Work item handle.
      */
-    void runOnMainThread(const std::function<void()>& func);
+    int runOnMainThread(const std::function<void()>& func);
 
 protected:
     TaskQueueService(const ServiceManager * manager);
@@ -87,7 +91,9 @@ private:
 
     // unnamed queue
     std::mutex _queueMutex;
-    std::deque<std::function<void()> > _queue;
+    std::recursive_mutex _queueItemRemoveMutex;       // needed to prevent work item deletion after it started processing
+    std::deque<std::pair<int, std::function<void()> > > _queue;
+    static std::atomic_int _itemCounter;
 };
 
 

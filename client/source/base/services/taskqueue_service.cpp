@@ -9,17 +9,6 @@
 
 class TaskQueue : Noncopyable
 {
-private:
-    std::unique_ptr<std::thread> _workThread;
-    bool _workThreadIsActive;
-    std::string _name;
-    TaskQueueService * _service;
-
-    std::mutex _queueMutex;
-    std::condition_variable _queueIsNotEmpty;
-    std::deque<std::pair<int, std::function<void()> > > _queue;
-    static std::atomic_int _itemCounter;
-
 public:
     TaskQueue(const char * name, TaskQueueService * taskService);
     virtual ~TaskQueue();
@@ -32,6 +21,18 @@ public:
 
 private:
     static void threadProc(void * cookie);
+
+
+    std::unique_ptr<std::thread> _workThread;
+    bool _workThreadIsActive;
+    std::string _name;
+    TaskQueueService * _service;
+
+    std::mutex _queueMutex;
+    std::mutex _queueItemRemoveMutex;       // needed to prevent work item deletion after it started processing
+    std::condition_variable _queueIsNotEmpty;
+    std::deque<std::pair<int, std::function<void()> > > _queue;
+    static std::atomic_int _itemCounter;
 };
 
 
@@ -39,6 +40,8 @@ private:
 
 
 
+
+std::atomic_int TaskQueueService::_itemCounter;
 
 TaskQueueService::TaskQueueService(const ServiceManager * manager)
     : Service(manager)
@@ -63,7 +66,8 @@ bool TaskQueueService::onTick()
         if (!_queue.empty())
         {
             // copy functor
-            auto fn = _queue.front();
+            std::unique_lock<std::recursive_mutex> itemRemovelock(_queueItemRemoveMutex);
+            auto fn = _queue.front().second;
             _queue.pop_front();
             _queueMutex.unlock();
 
@@ -88,9 +92,10 @@ bool TaskQueueService::onShutdown()
     if (!_queue.empty())
     {
         std::unique_lock<std::mutex> lock(_queueMutex);
+        std::unique_lock<std::recursive_mutex> itemRemovelock(_queueItemRemoveMutex);
         while(!_queue.empty())
         {
-            _queue.front()();
+            _queue.front().second();
             _queue.pop_front();
         }
     }
@@ -113,6 +118,9 @@ void TaskQueueService::removeQueue(const char * name)
 
 int TaskQueueService::addWorkItem(const char * queue, const std::function<void()>& func)
 {
+    if (!queue)
+        return runOnMainThread(func);
+
 #if defined(__EMSCRIPTEN__)
     // emscripten does not fully support multithreading and conditional variables
     runOnMainThread(func);
@@ -128,17 +136,35 @@ int TaskQueueService::addWorkItem(const char * queue, const std::function<void()
 
 void TaskQueueService::removeWorkItem(const char * queue, int itemHandle)
 {
-    auto it = _queues.find(queue);
-    if (it == _queues.end())
+    if (queue)
+    {
+        auto it = _queues.find(queue);
+        if (it == _queues.end())
+            return;
+
+        (*it).second->removeWorkItem(itemHandle);
+        return;
+    }
+
+    // remove item from main thread queue
+    std::unique_lock<std::mutex> lock(_queueMutex);
+    std::unique_lock<std::recursive_mutex> itemRemoveLock(_queueItemRemoveMutex);
+
+    auto it = std::find_if(_queue.begin(), _queue.end(), [&itemHandle](const std::pair<int, std::function<void()> >& a) {return a.first == itemHandle; });
+    if (it == _queue.end())
         return;
 
-    (*it).second->removeWorkItem(itemHandle);
+    _queue.erase(it);
 }
 
-void TaskQueueService::runOnMainThread(const std::function<void()>& func)
+int TaskQueueService::runOnMainThread(const std::function<void()>& func)
 {
     std::unique_lock<std::mutex> lock(_queueMutex);
-    _queue.push_back(func);
+
+    _itemCounter++;
+    _queue.push_back(std::make_pair(_itemCounter.load(), func));
+
+    return _itemCounter;
 }
 
 
@@ -200,6 +226,7 @@ int TaskQueue::addWorkItem(const std::function<void()>& func)
 void TaskQueue::removeWorkItem(int itemHandle)
 {
     std::unique_lock<std::mutex> lock(_queueMutex);
+    std::unique_lock<std::mutex> itemRemoveLock(_queueItemRemoveMutex);
 
     auto it = std::find_if(_queue.begin(), _queue.end(), [&itemHandle](const std::pair<int, std::function<void()> >& a){return a.first == itemHandle; });
     if (it == _queue.end())
@@ -223,12 +250,14 @@ void TaskQueue::threadProc(void * cookie)
                 _this->_queueIsNotEmpty.wait(lock);
             if (!_this->_workThreadIsActive)
                 break;
+            _this->_queueItemRemoveMutex.lock();
             item = _this->_queue.front();
             _this->_queue.pop_front();
         }
 
-        _this->_service->runOnMainThread([&item](){ ServiceManager::getInstance()->signals.taskQueueWorkItemLoadedEvent(item.first); });
+        _this->_service->runOnMainThread([&item]() { ServiceManager::getInstance()->signals.taskQueueWorkItemLoadedEvent(item.first); });
         item.second();
+        _this->_queueItemRemoveMutex.unlock();
         _this->_service->runOnMainThread([&item](){ ServiceManager::getInstance()->signals.taskQueueWorkItemProcessedEvent(item.first); });
     }
     _this->_service->runOnMainThread([_this](){ ServiceManager::getInstance()->signals.taskQueueStoppedEvent(_this->_name.c_str()); });
