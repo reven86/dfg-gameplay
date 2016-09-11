@@ -149,24 +149,24 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
 
     // the actual scaling
     if (!control->isXPercentage())
-        control->setX(control->getX() * kx);
+        control->setX(roundf(control->getX() * kx));
     if (!control->isYPercentage())
-        control->setY(control->getY() * ky);
+        control->setY(roundf(control->getY() * ky));
     if (!control->isWidthPercentage() && (control->getAutoSize() & gameplay::Control::AUTO_SIZE_WIDTH) == 0)
-        control->setWidth(control->getWidth() * kx);
+        control->setWidth(roundf(control->getWidth() * kx));
     if (!control->isHeightPercentage() && (control->getAutoSize() & gameplay::Control::AUTO_SIZE_HEIGHT) == 0)
-        control->setHeight(control->getHeight() * ky);
+        control->setHeight(roundf(control->getHeight() * ky));
 
     const gameplay::Theme::Border& border = control->getBorder();
     const gameplay::Theme::Margin& margin = control->getMargin();
     const gameplay::Theme::Padding& padding = control->getPadding();
-    control->setBorder(border.top * ky, border.bottom * ky, border.left * kx, border.right * kx);
-    control->setMargin(margin.top * ky, margin.bottom * ky, margin.left * kx, margin.right * kx);
-    control->setPadding(padding.top * ky, padding.bottom * ky, padding.left * kx, padding.right * kx);
+    control->setBorder(roundf(border.top * ky), roundf(border.bottom * ky), roundf(border.left * kx), roundf(border.right * kx));
+    control->setMargin(roundf(margin.top * ky), roundf(margin.bottom * ky), roundf(margin.left * kx), roundf(margin.right * kx));
+    control->setPadding(roundf(padding.top * ky), roundf(padding.bottom * ky), roundf(padding.left * kx), roundf(padding.right * kx));
 
     control->setFontSize(roundf(ky * control->getFontSize()));
-    control->setCharacterSpacing(ky * control->getCharacterSpacing());
-    control->setLineSpacing(ky * control->getLineSpacing());
+    control->setCharacterSpacing(roundf(ky * control->getCharacterSpacing()));
+    control->setLineSpacing(roundf(ky * control->getLineSpacing()));
 
     if (strcmp(control->getTypeName(), "Slider") == 0)
         static_cast<gameplay::Slider *>(control)->setScaleFactor(ky);
