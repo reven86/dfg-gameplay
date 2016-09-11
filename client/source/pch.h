@@ -30,6 +30,7 @@
 #pragma warning( disable: 4127 )	// conditional expression is constant
 #pragma warning( disable: 4201 )	// nameless struct/union
 #pragma warning( disable: 4458 )	// declaration hides class-member
+#pragma warning( disable: 4503 )    // name is too long
 
 #include "gameplay.h"
 
