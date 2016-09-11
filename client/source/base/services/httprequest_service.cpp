@@ -194,7 +194,7 @@ size_t HTTPRequestService::writeFunction(void *contents, size_t size, size_t nme
     return realSize;
 }
 
-const char * HTTPRequestService::getTaskQueueName() const
+const char * HTTPRequestService::getTaskQueueName()
 {
     return HTTP_REQUEST_SERVICE_QUEUE;
 }

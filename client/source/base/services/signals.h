@@ -63,8 +63,8 @@ struct Signals : Noncopyable
     //
     // TaskQueueService
     //
-    sigc::signal< void, int > taskQueueWorkItemLoadedEvent;
-    sigc::signal< void, int > taskQueueWorkItemProcessedEvent;
+    sigc::signal< void, const char *, int > taskQueueWorkItemLoadedEvent;
+    sigc::signal< void, const char *, int > taskQueueWorkItemProcessedEvent;
     sigc::signal< void, const char * > taskQueueStartedEvent;
     sigc::signal< void, const char * > taskQueueStoppedEvent;
 

@@ -45,7 +45,7 @@ public:
     /** 
      * Get queue name for HTTPRequestService.
      */
-    const char * getTaskQueueName() const;
+    static const char * getTaskQueueName();
 
     /**
      * Create HTTP request and add it to the outgoing queue.

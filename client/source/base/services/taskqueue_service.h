@@ -64,6 +64,14 @@ public:
      */
     void removeWorkItem(const char * queue, int itemHandle);
 
+    /**
+     * Get number of items in the queue.
+     *
+     * @param[in] queue Task queue name or NULL for main thread's queue.
+     * @return Number of work items in the queue.
+     */
+    int getWorkItemsCount(const char * queue) const;
+
     /** 
      * Schedule a work item to run on main thread.
      *

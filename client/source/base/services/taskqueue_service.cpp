@@ -18,6 +18,7 @@ public:
 
     int addWorkItem(const std::function<void()>& func);
     void removeWorkItem(int itemHandle);
+    int getWorkItemsCount() const { return static_cast<int>(_queue.size()); }
 
 private:
     static void threadProc(void * cookie);
@@ -167,6 +168,21 @@ int TaskQueueService::runOnMainThread(const std::function<void()>& func)
     return _itemCounter;
 }
 
+int TaskQueueService::getWorkItemsCount(const char * queue) const 
+{
+    // no need to make synchronization here
+    // result may be not accurate by design
+    if (queue)
+    {
+        auto it = _queues.find(queue);
+        if (it == _queues.end())
+            return 0;
+        return (*it).second->getWorkItemsCount();
+    }
+
+    return static_cast<int>(_queue.size());
+}
+
 
 
 
@@ -255,10 +271,10 @@ void TaskQueue::threadProc(void * cookie)
             _this->_queue.pop_front();
         }
 
-        _this->_service->runOnMainThread([&item]() { ServiceManager::getInstance()->signals.taskQueueWorkItemLoadedEvent(item.first); });
+        _this->_service->runOnMainThread([&item, _this]() { ServiceManager::getInstance()->signals.taskQueueWorkItemLoadedEvent(_this->_name.c_str(), item.first); });
         item.second();
         _this->_queueItemRemoveMutex.unlock();
-        _this->_service->runOnMainThread([&item](){ ServiceManager::getInstance()->signals.taskQueueWorkItemProcessedEvent(item.first); });
+        _this->_service->runOnMainThread([&item, _this](){ ServiceManager::getInstance()->signals.taskQueueWorkItemProcessedEvent(_this->_name.c_str(), item.first); });
     }
     _this->_service->runOnMainThread([_this](){ ServiceManager::getInstance()->signals.taskQueueStoppedEvent(_this->_name.c_str()); });
 }

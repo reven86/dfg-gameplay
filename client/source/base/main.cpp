@@ -35,7 +35,7 @@ DfgGame::DfgGame()
 void DfgGame::initialize()
 {
 #ifndef __EMSCRIPTEN__
-    // initialize curl before any servers get created
+    // initialize curl before any services get created
     curl_global_init(CURL_GLOBAL_ALL);
 #endif
 
