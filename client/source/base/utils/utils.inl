@@ -166,6 +166,8 @@ inline void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * ou
     int val = 0, valb = -8;
     for (uint8_t c : in)
     {
+        if (c == '\n')
+            continue;
         if (T[c] == -1)
             break;
         val = (val << 6) + T[c];
