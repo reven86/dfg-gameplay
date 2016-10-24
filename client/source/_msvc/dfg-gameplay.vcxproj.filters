@@ -89,6 +89,12 @@
     <ClCompile Include="..\base\ui\http_image_control.cpp">
       <Filter>base\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\main\archive.cpp">
+      <Filter>base\main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\main\variant.cpp">
+      <Filter>base\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -210,6 +216,12 @@
     <ClInclude Include="..\base\ui\http_image_control.h">
       <Filter>base\ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\main\archive.h">
+      <Filter>base\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\main\variant.h">
+      <Filter>base\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -237,6 +249,12 @@
   <ItemGroup>
     <None Include="..\base\utils\utils.inl">
       <Filter>base\utils</Filter>
+    </None>
+    <None Include="..\base\main\archive.inl">
+      <Filter>base\main</Filter>
+    </None>
+    <None Include="..\base\main\variant.inl">
+      <Filter>base\main</Filter>
     </None>
   </ItemGroup>
 </Project>

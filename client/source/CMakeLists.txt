@@ -1,10 +1,12 @@
 
 set(DFGGAMEPLAY_SRC
     pch.cpp
+    base/main/archive.cpp
     base/main/asset.cpp
     base/main/dictionary.cpp
     base/main/gameplay_assets.cpp
     base/main/memory_stream.cpp
+    base/main/variant.cpp
     base/main/zip_package.cpp
     base/main/zip_packages.cpp
     base/main/zip_stream.cpp

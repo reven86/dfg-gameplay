@@ -1,0 +1,481 @@
+#include "variant.h"
+
+
+
+namespace detail
+{
+    static std::array<std::pair<VariantType::Type, const char *>, VariantType::TYPES_COUNT> __variantNames = {
+        std::make_pair(VariantType::TYPE_NONE, "unknown"),
+        std::make_pair(VariantType::TYPE_BOOLEAN, "bool"),
+        std::make_pair(VariantType::TYPE_INT32, "int32"),
+        std::make_pair(VariantType::TYPE_FLOAT, "float"),
+        std::make_pair(VariantType::TYPE_STRING, "string"),
+        std::make_pair(VariantType::TYPE_WIDE_STRING, "wideString"),
+        std::make_pair(VariantType::TYPE_BYTE_ARRAY, "byteArray"),
+        std::make_pair(VariantType::TYPE_UINT32, "uint32"),
+        std::make_pair(VariantType::TYPE_KEYED_ARCHIVE, "keyedArchive"),
+        std::make_pair(VariantType::TYPE_INT64, "int64"),
+        std::make_pair(VariantType::TYPE_UINT64, "uint64"),
+        std::make_pair(VariantType::TYPE_VECTOR2, "Vector2"),
+        std::make_pair(VariantType::TYPE_VECTOR3, "Vector3"),
+        std::make_pair(VariantType::TYPE_VECTOR4, "Vector4"),
+        std::make_pair(VariantType::TYPE_MATRIX2, "Matrix2"),
+        std::make_pair(VariantType::TYPE_MATRIX3, "Matrix3"),
+        std::make_pair(VariantType::TYPE_MATRIX4, "Matrix4"),
+        std::make_pair(VariantType::TYPE_COLOR, "Color"),
+        std::make_pair(VariantType::TYPE_FASTNAME, "FastName"),
+        std::make_pair(VariantType::TYPE_AABBOX3, "AABBox3"),
+        std::make_pair(VariantType::TYPE_FILEPATH, "FilePath"),
+        std::make_pair(VariantType::TYPE_FLOAT64, "float64"),
+        std::make_pair(VariantType::TYPE_INT8, "int8"),
+        std::make_pair(VariantType::TYPE_UINT8, "uint8"),
+        std::make_pair(VariantType::TYPE_INT16, "int16"),
+        std::make_pair(VariantType::TYPE_UINT16, "uint16"),
+    };
+};
+
+
+template<typename _Type> inline VariantType::VariantType(const _Type& var)
+{
+    set(var);
+}
+
+inline VariantType::Type VariantType::getType() const
+{
+    return type;
+}
+
+inline const char * VariantType::getTypeName() const
+{
+    return detail::__variantNames[type].second;
+}
+
+template<> inline void VariantType::set(const bool& value)
+{
+    release();
+    type = TYPE_BOOLEAN;
+    boolValue = value;
+}
+
+template<> inline void VariantType::set(const int8_t& value)
+{
+    release();
+    type = TYPE_INT8;
+    int8Value = value;
+}
+
+template<> inline void VariantType::set(const uint8_t& value)
+{
+    release();
+    type = TYPE_UINT8;
+    uint8Value = value;
+}
+
+template<> inline void VariantType::set(const int16_t& value)
+{
+    release();
+    type = TYPE_INT16;
+    int16Value = value;
+}
+
+template<> inline void VariantType::set(const uint16_t& value)
+{
+    release();
+    type = TYPE_UINT16;
+    uint16Value = value;
+}
+
+template<> inline void VariantType::set(const int32_t& value)
+{
+    release();
+    type = TYPE_INT32;
+    int32Value = value;
+}
+
+template<> inline void VariantType::set(const uint32_t& value)
+{
+    release();
+    type = TYPE_UINT32;
+    uint32Value = value;
+}
+
+template<> inline void VariantType::set(const float& value)
+{
+    release();
+    type = TYPE_FLOAT;
+    floatValue = value;
+}
+
+template<> inline void VariantType::set(const double& value)
+{
+    release();
+    type = TYPE_FLOAT64;
+    float64Value = value;
+}
+
+template<> inline void VariantType::set(const std::string& value)
+{
+    release();
+    type = TYPE_STRING;
+    stringValue = new std::string(value);
+}
+
+template<> inline void VariantType::set(const std::wstring& value)
+{
+    release();
+    type = TYPE_WIDE_STRING;
+    wideStringValue = new std::wstring(value);
+}
+
+//template<> void VariantType::set(const class Archive& value)
+//{
+//    GP_ASSERT(!"Not implemented yet");
+//}
+
+template<> inline void VariantType::set(const int64_t& value)
+{
+    release();
+    type = TYPE_INT64;
+    int64Value = value;
+}
+
+template<> inline void VariantType::set(const uint64_t& value)
+{
+    release();
+    type = TYPE_UINT64;
+    uint64Value = value;
+}
+
+template<> inline void VariantType::set(const gameplay::Vector2& value)
+{
+    release();
+    type = TYPE_VECTOR2;
+    vector2Value = new gameplay::Vector2(value);
+}
+
+template<> inline void VariantType::set(const gameplay::Vector3& value)
+{
+    release();
+    type = TYPE_VECTOR3;
+    vector3Value = new gameplay::Vector3(value);
+}
+
+template<> inline void VariantType::set(const gameplay::Vector4& value)
+{
+    release();
+    type = TYPE_VECTOR4;
+    vector4Value = new gameplay::Vector4(value);
+}
+
+template<> inline void VariantType::set(const gameplay::Matrix3& value)
+{
+    release();
+    type = TYPE_MATRIX3;
+    matrix3Value = new gameplay::Matrix3(value);
+}
+
+template<> inline void VariantType::set(const gameplay::Matrix& value)
+{
+    release();
+    type = TYPE_MATRIX4;
+    matrix4Value = new gameplay::Matrix(value);
+}
+
+template<> inline void VariantType::set(const VariantType& value)
+{
+    if (this == &value)
+        return;
+
+    type = TYPE_NONE;
+    switch (value.type)
+    {
+    case TYPE_BOOLEAN:
+        set(value.boolValue);
+        return;
+    case TYPE_INT32:
+        set(value.int32Value);
+        return;
+    case TYPE_FLOAT:
+        set(value.floatValue);
+        return;
+    case TYPE_STRING:
+        set(*value.stringValue);
+        return;
+    case TYPE_WIDE_STRING:
+        set(*value.wideStringValue);
+        return;
+    case TYPE_BYTE_ARRAY:
+        GP_ASSERT(!"Not implemented yet");
+        return;
+    case TYPE_UINT32:
+        set(value.uint32Value);
+        return;
+    case TYPE_KEYED_ARCHIVE:
+        GP_ASSERT(!"Not implemented yet");
+        return;
+    case TYPE_INT64:
+        set(value.int64Value);
+        return;
+    case TYPE_UINT64:
+        set(value.uint64Value);
+        return;
+    case TYPE_VECTOR2:
+        set(value.vector2Value);
+        return;
+    case TYPE_VECTOR3:
+        set(value.vector3Value);
+        return;
+    case TYPE_VECTOR4:
+        set(value.vector4Value);
+        return;
+    case TYPE_MATRIX3:
+        set(value.matrix3Value);
+        return;
+    case TYPE_MATRIX4:
+        set(value.matrix4Value);
+        return;
+    case TYPE_COLOR:
+        GP_ASSERT(!"Not implemented yet");
+        return;
+    case TYPE_FASTNAME:
+        GP_ASSERT(!"Not implemented yet");
+        return;
+    case TYPE_AABBOX3:
+        GP_ASSERT(!"Not implemented yet");
+        return;
+    case TYPE_FILEPATH:
+        GP_ASSERT(!"Not implemented yet");
+        return;
+    case TYPE_FLOAT64:
+        set(value.float64Value);
+        return;
+    case TYPE_INT8:
+        set(value.int8Value);
+        return;
+    case TYPE_UINT8:
+        set(value.uint8Value);
+        return;
+    case TYPE_INT16:
+        set(value.int16Value);
+        return;
+    case TYPE_UINT16:
+        set(value.uint16Value);
+        return;
+    default:
+        GP_ASSERT(!"Not implemented yet");
+    }
+}
+
+template<> inline const bool& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_BOOLEAN);
+    return boolValue;
+}
+
+template<> inline const int8_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_INT8);
+    return int8Value;
+}
+
+template<> inline const uint8_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_UINT8);
+    return uint8Value;
+}
+
+template<> inline const int16_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_INT16);
+    return int16Value;
+}
+
+template<> inline const uint16_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_UINT16);
+    return uint16Value;
+}
+
+template<> inline const int32_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_INT32);
+    return int32Value;
+}
+
+template<> inline const uint32_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_UINT32);
+    return uint32Value;
+}
+
+template<> inline const int64_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_INT64);
+    return int64Value;
+}
+
+template<> inline const uint64_t& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_UINT64);
+    return uint64Value;
+}
+
+template<> inline const float& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_FLOAT);
+    return floatValue;
+}
+
+template<> inline const double& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_FLOAT64);
+    return float64Value;
+}
+
+template<> inline const std::string& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_STRING);
+    return *stringValue;
+}
+
+template<> inline const std::wstring& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_WIDE_STRING);
+    return *wideStringValue;
+}
+
+template<> inline const gameplay::Vector2& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_VECTOR2);
+    return *vector2Value;
+}
+
+template<> inline const gameplay::Vector3& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_VECTOR3);
+    return *vector3Value;
+}
+
+template<> inline const gameplay::Vector4& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_VECTOR4);
+    return *vector4Value;
+}
+
+template<> inline const gameplay::Matrix3& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_MATRIX3);
+    return *matrix3Value;
+}
+
+template<> inline const gameplay::Matrix& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_MATRIX4);
+    return *matrix4Value;
+}
+
+inline void VariantType::release()
+{
+    if (!pointerValue)
+        return;
+
+    switch (type)
+    {
+    case TYPE_VECTOR2:
+        SAFE_DELETE(vector2Value);
+        return;
+    case TYPE_VECTOR3:
+        SAFE_DELETE(vector3Value);
+        return;
+    case TYPE_VECTOR4:
+        SAFE_DELETE(vector4Value);
+        return;
+    case TYPE_MATRIX3:
+        SAFE_DELETE(matrix3Value);
+        return;
+    case TYPE_MATRIX4:
+        SAFE_DELETE(matrix4Value);
+        return;
+    case TYPE_STRING:
+        SAFE_DELETE(stringValue);
+        return;
+    case TYPE_WIDE_STRING:
+        SAFE_DELETE(wideStringValue);
+        return;
+    default:
+        GP_ASSERT(!"Not implemented yet");
+    }
+}
+
+inline bool VariantType::operator==(const VariantType& value) const
+{
+    if (type != value.type)
+        return false;
+
+    switch (type)
+    {
+    case TYPE_BOOLEAN:
+        return value.boolValue == boolValue;
+    case TYPE_INT32:
+        return value.int32Value == int32Value;
+    case TYPE_FLOAT:
+        return value.floatValue == floatValue;
+    case TYPE_STRING:
+        return *value.stringValue == *stringValue;
+    case TYPE_WIDE_STRING:
+        return *value.wideStringValue == *wideStringValue;
+    case TYPE_BYTE_ARRAY:
+        GP_ASSERT(!"Not implemented yet");
+        return false;
+    case TYPE_UINT32:
+        return value.uint32Value == uint32Value;
+    case TYPE_KEYED_ARCHIVE:
+        GP_ASSERT(!"Not implemented yet");
+        return false;
+    case TYPE_INT64:
+        return value.int64Value == int64Value;
+    case TYPE_UINT64:
+        return value.uint64Value == uint64Value;
+    case TYPE_VECTOR2:
+        return value.vector2Value == vector2Value;
+    case TYPE_VECTOR3:
+        return value.vector3Value == vector3Value;
+    case TYPE_VECTOR4:
+        return value.vector4Value == vector4Value;
+    case TYPE_MATRIX3:
+        return value.matrix3Value == matrix3Value;
+    case TYPE_MATRIX4:
+        return value.matrix4Value == matrix4Value;
+    case TYPE_COLOR:
+        GP_ASSERT(!"Not implemented yet");
+        return false;
+    case TYPE_FASTNAME:
+        GP_ASSERT(!"Not implemented yet");
+        return false;
+    case TYPE_AABBOX3:
+        GP_ASSERT(!"Not implemented yet");
+        return false;
+    case TYPE_FILEPATH:
+        GP_ASSERT(!"Not implemented yet");
+        return false;
+    case TYPE_FLOAT64:
+        return value.float64Value == float64Value;
+    case TYPE_INT8:
+        return value.int8Value == int8Value;
+    case TYPE_UINT8:
+        return value.uint8Value == uint8Value;
+    case TYPE_INT16:
+        return value.int16Value == int16Value;
+    case TYPE_UINT16:
+        return value.uint16Value == uint16Value;
+    default:
+        GP_ASSERT(!"Not implemented yet");
+    }
+    return false;
+}
+
+inline bool VariantType::operator!=(const VariantType& other) const
+{
+    return !(*this == other);
+}
+

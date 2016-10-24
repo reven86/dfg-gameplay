@@ -22,6 +22,7 @@
 #include <tuple>
 #include <unordered_map>
 #include <random>
+#include <array>
 
 
 
@@ -52,6 +53,7 @@
 #include "main/cache.h"
 #include "main/gameplay_assets.h"
 #include "main/dictionary.h"
+#include "main/variant.h"
 
 
 

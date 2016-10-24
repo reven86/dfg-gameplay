@@ -52,10 +52,12 @@ LOCAL_SRC_FILES := \
     uuidlib/unpack.c \
     uuidlib/unparse.c \
     uuidlib/uuid_time.c \
+    base/main/archive.cpp \
     base/main/asset.cpp \
     base/main/dictionary.cpp \
     base/main/gameplay_assets.cpp \
     base/main/memory_stream.cpp \
+    base/main/variant.cpp \
     base/main/zip_package.cpp \
     base/main/zip_packages.cpp \
     base/main/zip_stream.cpp \
@@ -85,10 +87,6 @@ LOCAL_SRC_FILES := \
 # LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
 LOCAL_CFLAGS    := -O3 -D__ANDROID__ -Wno-psabi -fpermissive -fexceptions \
     -I"$(GAMEPLAY_PATH)external-deps/include" \
-    -I"$(SAMPLE_PATH)../../third_party/libsigc++/include" \
-    -I"$(SAMPLE_PATH)../../third_party/libcurl/include" \
-    -I"$(SAMPLE_PATH)../../third_party/icu/include" \
-    -I"$(SAMPLE_PATH)../../third_party/zip/include" \
     -I"$(SAMPLE_PATH)base" \
     -I"$(GAMEPLAY_PATH)gameplay/src" \
     -DHAVE_INTTYPES_H \
