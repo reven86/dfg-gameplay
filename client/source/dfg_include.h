@@ -9,11 +9,13 @@
 
 #include "pch.h"
 
+#include "main/archive.h"
 #include "main/asset.h"
 #include "main/cache.h"
 #include "main/dictionary.h"
 #include "main/gameplay_assets.h"
 #include "main/memory_stream.h"
+#include "main/variant.h"
 #include "main/zip_package.h"
 #include "main/zip_packages.h"
 #include "main/zip_stream.h"

@@ -36,10 +36,11 @@ public:
      *
      * \param key String key.
      * \param value POD value, should be one of supported by VariantType.
+     * \return Reference to newly added/changed underlying VariantType instance.
      *
      * \see VariantType.
      */
-    template<typename _Type> inline void set(const char * key, const _Type& value);
+    template<typename _Type> inline VariantType& set(const char * key, const _Type& value);
 
     /**
      * Get data from archive for a given key.
@@ -58,7 +59,7 @@ public:
      * \param data Source data.
      * \param size Data size.
      */
-    inline void setBlob(const char * key, const uint8_t * data, uint32_t size);
+    inline VariantType& setBlob(const char * key, const uint8_t * data, uint32_t size);
 
     /**
      * Get byte array (blob) from the archive for a given key.

@@ -9,13 +9,21 @@ inline bool Archive::hasKey(const char * key) const
 
 template<typename _Type> inline const _Type& Archive::get(const char * key, const _Type& defaultValue) const
 {
-    auto& it = _values.find(key);
+    const auto& it = _values.find(key);
     return it == _values.end() ? defaultValue : (*it).second.get<_Type>();
 }
 
-template<typename _Type> inline void Archive::set(const char * key, const _Type& value)
+template<> inline const VariantType& Archive::get(const char * key, const VariantType& defaultValue) const
 {
-    _values[key].set(value);
+    const auto& it = _values.find(key);
+    return it == _values.end() ? defaultValue : (*it).second;
+}
+
+template<typename _Type> inline VariantType& Archive::set(const char * key, const _Type& value)
+{
+    VariantType& archMember = _values[key];
+    archMember.set(value);
+    return archMember;
 }
 
 inline void Archive::removeKey(const char * key)
@@ -37,13 +45,16 @@ template<typename _Type> inline const _Type * Archive::getBlob(const char * key)
     return reinterpret_cast<const _Type *>(data);
 }
 
-inline void Archive::setBlob(const char * key, const uint8_t * data, uint32_t size)
+inline VariantType& Archive::setBlob(const char * key, const uint8_t * data, uint32_t size)
 {
-    _values[key].setBlob(data, size);
+    VariantType& archMember = _values[key];
+    archMember.setBlob(data, size);
+
+    return archMember;
 }
 
 inline const uint8_t * Archive::getBlob(const char * key, uint32_t * outSize)
 {
-    auto& it = _values.find(key);
+    const auto& it = _values.find(key);
     return it == _values.end() ? NULL : (*it).second.getBlob(outSize);
 }

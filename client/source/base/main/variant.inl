@@ -36,6 +36,8 @@ namespace detail
 
 
 template<typename _Type> inline VariantType::VariantType(const _Type& var)
+    : type(TYPE_NONE)
+    , pointerValue(nullptr)
 {
     set(var);
 }
@@ -55,6 +57,7 @@ template<> inline void VariantType::set(const bool& value)
     release();
     type = TYPE_BOOLEAN;
     boolValue = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const int8_t& value)
@@ -62,6 +65,7 @@ template<> inline void VariantType::set(const int8_t& value)
     release();
     type = TYPE_INT8;
     int8Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const uint8_t& value)
@@ -69,6 +73,7 @@ template<> inline void VariantType::set(const uint8_t& value)
     release();
     type = TYPE_UINT8;
     uint8Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const int16_t& value)
@@ -76,6 +81,7 @@ template<> inline void VariantType::set(const int16_t& value)
     release();
     type = TYPE_INT16;
     int16Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const uint16_t& value)
@@ -83,6 +89,7 @@ template<> inline void VariantType::set(const uint16_t& value)
     release();
     type = TYPE_UINT16;
     uint16Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const int32_t& value)
@@ -90,6 +97,7 @@ template<> inline void VariantType::set(const int32_t& value)
     release();
     type = TYPE_INT32;
     int32Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const uint32_t& value)
@@ -97,6 +105,7 @@ template<> inline void VariantType::set(const uint32_t& value)
     release();
     type = TYPE_UINT32;
     uint32Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const float& value)
@@ -104,6 +113,7 @@ template<> inline void VariantType::set(const float& value)
     release();
     type = TYPE_FLOAT;
     floatValue = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const double& value)
@@ -111,6 +121,7 @@ template<> inline void VariantType::set(const double& value)
     release();
     type = TYPE_FLOAT64;
     float64Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const std::string& value)
@@ -118,6 +129,7 @@ template<> inline void VariantType::set(const std::string& value)
     release();
     type = TYPE_STRING;
     stringValue = new std::string(value);
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const std::wstring& value)
@@ -125,6 +137,7 @@ template<> inline void VariantType::set(const std::wstring& value)
     release();
     type = TYPE_WIDE_STRING;
     wideStringValue = new std::wstring(value);
+    valueChangedSignal(*this);
 }
 
 //template<> void VariantType::set(const class Archive& value)
@@ -137,6 +150,7 @@ template<> inline void VariantType::set(const int64_t& value)
     release();
     type = TYPE_INT64;
     int64Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const uint64_t& value)
@@ -144,6 +158,7 @@ template<> inline void VariantType::set(const uint64_t& value)
     release();
     type = TYPE_UINT64;
     uint64Value = value;
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const gameplay::Vector2& value)
@@ -151,6 +166,7 @@ template<> inline void VariantType::set(const gameplay::Vector2& value)
     release();
     type = TYPE_VECTOR2;
     vector2Value = new gameplay::Vector2(value);
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const gameplay::Vector3& value)
@@ -158,6 +174,7 @@ template<> inline void VariantType::set(const gameplay::Vector3& value)
     release();
     type = TYPE_VECTOR3;
     vector3Value = new gameplay::Vector3(value);
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const gameplay::Vector4& value)
@@ -165,6 +182,7 @@ template<> inline void VariantType::set(const gameplay::Vector4& value)
     release();
     type = TYPE_VECTOR4;
     vector4Value = new gameplay::Vector4(value);
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const gameplay::Matrix3& value)
@@ -172,6 +190,7 @@ template<> inline void VariantType::set(const gameplay::Matrix3& value)
     release();
     type = TYPE_MATRIX3;
     matrix3Value = new gameplay::Matrix3(value);
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const gameplay::Matrix& value)
@@ -179,6 +198,7 @@ template<> inline void VariantType::set(const gameplay::Matrix& value)
     release();
     type = TYPE_MATRIX4;
     matrix4Value = new gameplay::Matrix(value);
+    valueChangedSignal(*this);
 }
 
 template<> inline void VariantType::set(const VariantType& value)
@@ -224,19 +244,19 @@ template<> inline void VariantType::set(const VariantType& value)
         set(value.uint64Value);
         return;
     case TYPE_VECTOR2:
-        set(value.vector2Value);
+        set(*value.vector2Value);
         return;
     case TYPE_VECTOR3:
-        set(value.vector3Value);
+        set(*value.vector3Value);
         return;
     case TYPE_VECTOR4:
-        set(value.vector4Value);
+        set(*value.vector4Value);
         return;
     case TYPE_MATRIX3:
-        set(value.matrix3Value);
+        set(*value.matrix3Value);
         return;
     case TYPE_MATRIX4:
-        set(value.matrix4Value);
+        set(*value.matrix4Value);
         return;
     case TYPE_COLOR:
         GP_ASSERT(!"Not implemented yet");
@@ -410,7 +430,8 @@ inline void VariantType::release()
         SAFE_DELETE(pointerValue);
         return;
     default:
-        GP_ASSERT(!"Not implemented yet");
+        // do nothing, it's not an error to get here
+        break;
     }
 }
 
@@ -448,15 +469,15 @@ inline bool VariantType::operator==(const VariantType& value) const
     case TYPE_UINT64:
         return value.uint64Value == uint64Value;
     case TYPE_VECTOR2:
-        return value.vector2Value == vector2Value;
+        return *value.vector2Value == *vector2Value;
     case TYPE_VECTOR3:
-        return value.vector3Value == vector3Value;
+        return *value.vector3Value == *vector3Value;
     case TYPE_VECTOR4:
-        return value.vector4Value == vector4Value;
+        return *value.vector4Value == *vector4Value;
     case TYPE_MATRIX3:
-        return value.matrix3Value == matrix3Value;
+        return memcmp(value.matrix3Value, matrix3Value, sizeof(gameplay::Matrix3)) == 0;
     case TYPE_MATRIX4:
-        return value.matrix4Value == matrix4Value;
+        return memcmp(value.matrix4Value, matrix4Value, sizeof(gameplay::Matrix)) == 0;
     case TYPE_COLOR:
         GP_ASSERT(!"Not implemented yet");
         return false;

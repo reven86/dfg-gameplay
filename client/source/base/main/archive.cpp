@@ -42,8 +42,6 @@ bool Archive::serialize(gameplay::Stream * stream) const
 
 bool Archive::deserialize(gameplay::Stream * stream)
 {
-    clear();
-
     uint8_t header[2];
     if (stream->read(header, 1, 2) != 2)
         return false;

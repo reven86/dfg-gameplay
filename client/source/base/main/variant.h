@@ -45,6 +45,12 @@ public:
         TYPES_COUNT // every new type should be always added to the end for compatibility with old archives
     };
 
+    /**
+     * Signals after the underlying type or the value has been changed.
+     * Instance of this VariantType is passed as argument.
+     */
+    sigc::signal<void, const VariantType&> valueChangedSignal;
+
 public:
     VariantType();
     ~VariantType();

@@ -14,12 +14,20 @@ VariantType::~VariantType()
     release();
 }
 
+VariantType& VariantType::operator= (const VariantType& other)
+{
+    set(other);
+    return *this;
+}
+
 void VariantType::setBlob(const uint8_t * data, uint32_t size)
 {
     release();
     type = TYPE_BYTE_ARRAY;
     std::vector<uint8_t> * buf = new std::vector<uint8_t>(data, data + size);
     pointerValue = reinterpret_cast<void *>(buf);
+
+    valueChangedSignal(*this);
 }
 
 const uint8_t * VariantType::getBlob(uint32_t * size) const

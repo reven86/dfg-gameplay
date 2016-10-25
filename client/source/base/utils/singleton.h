@@ -28,10 +28,6 @@ public:
 protected:
     Singleton() {};
     virtual ~Singleton() {};
-
-private:
-    Singleton(const Singleton&) = delete;
-    Singleton& operator = (const Singleton&) = delete;
 };
 
 
