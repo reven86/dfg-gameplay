@@ -49,14 +49,53 @@ public:
     VariantType();
     ~VariantType();
 
+    /**
+     * Explicit conversion constructors.
+     */
     template<class _Type> explicit VariantType(const _Type& value);
+
+    /**
+     * Assignment operator.
+     */
     VariantType& operator=(const VariantType& other);
 
+    /**
+     * Get data type held by variant.
+     */
     inline Type getType() const;
+
+    /**
+     * Get data type name held by variant.
+     */
     inline const char * getTypeName() const;
 
+    /**
+     * Set the contents of variant to specified value.
+     *
+     * \param value Value, can be one of supported data types.
+     */
     template<typename _Type> inline void set(const _Type& value);
+
+    /**
+     * Get the contents of variant as a given type.
+     */
     template<typename _Type> inline const _Type& get() const;
+
+    /**
+     * Set contents of variant as a blob (byte array).
+     *
+     * \param data Data source.
+     * \param size Data size.
+     */
+    void setBlob(const uint8_t * data, uint32_t size);
+
+    /**
+     * Get the contents of a variant as a byte array (blob).
+     *
+     * \param[out] size Receives blob's size.
+     * \return Pointer to blob's first byte.
+     */
+    const uint8_t * getBlob(uint32_t * size) const;
 
     inline bool operator== (const VariantType& other) const;
     inline bool operator!= (const VariantType& other) const;

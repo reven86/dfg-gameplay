@@ -31,8 +31,51 @@ public:
      */
     static Archive * create();
 
+    /**
+     * Set arbitrary POD data for a given key.
+     *
+     * \param key String key.
+     * \param value POD value, should be one of supported by VariantType.
+     *
+     * \see VariantType.
+     */
     template<typename _Type> inline void set(const char * key, const _Type& value);
+
+    /**
+     * Get data from archive for a given key.
+     *
+     * \param key String key.
+     * \param defaultValue Default value when key is not found.
+     *
+     * \return Value from archive for a given key or default one if key is not present.
+     */
     template<typename _Type> inline const _Type& get(const char * key, const _Type& defaultValue = _Type()) const;
+
+    /**
+     * Insert byte array (blob) into the archive for a given key.
+     *
+     * \param key String key.
+     * \param data Source data.
+     * \param size Data size.
+     */
+    inline void setBlob(const char * key, const uint8_t * data, uint32_t size);
+
+    /**
+     * Get byte array (blob) from the archive for a given key.
+     *
+     * \param key String key.
+     * \param[out] outSize Receives the size of the blob.
+     * \return Pointer to first byte in the blob or NULL if key is not found.
+     */
+    inline const uint8_t * getBlob(const char * key, uint32_t * outSize);
+
+    /**
+     * Helper function to get blob and convert it to a given data type.
+     *
+     * \param key String key.
+     * \return Pointer to a first byte of blob, converted to a given type.
+     */
+    template<typename _Type> inline const _Type* getBlob(const char * key);
 
     /**
      * \brief Function to check if key is available in this archive.

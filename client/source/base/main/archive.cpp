@@ -124,8 +124,11 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
             return stream->write(&len, sizeof(len), 1) == 1 && stream->write(str.c_str(), sizeof(wchar_t), len) == len;
         }
     case VariantType::TYPE_BYTE_ARRAY:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        {
+            uint32_t size;
+            const uint8_t * buf = value.getBlob(&size);
+            return stream->write(&size, sizeof(size), 1) == 1 && stream->write(buf, 1, size) == size;
+        }
     case VariantType::TYPE_KEYED_ARCHIVE:
         GP_ASSERT(!"Not implemented yet");
         return false;
@@ -270,6 +273,7 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             }
             buf[len] = '\0';
             out->set(std::string(buf));
+            SAFE_DELETE(buf);
         }
         return true;
     case VariantType::TYPE_WIDE_STRING:
@@ -285,11 +289,24 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             }
             buf[len] = L'\0';
             out->set(std::wstring(buf));
+            SAFE_DELETE(buf);
         }
         return true;
     case VariantType::TYPE_BYTE_ARRAY:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        {
+            uint32_t size;
+            if (stream->read(&size, sizeof(size), 1) != 1)
+                return false;
+            uint8_t * buf = new uint8_t[size];
+            if (stream->read(buf, 1, size) != size)
+            {
+                SAFE_DELETE(buf);
+                return false;
+            }
+            out->setBlob(buf, size);
+            SAFE_DELETE(buf);
+        }
+        return true;
     case VariantType::TYPE_KEYED_ARCHIVE:
         GP_ASSERT(!"Not implemented yet");
         return false;

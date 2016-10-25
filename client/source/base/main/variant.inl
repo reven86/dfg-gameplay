@@ -205,7 +205,11 @@ template<> inline void VariantType::set(const VariantType& value)
         set(*value.wideStringValue);
         return;
     case TYPE_BYTE_ARRAY:
-        GP_ASSERT(!"Not implemented yet");
+        {
+            uint32_t dataSize;
+            const uint8_t * dataBuf = value.getBlob(&dataSize);
+            setBlob(dataBuf, dataSize);
+        }
         return;
     case TYPE_UINT32:
         set(value.uint32Value);
@@ -402,6 +406,9 @@ inline void VariantType::release()
     case TYPE_WIDE_STRING:
         SAFE_DELETE(wideStringValue);
         return;
+    case TYPE_BYTE_ARRAY:
+        SAFE_DELETE(pointerValue);
+        return;
     default:
         GP_ASSERT(!"Not implemented yet");
     }
@@ -425,8 +432,12 @@ inline bool VariantType::operator==(const VariantType& value) const
     case TYPE_WIDE_STRING:
         return *value.wideStringValue == *wideStringValue;
     case TYPE_BYTE_ARRAY:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        {
+            uint32_t dataSize, otherDataSize;
+            const uint8_t * dataBuf = getBlob(&dataSize);
+            const uint8_t * otherDataBuf = value.getBlob(&otherDataSize);
+            return dataSize == otherDataSize && memcmp(dataBuf, otherDataBuf, dataSize) == 0;
+        }
     case TYPE_UINT32:
         return value.uint32Value == uint32Value;
     case TYPE_KEYED_ARCHIVE:
