@@ -53,6 +53,17 @@ public:
     template<typename _Type> inline const _Type& get(const char * key, const _Type& defaultValue = _Type()) const;
 
     /**
+     * Get underlying variant type for a given key.
+     * Allows you to save and modify the value later without looking up it again.
+     *
+     * \param key String key.
+     * \param defaultValue Default value when key is not found.
+     *
+     * \return Value from archive for a given key or NULL.
+     */
+    inline VariantType * get(const char * key);
+
+    /**
      * Insert byte array (blob) into the archive for a given key.
      *
      * \param key String key.
@@ -111,6 +122,15 @@ public:
      * \return True if archive has been successfully loaded from the stream.
      */
     bool deserialize(gameplay::Stream * stream);
+
+    /**
+     * Get list of keys that present in both archives.
+     * Useful for merging or updating one archive with contents of the other.
+     *
+     * \param other Second archive.
+     * \param[out] outKeyList List of keys common for both archives.
+     */
+    void getCommonKeys(const Archive& other, std::vector<std::string> * outKeyList) const;
 
 protected:
     Archive();

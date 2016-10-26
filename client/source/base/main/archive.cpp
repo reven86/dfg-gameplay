@@ -369,3 +369,27 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
 
     return true;
 }
+
+void Archive::getCommonKeys(const Archive& other, std::vector<std::string> * outKeyList) const
+{
+    GP_ASSERT(outKeyList);
+
+    outKeyList->clear();
+
+    auto thisBegin = _values.begin();
+    auto thisEnd = _values.end();
+    auto otherBegin = other._values.begin();
+    auto otherEnd = other._values.end();
+
+    while (thisBegin != thisEnd && otherBegin != otherEnd)
+        if ((*thisBegin).first < (*otherBegin).first)
+            thisBegin++;
+        else if ((*otherBegin).first < (*thisBegin).first)
+            otherBegin++;
+        else
+        {
+            outKeyList->push_back((*thisBegin).first);
+            thisBegin++;
+            otherBegin++;
+        }
+}
