@@ -428,7 +428,7 @@ inline void VariantType::release()
         SAFE_DELETE(wideStringValue);
         return;
     case TYPE_BYTE_ARRAY:
-        delete[] reinterpret_cast<uint8_t *>(pointerValue);
+        delete reinterpret_cast<std::vector<uint8_t> *>(pointerValue);
         pointerValue = NULL;
         return;
     default:
