@@ -208,7 +208,6 @@ template<> inline void VariantType::set(const VariantType& value)
     if (this == &value)
         return;
 
-    type = TYPE_NONE;
     switch (value.type)
     {
     case TYPE_BOOLEAN:
@@ -517,4 +516,13 @@ inline bool VariantType::operator!=(const VariantType& other) const
 inline bool VariantType::isEmpty() const
 {
     return type == TYPE_NONE;
+}
+
+template<typename _Type> inline const _Type * VariantType::getBlob() const
+{
+    uint32_t size;
+    const uint8_t * data = getBlob(&size);
+    GP_ASSERT(!data || size == sizeof(_Type));
+
+    return reinterpret_cast<const _Type *>(data);
 }

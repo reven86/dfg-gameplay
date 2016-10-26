@@ -36,7 +36,7 @@ inline void Archive::clear()
     _values.clear();
 }
 
-template<typename _Type> inline const _Type * Archive::getBlob(const char * key)
+template<typename _Type> inline const _Type * Archive::getBlob(const char * key) const
 {
     uint32_t size;
     const uint8_t * data = getBlob(key, &size);
@@ -45,7 +45,7 @@ template<typename _Type> inline const _Type * Archive::getBlob(const char * key)
     return reinterpret_cast<const _Type *>(data);
 }
 
-inline VariantType& Archive::setBlob(const char * key, const uint8_t * data, uint32_t size)
+inline VariantType& Archive::setBlob(const char * key, const void * data, uint32_t size)
 {
     VariantType& archMember = _values[key];
     archMember.setBlob(data, size);
@@ -53,7 +53,7 @@ inline VariantType& Archive::setBlob(const char * key, const uint8_t * data, uin
     return archMember;
 }
 
-inline const uint8_t * Archive::getBlob(const char * key, uint32_t * outSize)
+inline const uint8_t * Archive::getBlob(const char * key, uint32_t * outSize) const
 {
     const auto& it = _values.find(key);
     return it == _values.end() ? NULL : (*it).second.getBlob(outSize);

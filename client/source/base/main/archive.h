@@ -59,7 +59,7 @@ public:
      * \param data Source data.
      * \param size Data size.
      */
-    inline VariantType& setBlob(const char * key, const uint8_t * data, uint32_t size);
+    inline VariantType& setBlob(const char * key, const void * data, uint32_t size);
 
     /**
      * Get byte array (blob) from the archive for a given key.
@@ -68,7 +68,7 @@ public:
      * \param[out] outSize Receives the size of the blob.
      * \return Pointer to first byte in the blob or NULL if key is not found.
      */
-    inline const uint8_t * getBlob(const char * key, uint32_t * outSize);
+    inline const uint8_t * getBlob(const char * key, uint32_t * outSize) const;
 
     /**
      * Helper function to get blob and convert it to a given data type.
@@ -76,7 +76,7 @@ public:
      * \param key String key.
      * \return Pointer to a first byte of blob, converted to a given type.
      */
-    template<typename _Type> inline const _Type* getBlob(const char * key);
+    template<typename _Type> inline const _Type* getBlob(const char * key) const;
 
     /**
      * \brief Function to check if key is available in this archive.

@@ -56,7 +56,7 @@ public:
     /**
      * Signals when value is about to be changed.
      * Performs a validation of the value. If returns false, the value is not changed.
-     * Accepts current value as fist argument and new value to be set as a VariantType as second argument.
+     * Accepts current value as fist argument and new value to be set as a VariantType as a second argument.
      * Validator can also change the new value as needed since it's passed by reference.
      */
     mutable sigc::signal<bool, const VariantType&, VariantType&>::accumulated<interruptable_accumulator> valueValidatorSignal;
@@ -108,7 +108,7 @@ public:
      * \param data Data source.
      * \param size Data size.
      */
-    void setBlob(const uint8_t * data, uint32_t size);
+    void setBlob(const void * data, uint32_t size);
 
     /**
      * Get the contents of a variant as a byte array (blob).
@@ -117,6 +117,13 @@ public:
      * \return Pointer to blob's first byte.
      */
     const uint8_t * getBlob(uint32_t * size) const;
+
+    /**
+     * Helper function to get blob and convert it to a given data type.
+     *
+     * \return Pointer to a first byte of blob, converted to a given type.
+     */
+    template<typename _Type> inline const _Type* getBlob() const;
 
     inline bool operator== (const VariantType& other) const;
     inline bool operator!= (const VariantType& other) const;
