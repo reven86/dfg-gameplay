@@ -52,92 +52,125 @@ inline const char * VariantType::getTypeName() const
     return detail::__variantNames[type].second;
 }
 
+template<class _Type> inline void VariantType::setInternal(const _Type& value, _Type& field, Type fieldType)
+{
+    if (!valueValidatorSignal.empty())
+    {
+        VariantType newValue(value);
+        if (!valueValidatorSignal(*this, newValue))
+            return;
+        if (newValue.type != type)
+        {
+            set(newValue);
+            return;
+        }
+
+        release();
+        type = fieldType;
+        field = newValue.get<_Type>();
+        valueChangedSignal(*this);
+        return;
+    }
+    if (type == fieldType && field == value)
+        return;
+
+    release();
+    type = fieldType;
+    field = value;
+    valueChangedSignal(*this);
+}
+
+template<class _Type> inline void VariantType::setInternalObject(const _Type& value, _Type*& field, Type fieldType)
+{
+    if (!valueValidatorSignal.empty())
+    {
+        VariantType newValue(value);
+        if (!valueValidatorSignal(*this, newValue))
+            return;
+        if (newValue.type != type)
+        {
+            set(newValue);
+            return;
+        }
+
+        release();
+        type = fieldType;
+        field = new _Type(newValue.get<_Type>());
+        valueChangedSignal(*this);
+        return;
+    }
+    if (type == fieldType && *field == value)
+        return;
+
+    release();
+    type = fieldType;
+    field = new _Type(value);
+    valueChangedSignal(*this);
+}
+
 template<> inline void VariantType::set(const bool& value)
 {
-    release();
-    type = TYPE_BOOLEAN;
-    boolValue = value;
-    valueChangedSignal(*this);
+    setInternal(value, boolValue, TYPE_BOOLEAN);
 }
 
 template<> inline void VariantType::set(const int8_t& value)
 {
-    release();
-    type = TYPE_INT8;
-    int8Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, int8Value, TYPE_INT8);
 }
 
 template<> inline void VariantType::set(const uint8_t& value)
 {
-    release();
-    type = TYPE_UINT8;
-    uint8Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, uint8Value, TYPE_UINT8);
 }
 
 template<> inline void VariantType::set(const int16_t& value)
 {
-    release();
-    type = TYPE_INT16;
-    int16Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, int16Value, TYPE_INT16);
 }
 
 template<> inline void VariantType::set(const uint16_t& value)
 {
-    release();
-    type = TYPE_UINT16;
-    uint16Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, uint16Value, TYPE_UINT16);
 }
 
 template<> inline void VariantType::set(const int32_t& value)
 {
-    release();
-    type = TYPE_INT32;
-    int32Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, int32Value, TYPE_INT32);
 }
 
 template<> inline void VariantType::set(const uint32_t& value)
 {
-    release();
-    type = TYPE_UINT32;
-    uint32Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, uint32Value, TYPE_UINT32);
+}
+
+template<> inline void VariantType::set(const int64_t& value)
+{
+    setInternal(value, int64Value, TYPE_INT64);
+}
+
+template<> inline void VariantType::set(const uint64_t& value)
+{
+    setInternal(value, uint64Value, TYPE_UINT64);
 }
 
 template<> inline void VariantType::set(const float& value)
 {
-    release();
-    type = TYPE_FLOAT;
-    floatValue = value;
-    valueChangedSignal(*this);
+    setInternal(value, floatValue, TYPE_FLOAT);
 }
 
 template<> inline void VariantType::set(const double& value)
 {
-    release();
-    type = TYPE_FLOAT64;
-    float64Value = value;
-    valueChangedSignal(*this);
+    setInternal(value, float64Value, TYPE_FLOAT64);
 }
 
 template<> inline void VariantType::set(const std::string& value)
 {
-    release();
-    type = TYPE_STRING;
-    stringValue = new std::string(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, stringValue, TYPE_STRING);
 }
 
 template<> inline void VariantType::set(const std::wstring& value)
 {
-    release();
-    type = TYPE_WIDE_STRING;
-    wideStringValue = new std::wstring(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, wideStringValue, TYPE_WIDE_STRING);
 }
 
 //template<> void VariantType::set(const class Archive& value)
@@ -145,60 +178,29 @@ template<> inline void VariantType::set(const std::wstring& value)
 //    GP_ASSERT(!"Not implemented yet");
 //}
 
-template<> inline void VariantType::set(const int64_t& value)
-{
-    release();
-    type = TYPE_INT64;
-    int64Value = value;
-    valueChangedSignal(*this);
-}
-
-template<> inline void VariantType::set(const uint64_t& value)
-{
-    release();
-    type = TYPE_UINT64;
-    uint64Value = value;
-    valueChangedSignal(*this);
-}
-
 template<> inline void VariantType::set(const gameplay::Vector2& value)
 {
-    release();
-    type = TYPE_VECTOR2;
-    vector2Value = new gameplay::Vector2(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, vector2Value, TYPE_VECTOR2);
 }
 
 template<> inline void VariantType::set(const gameplay::Vector3& value)
 {
-    release();
-    type = TYPE_VECTOR3;
-    vector3Value = new gameplay::Vector3(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, vector3Value, TYPE_VECTOR3);
 }
 
 template<> inline void VariantType::set(const gameplay::Vector4& value)
 {
-    release();
-    type = TYPE_VECTOR4;
-    vector4Value = new gameplay::Vector4(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, vector4Value, TYPE_VECTOR4);
 }
 
 template<> inline void VariantType::set(const gameplay::Matrix3& value)
 {
-    release();
-    type = TYPE_MATRIX3;
-    matrix3Value = new gameplay::Matrix3(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, matrix3Value, TYPE_MATRIX3);
 }
 
 template<> inline void VariantType::set(const gameplay::Matrix& value)
 {
-    release();
-    type = TYPE_MATRIX4;
-    matrix4Value = new gameplay::Matrix(value);
-    valueChangedSignal(*this);
+    setInternalObject(value, matrix4Value, TYPE_MATRIX4);
 }
 
 template<> inline void VariantType::set(const VariantType& value)
@@ -427,7 +429,8 @@ inline void VariantType::release()
         SAFE_DELETE(wideStringValue);
         return;
     case TYPE_BYTE_ARRAY:
-        SAFE_DELETE(pointerValue);
+        delete[] reinterpret_cast<uint8_t *>(pointerValue);
+        pointerValue = NULL;
         return;
     default:
         // do nothing, it's not an error to get here
@@ -511,3 +514,7 @@ inline bool VariantType::operator!=(const VariantType& other) const
     return !(*this == other);
 }
 
+inline bool VariantType::isEmpty() const
+{
+    return type == TYPE_NONE;
+}

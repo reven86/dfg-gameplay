@@ -48,8 +48,18 @@ public:
     /**
      * Signals after the underlying type or the value has been changed.
      * Instance of this VariantType is passed as argument.
+     *
+     * Using mutable keyword to make it able to connect slots even on constant variant objects.
      */
-    sigc::signal<void, const VariantType&> valueChangedSignal;
+    mutable sigc::signal<void, const VariantType&> valueChangedSignal;
+
+    /**
+     * Signals when value is about to be changed.
+     * Performs a validation of the value. If returns false, the value is not changed.
+     * Accepts current value as fist argument and new value to be set as a VariantType as second argument.
+     * Validator can also change the new value as needed since it's passed by reference.
+     */
+    mutable sigc::signal<bool, const VariantType&, VariantType&>::accumulated<interruptable_accumulator> valueValidatorSignal;
 
 public:
     VariantType();
@@ -64,6 +74,11 @@ public:
      * Assignment operator.
      */
     VariantType& operator=(const VariantType& other);
+
+    /**
+     * Whether this instance has no values assigned to it.
+     */
+    inline bool isEmpty() const;
 
     /**
      * Get data type held by variant.
@@ -113,6 +128,9 @@ private:
     VariantType(void*);
 
     void release();
+
+    template<class _Type> inline void setInternal(const _Type& value, _Type& field, Type fieldType);
+    template<class _Type> inline void setInternalObject(const _Type& value, _Type*& field, Type fieldType);
 
 
 
