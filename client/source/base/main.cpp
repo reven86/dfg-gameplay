@@ -20,6 +20,13 @@
 extern struct android_app* __state;
 #endif
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+extern int __argc;
+extern char ** __argv;
+#endif
+
+
 
 
 DfgGame::DfgGame()

@@ -376,20 +376,13 @@ void Archive::getCommonKeys(const Archive& other, std::vector<std::string> * out
 
     outKeyList->clear();
 
-    auto thisBegin = _values.begin();
-    auto thisEnd = _values.end();
-    auto otherBegin = other._values.begin();
-    auto otherEnd = other._values.end();
+    std::set<std::string> keys1;
+    std::set<std::string> keys2;
 
-    while (thisBegin != thisEnd && otherBegin != otherEnd)
-        if ((*thisBegin).first < (*otherBegin).first)
-            thisBegin++;
-        else if ((*otherBegin).first < (*thisBegin).first)
-            otherBegin++;
-        else
-        {
-            outKeyList->push_back((*thisBegin).first);
-            thisBegin++;
-            otherBegin++;
-        }
+    for (const auto& it1 : _values)
+        keys1.insert(it1.first);
+    for (const auto& it2 : other._values)
+        keys2.insert(it2.first);
+
+    std::set_intersection(keys1.begin(), keys1.end(), keys2.begin(), keys2.end(), std::back_inserter(*outKeyList));
 }
