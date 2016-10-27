@@ -58,12 +58,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\base\game_advanced.cpp" />
     <ClCompile Include="..\base\main.cpp" />
     <ClCompile Include="..\base\main\archive.cpp" />
     <ClCompile Include="..\base\main\asset.cpp" />
     <ClCompile Include="..\base\main\dictionary.cpp" />
     <ClCompile Include="..\base\main\gameplay_assets.cpp" />
     <ClCompile Include="..\base\main\memory_stream.cpp" />
+    <ClCompile Include="..\base\main\settings.cpp" />
     <ClCompile Include="..\base\main\variant.cpp" />
     <ClCompile Include="..\base\main\zip_package.cpp" />
     <ClCompile Include="..\base\main\zip_packages.cpp" />
@@ -95,6 +97,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\base\game_advanced.h" />
     <ClInclude Include="..\base\main.h" />
     <ClInclude Include="..\base\main\archive.h" />
     <ClInclude Include="..\base\main\asset.h" />
@@ -102,6 +105,7 @@
     <ClInclude Include="..\base\main\dictionary.h" />
     <ClInclude Include="..\base\main\gameplay_assets.h" />
     <ClInclude Include="..\base\main\memory_stream.h" />
+    <ClInclude Include="..\base\main\settings.h" />
     <ClInclude Include="..\base\main\variant.h" />
     <ClInclude Include="..\base\main\zip_package.h" />
     <ClInclude Include="..\base\main\zip_packages.h" />
@@ -141,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\base\main\archive.inl" />
+    <None Include="..\base\main\settings.inl" />
     <None Include="..\base\main\variant.inl" />
     <None Include="..\base\utils\utils.inl" />
   </ItemGroup>

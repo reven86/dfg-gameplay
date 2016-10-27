@@ -6,6 +6,7 @@ set(DFGGAMEPLAY_SRC
     base/main/dictionary.cpp
     base/main/gameplay_assets.cpp
     base/main/memory_stream.cpp
+    base/main/settings.cpp
     base/main/variant.cpp
     base/main/zip_package.cpp
     base/main/zip_packages.cpp
@@ -32,6 +33,7 @@ set(DFGGAMEPLAY_SRC
     base/utils/singleton.cpp
     base/utils/utils.cpp
     base/main.cpp
+    base/game_advanced.cpp
 )
 
 set(UUIDLIB_SRC

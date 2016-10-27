@@ -14,6 +14,8 @@
  * iOS rating lib, provides basic integration with Emscipten which helps the game 
  * run in the web and supports serialization and deserialization of game's settings
  * use DfgGameAdvanced.
+ *
+ * @see DfgGameAdvanced
  */
 
 class DfgGame : public gameplay::Game

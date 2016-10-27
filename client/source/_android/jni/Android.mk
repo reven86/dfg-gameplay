@@ -57,6 +57,7 @@ LOCAL_SRC_FILES := \
     base/main/dictionary.cpp \
     base/main/gameplay_assets.cpp \
     base/main/memory_stream.cpp \
+    base/main/settings.cpp \
     base/main/variant.cpp \
     base/main/zip_package.cpp \
     base/main/zip_packages.cpp \
@@ -83,6 +84,7 @@ LOCAL_SRC_FILES := \
     base/utils/singleton.cpp \
     base/utils/utils.cpp \
     base/main.cpp \
+    base/game_advanced.cpp \
 
 # LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
 LOCAL_CFLAGS    := -O3 -D__ANDROID__ -Wno-psabi -fpermissive -fexceptions \

@@ -15,6 +15,7 @@
 #include "main/dictionary.h"
 #include "main/gameplay_assets.h"
 #include "main/memory_stream.h"
+#include "main/settings.h"
 #include "main/variant.h"
 #include "main/zip_package.h"
 #include "main/zip_packages.h"
@@ -46,6 +47,7 @@
 #include "utils/singleton.h"
 #include "utils/utils.h"
 #include "main.h"
+#include "game_advanced.h"
 
 
 

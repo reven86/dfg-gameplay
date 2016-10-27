@@ -95,6 +95,12 @@
     <ClCompile Include="..\base\main\variant.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\game_advanced.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\main\settings.cpp">
+      <Filter>base\main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -222,6 +228,12 @@
     <ClInclude Include="..\base\main\variant.h">
       <Filter>base\main</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\game_advanced.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\main\settings.h">
+      <Filter>base\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -254,6 +266,9 @@
       <Filter>base\main</Filter>
     </None>
     <None Include="..\base\main\variant.inl">
+      <Filter>base\main</Filter>
+    </None>
+    <None Include="..\base\main\settings.inl">
       <Filter>base\main</Filter>
     </None>
   </ItemGroup>

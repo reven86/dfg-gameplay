@@ -92,12 +92,12 @@ void DfgGame::setGameLocale(const char * newLocale)
     if (newLocale == NULL)
     {
         // get system-wide locale and override _gameLocale if we have resources for it
-#ifdef __APPLE__
+#if defined(__APPLE__)
+        
         NSString* preferredLang = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"GameLanguage"];
         systemLocale = [preferredLang cStringUsingEncoding : NSASCIIStringEncoding];
-#endif
 
-#ifdef __ANDROID__
+#elif defined(__ANDROID__)
         android_app* app = __state;
         JNIEnv* env = app->activity->env;
         JavaVM* vm = app->activity->vm;
@@ -124,6 +124,27 @@ void DfgGame::setGameLocale(const char * newLocale)
         env->ReleaseStringUTFChars(language, lng);
 
         vm->DetachCurrentThread();
+
+#elif defined(WIN32)
+
+        wchar_t locale[255];
+        if (GetUserDefaultLocaleName(locale, sizeof(locale)) > 2)
+            systemLocale = Utils::WCSToUTF8(locale).substr(0, 2).c_str();
+
+#elif defined(__EMSCRIPTEN__)
+
+        // system locale for emscripten comes from command line
+        int i = 1;
+        while (i < __argc - 1)
+        {
+            if (strcmp(__argv[i], "-l") == 0 || strcmp(__argv[i], "--language") == 0)
+            {
+                systemLocale = __argv[++i];
+                break;
+            }
+            i++;
+        }
+
 #endif
 
         newLocale = systemLocale.c_str();
