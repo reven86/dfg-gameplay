@@ -26,6 +26,17 @@ void VariantType::setBlob(const void * data, uint32_t size)
         return;
 
     const uint8_t * buf = reinterpret_cast<const uint8_t *>(data);
+    if (type == TYPE_BYTE_ARRAY)
+    {
+        std::vector<uint8_t> * src = reinterpret_cast<std::vector<uint8_t> *>(pointerValue);
+        if (src && src->size() == size)
+        {
+            // copy the data inplace without reallocating the vector
+            src->assign(buf, buf + size);
+            return;
+        }
+    }
+
     release();
     type = TYPE_BYTE_ARRAY;
     pointerValue = size > 0 ? reinterpret_cast<void *>(new std::vector<uint8_t>(buf, buf + size)) : NULL;

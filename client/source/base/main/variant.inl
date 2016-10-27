@@ -210,6 +210,10 @@ template<> inline void VariantType::set(const VariantType& value)
 
     switch (value.type)
     {
+    case TYPE_NONE:
+        release();
+        type = TYPE_NONE;
+        break;
     case TYPE_BOOLEAN:
         set(value.boolValue);
         return;
