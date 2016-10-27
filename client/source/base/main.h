@@ -3,6 +3,19 @@
 
 
 
+
+/**
+ * Base class for your game. Extends the gameplay::Game class and provides
+ * additional cross platform functionality like localization, notification and
+ * simplifies some other tasks. Integrates with other input and rendering
+ * services provided by the lib.
+ *
+ * For more feature-rich base class which integrates with Google Analytics,
+ * iOS rating lib, provides basic integration with Emscipten which helps the game 
+ * run in the web and supports serialization and deserialization of game's settings
+ * use DfgGameAdvanced.
+ */
+
 class DfgGame : public gameplay::Game
 {
 public:
@@ -10,7 +23,27 @@ public:
 
     static DfgGame * getInstance() { return static_cast<DfgGame *>(gameplay::Game::getInstance()); };
 
+    /**
+     * Get path to the folder where the app can save its files.
+     * The folder is placed under the platform-dependend storage suited for app's files.
+     * App's name is used as a part of the path.
+     *
+     * \return Path to folder where the game can put its private files (not user docs).
+     */
     const char * getUserDataFolder() const { return _userFolder.c_str(); };
+
+    /**
+     * Get the locale used by the game.
+     *
+     * Available locales are specified in the game.config files.
+     * Config file should have a section named 'aliases_XX, where XX is the local name,
+     * which defines aliases for resources dependend on language.
+     *
+     * For example, if you put 'aliases_fr' section into the config put, you could set
+     * the locale 'fr', otherwise locale won't be changed.
+     *
+     * \return Game's locale.
+     */
     const char * getGameLocale() const { return _gameLocale.c_str(); };
 
     /**

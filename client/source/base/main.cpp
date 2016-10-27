@@ -53,7 +53,7 @@ void DfgGame::initialize()
 #else
     mkdir( _userFolder.c_str( ), 0777 );
 #endif
-    _userFolder += "/Dream Farm Games";
+    _userFolder += "/DFG";
 #ifdef WIN32
     _mkdir(_userFolder.c_str());
 #else
