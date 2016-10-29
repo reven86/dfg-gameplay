@@ -266,12 +266,12 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             char * buf = new char[len+1];
             if (stream->read(buf, 1, len) != len)
             {
-                SAFE_DELETE(buf);
+                   SAFE_DELETE_ARRAY(buf);
                 return false;
             }
             buf[len] = '\0';
             out->set(std::string(buf));
-            SAFE_DELETE(buf);
+            SAFE_DELETE_ARRAY(buf);
         }
         return true;
     case VariantType::TYPE_WIDE_STRING:
@@ -282,12 +282,12 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             wchar_t * buf = new wchar_t[len+1];
             if (stream->read(buf, sizeof(wchar_t), len) != len)
             {
-                SAFE_DELETE(buf);
+                SAFE_DELETE_ARRAY(buf);
                 return false;
             }
             buf[len] = L'\0';
             out->set(std::wstring(buf));
-            SAFE_DELETE(buf);
+            SAFE_DELETE_ARRAY(buf);
         }
         return true;
     case VariantType::TYPE_BYTE_ARRAY:
@@ -298,11 +298,11 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             uint8_t * buf = new uint8_t[size];
             if (stream->read(buf, 1, size) != size)
             {
-                SAFE_DELETE(buf);
+                SAFE_DELETE_ARRAY(buf);
                 return false;
             }
             out->setBlob(buf, size);
-            SAFE_DELETE(buf);
+            SAFE_DELETE_ARRAY(buf);
         }
         return true;
     case VariantType::TYPE_KEYED_ARCHIVE:
