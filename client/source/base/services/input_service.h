@@ -21,6 +21,8 @@ public:
     void injectTouchEvent(const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex);
     bool injectMouseEvent(const gameplay::Mouse::MouseEvent& ev, int x, int y, float wheelDelta);
     void injectGesturePinchEvent(int x, int y, float scale, int numberOfTouches);
+    void injectGestureRotationEvent(int x, int y, float rotation, int numberOfTouches);
+    void injectGesturePanEvent(int x, int y, int numberOfTouches);
 
     void injectKeyGlobalEvent(const gameplay::Keyboard::KeyEvent& ev, int key);
     void injectTouchGlobalEvent(const gameplay::Touch::TouchEvent& ev, int x, int y, unsigned int contactIndex);

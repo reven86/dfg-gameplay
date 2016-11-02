@@ -79,6 +79,20 @@ void InputService::injectGesturePinchEvent(int x, int y, float scale, int number
             break;
 }
 
+void InputService::injectGestureRotationEvent(int x, int y, float rotation, int numberOfTouches)
+{
+    for (auto it = _manager->signals.inputGestureRotationEvent.signal.slots().begin(), end_it = _manager->signals.inputGestureRotationEvent.signal.slots().end(); it != end_it; it++)
+        if ((*it)(x, y, rotation, numberOfTouches))
+            break;
+}
+
+void InputService::injectGesturePanEvent(int x, int y, int numberOfTouches)
+{
+    for (auto it = _manager->signals.inputGesturePanEvent.signal.slots().begin(), end_it = _manager->signals.inputGesturePanEvent.signal.slots().end(); it != end_it; it++)
+        if ((*it)(x, y, numberOfTouches))
+            break;
+}
+
 void InputService::injectGestureSwipeEvent(int x, int y, int direction)
 {
     for (auto& slot : _manager->signals.inputGestureSwipeEvent.signal.slots())

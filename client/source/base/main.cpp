@@ -236,6 +236,18 @@ void DfgGame::gesturePinchEvent(int x, int y, float scale, int numberOfTouches)
         _inputService->injectGesturePinchEvent(x, y, scale, numberOfTouches);
 }
 
+void DfgGame::gestureRotationEvent(int x, int y, float rotation, int numberOfTouches)
+{
+    if (_inputService)
+        _inputService->injectGestureRotationEvent(x, y, rotation, numberOfTouches);
+}
+
+void DfgGame::gesturePanEvent(int x, int y, int numberOfTouches)
+{
+    if (_inputService)
+        _inputService->injectGesturePanEvent(x, y, numberOfTouches);
+}
+
 void DfgGame::gestureSwipeEvent(int x, int y, int direction)
 {
     if (_inputService)

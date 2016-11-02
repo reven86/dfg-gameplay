@@ -101,6 +101,8 @@ protected:
     virtual void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex, bool processed) override;
     virtual bool mouseEvent(gameplay::Mouse::MouseEvent evt, int x, int y, float wheelDelta, bool processed) override;
     virtual void gesturePinchEvent(int x, int y, float scale, int numberOfTouches) override;
+    virtual void gestureRotationEvent(int x, int y, float rotation, int numberOfTouches) override;
+    virtual void gesturePanEvent(int x, int y, int numberOfTouches) override;
 
     /**
      * @see Game::resizeEvent;
