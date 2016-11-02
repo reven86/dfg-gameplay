@@ -88,6 +88,7 @@
     <ClCompile Include="..\base\ui\dial_button.cpp" />
     <ClCompile Include="..\base\ui\expanded_tab.cpp" />
     <ClCompile Include="..\base\ui\http_image_control.cpp" />
+    <ClCompile Include="..\base\ui\slide_menu.cpp" />
     <ClCompile Include="..\base\utils\profiler.cpp" />
     <ClCompile Include="..\base\utils\singleton.cpp" />
     <ClCompile Include="..\base\utils\utils.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="..\base\ui\dial_button.h" />
     <ClInclude Include="..\base\ui\expanded_tab.h" />
     <ClInclude Include="..\base\ui\http_image_control.h" />
+    <ClInclude Include="..\base\ui\slide_menu.h" />
     <ClInclude Include="..\base\utils\curve.h" />
     <ClInclude Include="..\base\utils\noncopyable.h" />
     <ClInclude Include="..\base\utils\priority_signal.h" />
@@ -147,6 +149,7 @@
     <None Include="..\base\main\archive.inl" />
     <None Include="..\base\main\settings.inl" />
     <None Include="..\base\main\variant.inl" />
+    <None Include="..\base\ui\slide_menu.inl" />
     <None Include="..\base\utils\utils.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

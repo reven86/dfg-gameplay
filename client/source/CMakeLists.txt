@@ -29,6 +29,7 @@ set(DFGGAMEPLAY_SRC
     base/ui/dial_button.cpp
     base/ui/expanded_tab.cpp
     base/ui/http_image_control.cpp
+    base/ui/slide_menu.cpp
     base/utils/profiler.cpp
     base/utils/singleton.cpp
     base/utils/utils.cpp

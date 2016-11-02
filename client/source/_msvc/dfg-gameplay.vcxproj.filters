@@ -101,6 +101,9 @@
     <ClCompile Include="..\base\main\settings.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\slide_menu.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -234,6 +237,9 @@
     <ClInclude Include="..\base\main\settings.h">
       <Filter>base\main</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\ui\slide_menu.h">
+      <Filter>base\ui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -270,6 +276,9 @@
     </None>
     <None Include="..\base\main\settings.inl">
       <Filter>base\main</Filter>
+    </None>
+    <None Include="..\base\ui\slide_menu.inl">
+      <Filter>base\ui</Filter>
     </None>
   </ItemGroup>
 </Project>

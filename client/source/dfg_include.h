@@ -39,6 +39,7 @@
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
 #include "ui/http_image_control.h"
+#include "ui/slide_menu.h"
 #include "utils/curve.h"
 #include "utils/noncopyable.h"
 #include "utils/priority_signal.h"
