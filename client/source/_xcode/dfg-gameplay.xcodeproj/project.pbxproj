@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		EB1E5E3E1BB2C8E5007A8C9E /* taskscheduler_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */; };
 		EB1E5E3F1BB2C8E5007A8C9E /* taskscheduler_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */; };
+		EB22EE251DCA21A3001E5328 /* slide_menu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB22EE221DCA21A3001E5328 /* slide_menu.cpp */; };
 		EB30DDF11C493ECF00B01597 /* clip_label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB30DDEF1C493ECF00B01597 /* clip_label.cpp */; };
 		EB30DDF21C493ECF00B01597 /* clip_label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB30DDEF1C493ECF00B01597 /* clip_label.cpp */; };
 		EB4A5F341C6536FD00C8E4CE /* http_image_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4A5F321C6536FD00C8E4CE /* http_image_control.cpp */; };
@@ -99,6 +100,9 @@
 /* Begin PBXFileReference section */
 		EB1E5E3C1BB2C8E5007A8C9E /* taskscheduler_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskscheduler_service.cpp; sourceTree = "<group>"; };
 		EB1E5E3D1BB2C8E5007A8C9E /* taskscheduler_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taskscheduler_service.h; sourceTree = "<group>"; };
+		EB22EE221DCA21A3001E5328 /* slide_menu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = slide_menu.cpp; path = ui/slide_menu.cpp; sourceTree = "<group>"; };
+		EB22EE231DCA21A3001E5328 /* slide_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = slide_menu.h; path = ui/slide_menu.h; sourceTree = "<group>"; };
+		EB22EE241DCA21A3001E5328 /* slide_menu.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = slide_menu.inl; path = ui/slide_menu.inl; sourceTree = "<group>"; };
 		EB30DDEF1C493ECF00B01597 /* clip_label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = clip_label.cpp; path = ui/clip_label.cpp; sourceTree = "<group>"; };
 		EB30DDF01C493ECF00B01597 /* clip_label.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clip_label.h; path = ui/clip_label.h; sourceTree = "<group>"; };
 		EB4A5F321C6536FD00C8E4CE /* http_image_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = http_image_control.cpp; path = ui/http_image_control.cpp; sourceTree = "<group>"; };
@@ -218,6 +222,9 @@
 		EB7790201B75145300E1DDB2 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				EB22EE221DCA21A3001E5328 /* slide_menu.cpp */,
+				EB22EE231DCA21A3001E5328 /* slide_menu.h */,
+				EB22EE241DCA21A3001E5328 /* slide_menu.inl */,
 				EB4A5F321C6536FD00C8E4CE /* http_image_control.cpp */,
 				EB4A5F331C6536FD00C8E4CE /* http_image_control.h */,
 				EB30DDEF1C493ECF00B01597 /* clip_label.cpp */,
@@ -500,6 +507,7 @@
 				EB9F81491AAB25CD00839018 /* memory_stream.cpp in Sources */,
 				EB9F81501AAB25CD00839018 /* input_service.cpp in Sources */,
 				EB9F81471AAB25CD00839018 /* dictionary.cpp in Sources */,
+				EB22EE251DCA21A3001E5328 /* slide_menu.cpp in Sources */,
 				EB7D1E0F1DC4DA400051B0F6 /* iRate.m in Sources */,
 				EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */,
 				EB4F765A1DC3D7AE001139D4 /* variant.cpp in Sources */,
