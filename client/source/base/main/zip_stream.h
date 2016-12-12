@@ -8,8 +8,10 @@
 
 
 
-/** ZipStream is an extension to gameplay::Stream to stream
- *  data from zip packages. Uses ZipPackagesCache.
+/**
+ * ZipStream is an extension to gameplay::Stream to stream
+ * data from zip packages. Uses ZipPackagesCache.
+ * It can be also used to read from other zlib compressed streams.
  */
 class ZipStream : public gameplay::Stream
 {
@@ -24,6 +26,13 @@ public:
      * @param fileName File inside the package.
      */
     static gameplay::Stream * create(const char * packageName, const char * fileName);
+
+	/**
+	 * Creates ZipStream from another zlib compressed stream.
+	 *
+	 * @param stream Stream compressed with zlib.
+	 */
+	static gameplay::Stream * create(gameplay::Stream * compressedStream);
 
     /**
      * Returns true if this stream can perform read operations.
@@ -165,7 +174,6 @@ protected:
 
 private:
     std::unique_ptr<MemoryStream> _underlyingStream;
-    std::unique_ptr< uint8_t[] > _fileContent;
     static std::mutex _zipReadMutex;
 };
 
