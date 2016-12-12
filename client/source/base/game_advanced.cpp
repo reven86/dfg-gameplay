@@ -208,9 +208,6 @@ void DfgGameAdvanced::mergeSettings(Archive& other)
     int destVersion = other.get<int>("app.version", 0);
     for (const std::string& key : commonKeys)
     {
-        if (key == "app.version")
-            continue;
-
         VariantType * sourceValue = Settings::getInstance()->get(key.c_str());
         const VariantType& destValue = other.get<VariantType>(key.c_str());
         GP_ASSERT(sourceValue);

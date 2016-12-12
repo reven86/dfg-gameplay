@@ -1,8 +1,8 @@
 #pragma once
 
 
-#ifndef __SETTINGS_H__
-#define __SETTINGS_H__
+#ifndef __DFG_SETTINGS_H__
+#define __DFG_SETTINGS_H__
 
 #include "archive.h"
 
@@ -45,4 +45,4 @@ private:
 #include "settings.inl"
 
 
-#endif // __SETTINGS_H__
+#endif // __DFG_SETTINGS_H__
