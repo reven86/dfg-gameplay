@@ -99,9 +99,8 @@ void DfgGameAdvanced::initialize()
     // subscribe to beforeunload event to save settings
     EM_ASM({
         window.onbeforeunload = function(e) {
-        Module.ccall('onBeforeUnload', null,[],[]);
-    }
-    });
+            Module.ccall('onBeforeUnload', null,[],[]);
+        }; });
 
     _resourcePackage.reset(ZipPackage::create("resources.data"));
     if (_resourcePackage)
