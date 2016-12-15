@@ -27,12 +27,12 @@ public:
      */
     static gameplay::Stream * create(const char * packageName, const char * fileName);
 
-	/**
-	 * Creates ZipStream from another zlib compressed stream.
-	 *
-	 * @param stream Stream compressed with zlib.
-	 */
-	static gameplay::Stream * create(gameplay::Stream * compressedStream);
+    /**
+     * Creates ZipStream from another zlib compressed stream.
+     *
+     * @param stream Stream compressed with zlib.
+     */
+    static gameplay::Stream * create(gameplay::Stream * compressedStream);
 
     /**
      * Returns true if this stream can perform read operations.

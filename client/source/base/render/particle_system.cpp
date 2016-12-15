@@ -81,54 +81,6 @@ void ParticleSubSystem::spawnParticle(Particle& p, const gameplay::Matrix& trans
     updateParticle(p, p.localtime);
 }
 
-bool ParticleSubSystem::loadFloatCurveFromProperties(gameplay::Properties * properties, Curve< float > * curve) const
-{
-    const char* name;
-    while ((name = properties->getNextProperty()) != 0)
-    {
-        if (strcmp(name, "key") == 0)
-        {
-            const char * str = properties->getString();
-            unsigned int key;
-            float value;
-            if (sscanf(str, "%u, %f", &key, &value) != 2)
-            {
-                GP_WARN("Failed to read curve key.");
-                return false;
-            }
-
-            curve->addKey(static_cast<unsigned char>(key), value);
-        }
-    }
-
-    return true;
-}
-
-bool ParticleSubSystem::loadColorCurveFromProperties(gameplay::Properties * properties, Curve< gameplay::Vector4 > * curve) const
-{
-    const char* name;
-    while ((name = properties->getNextProperty()) != 0)
-    {
-        if (strcmp(name, "key") == 0)
-        {
-            const char * str = properties->getString();
-            unsigned int key;
-            unsigned int value;
-            if (sscanf(str, "%u, 0x%x", &key, &value) != 2)
-            {
-                GP_WARN("Failed to read curve key.");
-                return false;
-            }
-
-            gameplay::Vector4 color = gameplay::Vector4::fromColor(value);
-            // colors for curves stored in ARGB format
-            curve->addKey(static_cast<unsigned char>(key), gameplay::Vector4(color.y, color.z, color.w, color.x));
-        }
-    }
-
-    return true;
-}
-
 bool ParticleSubSystem::loadFromProperties(gameplay::Properties * properties)
 {
     // Check if the Properties is valid and has a valid namespace.
@@ -144,32 +96,32 @@ bool ParticleSubSystem::loadFromProperties(gameplay::Properties * properties)
     {
         if (strcmp(curveProperties->getNamespace(), "size_curve") == 0)
         {
-            if (!loadFloatCurveFromProperties(curveProperties, &size_curve))
+            if (!size_curve.initialize(curveProperties))
                 return false;
         }
         else if (strcmp(curveProperties->getNamespace(), "velocity_curve") == 0)
         {
-            if (!loadFloatCurveFromProperties(curveProperties, &velocity_curve))
+            if (!velocity_curve.initialize(curveProperties))
                 return false;
         }
         else if (strcmp(curveProperties->getNamespace(), "acceleration_curve") == 0)
         {
-            if (!loadFloatCurveFromProperties(curveProperties, &acceleration_curve))
+            if (!acceleration_curve.initialize(curveProperties))
                 return false;
         }
         else if (strcmp(curveProperties->getNamespace(), "spin_curve") == 0)
         {
-            if (!loadFloatCurveFromProperties(curveProperties, &spin_curve))
+            if (!spin_curve.initialize(curveProperties))
                 return false;
         }
         else if (strcmp(curveProperties->getNamespace(), "motionrand_curve") == 0)
         {
-            if (!loadFloatCurveFromProperties(curveProperties, &motionrand_curve))
+            if (!motionrand_curve.initialize(curveProperties))
                 return false;
         }
         else if (strcmp(curveProperties->getNamespace(), "colors_curve") == 0)
         {
-            if (!loadColorCurveFromProperties(curveProperties, &colors_curve))
+            if (!colors_curve.initialize(curveProperties))
                 return false;
         }
     }

@@ -168,10 +168,6 @@ public:
      * Load subsystem from Properties.
      */
     bool loadFromProperties(gameplay::Properties * properties);
-
-protected:
-    bool loadFloatCurveFromProperties(gameplay::Properties * properties, Curve< float > * curve) const;
-    bool loadColorCurveFromProperties(gameplay::Properties * properties, Curve< gameplay::Vector4 > * curve) const;
 };
 
 
