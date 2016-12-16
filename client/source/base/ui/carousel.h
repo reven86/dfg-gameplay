@@ -171,7 +171,7 @@ private:
     int _touchPressX;
     int _touchPressY;
     gameplay::Curve::InterpolationType _animationInterpolator;
-    unsigned int _animationDuration;
+    float _animationDuration;
 };
 
 

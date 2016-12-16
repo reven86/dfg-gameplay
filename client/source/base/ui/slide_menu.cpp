@@ -7,7 +7,7 @@
 
 SlideMenu::SlideMenu()
     : _currentItemIndex(INVALID_ITEM_INDEX)
-    , _animationDuration(200)
+    , _animationDuration(0.2f)
     , _animationInterpolator(gameplay::Curve::QUARTIC_IN_OUT)
     , _itemScrollingClip(NULL)
 {
@@ -43,9 +43,9 @@ void SlideMenu::initialize(const char* typeName, gameplay::Theme::Style* style, 
                 _animationInterpolator = static_cast<gameplay::Curve::InterpolationType>(type);
         }
 
-        int duration = properties->getInt("animationDuration");
+        float duration = properties->getFloat("animationDuration");
         if (duration > 0)
-            _animationDuration = static_cast<unsigned>(duration);
+            _animationDuration = duration;
     }
 }
 

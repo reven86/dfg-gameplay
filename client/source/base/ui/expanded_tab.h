@@ -174,7 +174,7 @@ private:
     float _widthMaximized;
     float _widthMinimized;
     gameplay::Curve::InterpolationType _animationInterpolator;
-    unsigned int _animationDuration;
+    float _animationDuration;
     gameplay::AnimationClip * _stateChangeClip;
     gameplay::AnimationClip * _clickWaitClip;
 };

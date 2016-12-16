@@ -13,8 +13,8 @@ DialButton::DialButton()
     , _expandingFactor(0.0f)
     , _targetScrollPositionOnExpand(0.0f)
     , _animationInterpolator(gameplay::Curve::CUBIC_IN_OUT)
-    , _animationWaitDuration(700)
-    , _animationDuration(500)
+    , _animationWaitDuration(0.7f)
+    , _animationDuration(0.5f)
     , _currentItemBeforeTouch(INVALID_ITEM_INDEX)
     , _startScrollingPosition(0.0f, 0.0f)
     , _itemScrollingClip(NULL)
@@ -58,13 +58,13 @@ void DialButton::initialize(const char* typeName, gameplay::Theme::Style* style,
             _animationInterpolator = static_cast<gameplay::Curve::InterpolationType>(type);
     }
 
-    int duration = properties->getInt("animationDuration");
+    float duration = properties->getFloat("animationDuration");
     if (duration > 0)
-        _animationDuration = static_cast<unsigned>(duration);
+        _animationDuration = duration;
 
-    duration = properties->getInt("animationWaitDuration");
+    duration = properties->getFloat("animationWaitDuration");
     if (duration > 0)
-        _animationWaitDuration = static_cast<unsigned>(duration);
+        _animationWaitDuration = duration;
 
     _freeSliding = properties->getBool("freeSliding");
 
@@ -241,7 +241,7 @@ void DialButton::scrollToItem(unsigned itemIndex, bool immediately)
         _startScrollingPosition = _scrollPosition;
 
         gameplay::Animation * animation = createAnimationFromTo("scrollbar-scroll-to-item", ANIMATE_SCROLL_TO_ITEM, &from, &to,
-            gameplay::Curve::QUADRATIC_IN, 200);
+            gameplay::Curve::QUADRATIC_IN, 0.2f);
         _itemScrollingClip = animation->getClip();
         _itemScrollingClip->play();
     }
@@ -404,7 +404,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
         if (evt == gameplay::Touch::TOUCH_PRESS)
         {
             float to = 1.0f;
-            unsigned times[] = { 0, _animationWaitDuration, _animationWaitDuration + _animationDuration };
+            float times[] = { 0, _animationWaitDuration, _animationWaitDuration + _animationDuration };
             float values[] = { from, from, to };
             animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 3, times, values, _animationInterpolator);
 
@@ -423,7 +423,7 @@ bool DialButton::touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsig
         else if (from > 0.0f)
         {
             float to = 0.0f;
-            unsigned times[] = { 0, _animationDuration };
+            float times[] = { 0, _animationDuration };
             float values[] = { from, to };
             animation = createAnimation("dial-button-shrink", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
             _targetScrollPositionOnExpand = _scrollPosition.y;
@@ -495,7 +495,7 @@ void DialButton::transitionToMenu()
 
     float from = _heightExpanded > _heightCollapsed ? (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed) : 0.0f;
     float to = 1.0f;
-    unsigned times[] = { 0, _animationDuration };
+    float times[] = { 0, _animationDuration };
     float values[] = { from, to };
     gameplay::Animation * animation = createAnimation("dial-button-expand", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
 
@@ -531,7 +531,7 @@ void DialButton::controlEvent(gameplay::Control::Listener::EventType evt)
 
         float from = _heightExpanded > _heightCollapsed ? (getHeight() - _heightCollapsed) / (_heightExpanded - _heightCollapsed) : 1.0f;
         float to = 0.0f;
-        unsigned times[] = { 0, _animationDuration };
+        float times[] = { 0, _animationDuration };
         float values[] = { from, to };
         gameplay::Animation * animation = createAnimation("dial-button-shrink", ANIMATE_BUTTON_EXPANDING, 2, times, values, _animationInterpolator);
         _targetScrollPositionOnExpand = _scrollPosition.y;

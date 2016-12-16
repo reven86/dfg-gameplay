@@ -85,10 +85,10 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
                 stream->read(&payload.createTime, sizeof(payload.createTime), 1);
 
                 // adjust payload's createTime by diff between runs
-                payload.createTime -= static_cast<float>(payloadDiffInSeconds * 1000.0f);
+                payload.createTime -= static_cast<float>(payloadDiffInSeconds);
 
                 // filter out too old payloads (older thah 4h)
-                if (payload.createTime > -4.0f * 3600.0f * 1000.0f)
+                if (payload.createTime > -4.0f * 3600.0f)
                     _payloadsQueue.push_back(payload);
             }
         }
@@ -257,7 +257,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     static char finalRequest[4096];
     float curTime = static_cast<float>(gameplay::Game::getInstance()->getAbsoluteTime());
 
-    int timeDiff = static_cast<int>(curTime - payload.createTime);
+    int timeDiff = static_cast<int>((curTime - payload.createTime) * 1000.0f);
     sprintf(finalRequest, "v=%d&tid=%s&cid=%s&an=%s&av=%s&%s",
         _protocolVersion, _trackingId.c_str(), _clientId.c_str(),
         _appName.c_str(),
@@ -268,14 +268,14 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
         sprintf(finalRequest, "%s&uid=%s", finalRequest, _userId.c_str());
 
     // reset session when time between payloads passed midnight
-    time_t time1 = _trackerStartTime + static_cast<int>(_lastPayloadSentTime * 0.001f);
-    time_t time2 = _trackerStartTime + static_cast<int>(curTime * 0.001f);
+    time_t time1 = _trackerStartTime + static_cast<int>(_lastPayloadSentTime);
+    time_t time2 = _trackerStartTime + static_cast<int>(curTime);
     int day1 = localtime(&time1)->tm_mday;
     int day2 = localtime(&time2)->tm_mday;
 
     if (payload.createTime >= 0 && payload.params.find("&sc=end") == payload.params.npos &&
         (_sessionStartTime <= 0
-        || (payload.createTime - _sessionStartTime) > 240.0f * 60.0f * 1000.0f     // sessions in GA are automaticaly ended after some period of time
+        || (payload.createTime - _sessionStartTime) > 240.0f * 60.0f      // sessions in GA are automaticaly ended after some period of time
         || day1 != day2)
         )
     {
@@ -326,12 +326,12 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     time(&seconds);
     tm * t = localtime(&seconds);
 
-    gameplay::Logger::log(gameplay::Logger::LEVEL_INFO,
+    GP_LOG(
         "%02d-%02d-%02d %02d:%02d:%02d %08d %08d GA: %s - %d\n",
         t->tm_mon + 1, t->tm_mday, t->tm_year % 100, t->tm_hour, t->tm_min, t->tm_sec,
-        static_cast<int>(curTime), static_cast<int>(payload.createTime), finalRequest, res);
+        static_cast<int>(curTime * 1000.0f), static_cast<int>(payload.createTime * 1000.0f), finalRequest, res);
 
-    GP_ASSERT(abs(static_cast<int>(curTime)-timeDiff - static_cast<int>(payload.createTime)) < 2);
+    GP_ASSERT(abs(static_cast<int>(curTime * 1000.0f)-timeDiff - static_cast<int>(payload.createTime * 1000.0f)) < 2);
 #endif
 
     return res == CURLE_OK;

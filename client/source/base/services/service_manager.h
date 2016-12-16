@@ -45,7 +45,7 @@ public:
     _Service * findService() const { return static_cast<_Service *>(findService(_Service::getTypeName())); }
 
     /**
-     * Get frame time in milliseconds.
+     * Get frame time in seconds.
      */
     float getFrameElapsedTime() const { return _elapsedTime; };
 

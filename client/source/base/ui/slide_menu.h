@@ -89,9 +89,9 @@ public:
     const gameplay::Curve::InterpolationType& getAnimationInterpolator() const;
 
     /**
-     * Get animation duration in milliseconds.
+     * Get animation duration in seconds.
      */
-    unsigned getAnimationDuration() const;
+    float getAnimationDuration() const;
 
 protected:
 
@@ -148,7 +148,7 @@ protected:
 
 private:
     gameplay::Curve::InterpolationType _animationInterpolator;
-    unsigned int _animationDuration;
+    float _animationDuration;
 
     unsigned _currentItemIndex;
     gameplay::AnimationClip * _itemScrollingClip;

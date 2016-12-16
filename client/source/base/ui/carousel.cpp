@@ -15,7 +15,7 @@ Carousel::Carousel()
     , _passiveState(false)
     , _touchPressX(0)
     , _touchPressY(0)
-    , _animationDuration(200)
+    , _animationDuration(0.2f)
     , _animationInterpolator(gameplay::Curve::QUADRATIC_IN)
 {
 }
@@ -53,9 +53,9 @@ void Carousel::initialize(const char* typeName, gameplay::Theme::Style* style, g
                 _animationInterpolator = static_cast<gameplay::Curve::InterpolationType>(type);
         }
 
-        int duration = properties->getInt("animationDuration");
+        float duration = properties->getFloat("animationDuration");
         if (duration > 0)
-            _animationDuration = static_cast<unsigned>(duration);
+            _animationDuration = duration;
     }
 
     if (!_passiveState)

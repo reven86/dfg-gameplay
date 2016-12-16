@@ -11,7 +11,7 @@ ExpandedTab::ExpandedTab()
     : _widthMinimized(0.0f)
     , _widthMaximized(100.0f)
     , _state(MAXIMIZED)
-    , _animationDuration(600)
+    , _animationDuration(0.6f)
     , _animationInterpolator(gameplay::Curve::QUARTIC_IN_OUT)
     , _stateChangeClip(NULL)
     , _clickWaitClip(NULL)
@@ -134,9 +134,9 @@ void ExpandedTab::initialize(const char * typeName, gameplay::Theme::Style * sty
                 _animationInterpolator = static_cast<gameplay::Curve::InterpolationType>(type);
         }
 
-        int duration = properties->getInt("animationDuration");
+        float duration = properties->getFloat("animationDuration");
         if (duration > 0)
-            _animationDuration = static_cast<unsigned>(duration);
+            _animationDuration = duration;
     }
 }
 
@@ -184,7 +184,7 @@ void ExpandedTab::notifyListeners(gameplay::Control::Listener::EventType eventTy
             // it's first click, start a waiting animation
             float from = 0;
             float to = 1;
-            gameplay::Animation * animation = createAnimationFromTo("double-click-wait", ANIMATE_DOUBLE_CLICK, &from, &to, gameplay::Curve::LINEAR, 300);
+            gameplay::Animation * animation = createAnimationFromTo("double-click-wait", ANIMATE_DOUBLE_CLICK, &from, &to, gameplay::Curve::LINEAR, 0.3f);
             _clickWaitClip = animation->getClip();
             _clickWaitClip->addEndListener(this);
             _clickWaitClip->play();

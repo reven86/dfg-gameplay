@@ -226,8 +226,8 @@ private:
     gameplay::AnimationClip * _expandAnimationClip;
     gameplay::AnimationClip * _itemScrollingClip;
     gameplay::Curve::InterpolationType _animationInterpolator;
-    unsigned int _animationWaitDuration;
-    unsigned int _animationDuration;
+    float _animationWaitDuration;
+    float _animationDuration;
 
     bool _menuState;
     float _lastScrollPositionOnPress;

@@ -6,7 +6,7 @@ inline const gameplay::Curve::InterpolationType& SlideMenu::getAnimationInterpol
     return _animationInterpolator;
 }
 
-inline unsigned SlideMenu::getAnimationDuration() const
+inline float SlideMenu::getAnimationDuration() const
 {
     return _animationDuration;
 }
