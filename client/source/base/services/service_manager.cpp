@@ -18,7 +18,7 @@ ServiceManager::~ServiceManager()
 
 void ServiceManager::cleanup()
 {
-    for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
+    for (ServicesType::reverse_iterator it = _services.rbegin(), end_it = _services.rend(); it != end_it; it++)
         delete (*it);
 
     _services.clear();
