@@ -82,7 +82,7 @@ gameplay::Stream * ZipStream::create(gameplay::Stream * compressedStream)
 		return NULL;
 	}
 
-	const int chunk = 10 * 1024 * 1024;
+	const int chunk = 1 * 1024 * 1024;
 	std::unique_ptr<uint8_t[]> out(new uint8_t[chunk]);
 
 	ZipStream * res = new ZipStream();
@@ -114,7 +114,7 @@ gameplay::Stream * ZipStream::create(gameplay::Stream * compressedStream)
 
 	(void)inflateEnd(&strm);
 
-	if (ret != Z_STREAM_END)
+	if (ret != Z_STREAM_END && ret != Z_OK)
 		GP_WARN("Error while decompressing the stream.");
 
 	res->_underlyingStream->seek(0, SEEK_SET);
