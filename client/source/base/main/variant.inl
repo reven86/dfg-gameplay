@@ -31,6 +31,7 @@ namespace detail
         std::make_pair(VariantType::TYPE_UINT8, "uint8"),
         std::make_pair(VariantType::TYPE_INT16, "int16"),
         std::make_pair(VariantType::TYPE_UINT16, "uint16"),
+        std::make_pair(VariantType::TYPE_LIST, "list"),
     };
 };
 
@@ -41,6 +42,14 @@ template<typename _Type> inline VariantType::VariantType(const _Type& var)
 {
     set(var);
 }
+
+template<typename _InputIterator> inline VariantType::VariantType(_InputIterator begin, _InputIterator end)
+    : type(TYPE_NONE)
+    , pointerValue(nullptr)
+{
+    set(begin, end);
+}
+
 
 inline VariantType::Type VariantType::getType() const
 {
@@ -93,18 +102,28 @@ template<class _Type> inline void VariantType::setInternalObject(const _Type& va
             return;
         }
 
+        GP_ASSERT(field == pointerValue);
+
         release();
         type = fieldType;
-        field = new _Type(newValue.get<_Type>());
+        pointerValue = newValue.pointerValue;   // take ownership
+        newValue.pointerValue = nullptr;
         valueChangedSignal(*this);
         return;
     }
     if (type == fieldType && *field == value)
         return;
 
-    release();
-    type = fieldType;
-    field = new _Type(value);
+    if (type == fieldType)
+    {
+        *field = value;
+    }
+    else
+    {
+        release();
+        type = fieldType;
+        field = new _Type(value);
+    }
     valueChangedSignal(*this);
 }
 
@@ -284,6 +303,13 @@ template<> inline void VariantType::set(const VariantType& value)
         return;
     case TYPE_UINT16:
         set(value.uint16Value);
+        return;
+    case TYPE_LIST:
+        {
+            std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(value.pointerValue);
+            GP_ASSERT(list);
+            set(list->begin(), list->end());
+        }
         return;
     default:
         GP_ASSERT(!"Not implemented yet");
@@ -468,6 +494,12 @@ inline bool VariantType::operator==(const VariantType& value) const
         return value.int16Value == int16Value;
     case TYPE_UINT16:
         return value.uint16Value == uint16Value;
+    case TYPE_LIST:
+        {
+            std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+            std::vector<VariantType> * otherList = reinterpret_cast<std::vector<VariantType> *>(value.pointerValue);
+            return list->size() == otherList->size() && std::mismatch(list->begin(), list->end(), otherList->begin()).first == list->end();
+        }
     default:
         GP_ASSERT(!"Not implemented yet");
     }
@@ -491,4 +523,73 @@ template<typename _Type> inline const _Type * VariantType::getBlob() const
     GP_ASSERT(!data || size == sizeof(_Type));
 
     return reinterpret_cast<const _Type *>(data);
+}
+
+template<typename _InputIterator> inline void VariantType::set(_InputIterator begin, _InputIterator end)
+{
+    if (!valueValidatorSignal.empty())
+    {
+        VariantType newValue(begin, end);
+        if (!valueValidatorSignal(*this, newValue))
+            return;
+        if (newValue.type != type)
+        {
+            set(newValue);
+            return;
+        }
+
+        release();
+        type = TYPE_LIST;
+        pointerValue = newValue.pointerValue;   // take ownership
+        newValue.pointerValue = nullptr;
+        valueChangedSignal(*this);
+        return;
+    }
+
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+
+    if (type == TYPE_LIST && list->size() == (size_t)std::distance(begin, end)
+        && std::mismatch(list->begin(), list->end(), begin, [&](const VariantType& a, const _InputIterator::value_type& b) { return a == VariantType(b); }).first == list->end())
+        return;
+
+    if (type != TYPE_LIST)
+    {
+        release();
+        type = TYPE_LIST;
+        pointerValue = list = new std::vector<VariantType>();
+    }
+
+    list->clear();
+    for (_InputIterator it = begin; it != end; ++it)
+        list->push_back(VariantType(*it));
+
+    valueChangedSignal(*this);
+}
+
+inline std::vector<VariantType>::iterator VariantType::begin()
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return list->begin();
+}
+
+inline std::vector<VariantType>::iterator VariantType::end()
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return list->end();
+}
+
+inline std::vector<VariantType>::const_iterator VariantType::begin() const
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return list->begin();
+}
+
+inline std::vector<VariantType>::const_iterator VariantType::end() const
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return list->end();
 }

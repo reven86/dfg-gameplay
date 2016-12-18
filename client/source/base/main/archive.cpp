@@ -170,6 +170,17 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
     case VariantType::TYPE_FILEPATH:
         GP_ASSERT(!"Not implemented yet");
         return false;
+    case VariantType::TYPE_LIST:
+        {
+            uint32_t size = std::distance(value.begin(), value.end());
+            if (stream->write(&size, sizeof(size), 1) != 1)
+                return false;
+
+            for (const VariantType& v : value)
+                if (!serializeVariant(stream, v))
+                    return false;
+        }
+        return true;
     default:
         GP_ASSERT(!"Not implemented yet");
     }
@@ -377,6 +388,21 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
     case VariantType::TYPE_FILEPATH:
         GP_ASSERT(!"Not implemented yet");
         return false;
+    case VariantType::TYPE_LIST:
+        {
+            uint32_t size;
+            if (stream->read(&size, sizeof(size), 1) != 1)
+                return false;
+
+            std::vector<VariantType> list;
+            list.resize(size);
+            for (VariantType& v : list)
+                if (!deserializeVariant(stream, &v))
+                    return false;
+
+            out->set(list.begin(), list.end());
+        }
+        return true;
     default:
         GP_ASSERT(!"Not implemented yet");
     }

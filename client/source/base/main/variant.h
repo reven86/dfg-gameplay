@@ -42,6 +42,9 @@ public:
         TYPE_UINT8,
         TYPE_INT16,
         TYPE_UINT16,
+
+        TYPE_LIST,  // not compatible with DAVA, list of VariantTypes
+
         TYPES_COUNT // every new type should be always added to the end for compatibility with old archives
     };
 
@@ -71,6 +74,14 @@ public:
      * Explicit conversion constructors.
      */
     template<class _Type> explicit VariantType(const _Type& value);
+
+    /**
+     * Construct VariantType from a range.
+     *
+     * @param begin Begin iterator of a range.
+     * @param end End iterator of a range.
+     */
+    template<typename _InputIterator> explicit VariantType(_InputIterator begin, _InputIterator end);
 
     /**
      * Assignment operator.
@@ -139,6 +150,35 @@ public:
      * @return Pointer to a first byte of blob, converted to a given type.
      */
     template<typename _Type> inline const _Type* getBlob() const;
+
+    /**
+     * Set the contents of a variant to a list of VariantTypes.
+     *
+     * @param begin Begin iterator.
+     * @param end End iterator.
+     */
+    template<typename _InputIterator>
+    inline void set(_InputIterator begin, _InputIterator end);
+
+    /**
+     * Get iterator to a first element of the list stored in the variant.
+     */
+    inline std::vector<VariantType>::iterator begin();
+
+    /**
+     * Get iterator to an element after the last of the list stored in the variant.
+     */
+    inline std::vector<VariantType>::iterator end();
+
+    /**
+     * Get iterator to a first element of the list stored in the variant.
+     */
+    inline std::vector<VariantType>::const_iterator begin() const;
+
+    /**
+     * Get iterator to an element after the last of the list stored in the variant.
+     */
+    inline std::vector<VariantType>::const_iterator end() const;
 
     inline bool operator== (const VariantType& other) const;
     inline bool operator!= (const VariantType& other) const;

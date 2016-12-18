@@ -74,11 +74,13 @@ void VariantType::set(const Archive * archive)
 
         release();
         type = TYPE_KEYED_ARCHIVE;
-        pointerValue = newValue.get() ? Archive::create(*newValue.get()) : Archive::create();
+        pointerValue = newValue.pointerValue;   // take ownership
+        newValue.pointerValue = nullptr;
         valueChangedSignal(*this);
         return;
     }
 
+    // TODO: make a proper Archive comparison
     if (type == TYPE_KEYED_ARCHIVE && pointerValue == archive)
         return;
 
@@ -122,6 +124,10 @@ void VariantType::release()
         return;
     case TYPE_KEYED_ARCHIVE:
         delete reinterpret_cast<class Archive *>(pointerValue);
+        pointerValue = NULL;
+        return;
+    case TYPE_LIST:
+        delete reinterpret_cast<std::vector<VariantType>*>(pointerValue);
         pointerValue = NULL;
         return;
     default:
