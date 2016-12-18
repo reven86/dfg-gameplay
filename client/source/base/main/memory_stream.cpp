@@ -110,6 +110,7 @@ char* MemoryStream::readLine(char* str, int num)
         if (ch == '\r' || ch == '\n')
         {
             *str++ = ch;
+            _cursor++;
             if (str - strSave < num)
                 *str++ = '\0';
             return strSave;
