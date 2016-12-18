@@ -607,3 +607,17 @@ inline std::vector<VariantType>::const_iterator VariantType::end() const
     std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
     return list->end();
 }
+
+inline VariantType& VariantType::operator[](unsigned pos)
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return (*list)[pos];
+}
+
+inline const VariantType& VariantType::operator[](unsigned pos) const
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return (*list)[pos];
+}

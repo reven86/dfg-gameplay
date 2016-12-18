@@ -196,6 +196,22 @@ public:
     inline std::vector<VariantType>::const_iterator end() const;
 
     /**
+     * Allow to reference list items of VariantType by index.
+     *
+     * @param pos Index of VariantType inside the list.
+     * @return Reference to VariantType.
+     */
+    inline const VariantType& operator[](unsigned pos) const;
+
+    /**
+     * Allow to reference list items of VariantType by index.
+     *
+     * @param pos Index of VariantType inside the list.
+     * @return Reference to VariantType.
+     */
+    inline VariantType& operator[](unsigned pos);
+
+    /**
      * Set contents of a variant to a data stored in the Python pickle format.
      * This is very simple implementation of Python's Unpickler, it supports only basic types.
      *
