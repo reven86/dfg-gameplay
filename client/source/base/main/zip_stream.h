@@ -24,6 +24,7 @@ public:
      *
      * @param packageName Zip package filename.
      * @param fileName File inside the package.
+     * @return Newly created ZipStream.
      */
     static gameplay::Stream * create(const char * packageName, const char * fileName);
 
@@ -31,8 +32,18 @@ public:
      * Creates ZipStream from another zlib compressed stream.
      *
      * @param stream Stream compressed with zlib.
+     * @return Newly created ZipStream.
      */
     static gameplay::Stream * create(gameplay::Stream * compressedStream);
+
+    /**
+     * Creates ZipStream from another compressed buffer in memory.
+     *
+     * @param buffer Buffer used to read compressed data from.
+     * @param bufferSize Size of the buffer.
+     * @return Newly created ZipStream.
+     */
+    static gameplay::Stream * create(const void * buffer, size_t bufferSize);
 
     /**
      * Returns true if this stream can perform read operations.

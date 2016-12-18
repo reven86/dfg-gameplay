@@ -56,22 +56,27 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
 
 gameplay::Stream * ZipStream::create(gameplay::Stream * compressedStream)
 {
-	// TODO: it not very efficient at the moment since stream is fully read and decompressed in memory
-	// it would be more efficient to decompress by chunks on demand
+    // TODO: it not very efficient at the moment since stream is fully read and decompressed in memory
+    // it would be more efficient to decompress by chunks on demand
 
-	if (!compressedStream)
-		return NULL;
+    if (!compressedStream)
+        return NULL;
 
-	size_t compressedLength = compressedStream->length() - compressedStream->position();
-	std::unique_ptr<uint8_t[]> compressedData(new uint8_t[compressedLength]);
+    size_t compressedLength = compressedStream->length() - compressedStream->position();
+    std::unique_ptr<uint8_t[]> compressedData(new uint8_t[compressedLength]);
 
-	if (compressedStream->read(compressedData.get(), 1, compressedLength) != compressedLength)
-		return NULL;
+    if (compressedStream->read(compressedData.get(), 1, compressedLength) != compressedLength)
+        return NULL;
 
+    return ZipStream::create(compressedData.get(), compressedLength);
+}
+
+gameplay::Stream * ZipStream::create(const void * buffer, size_t bufferSize)
+{
 	z_stream strm =
 	{
-		reinterpret_cast<unsigned char*>(compressedData.get()),
-		static_cast<uInt>(compressedLength)
+		(unsigned char*)(buffer),
+		static_cast<uInt>(bufferSize)
 	};
 
 	int ret = inflateInit(&strm);
