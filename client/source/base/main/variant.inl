@@ -50,6 +50,14 @@ template<typename _InputIterator> inline VariantType::VariantType(_InputIterator
     set(begin, end);
 }
 
+template<typename _Type> inline VariantType::VariantType(const std::initializer_list<_Type>& list)
+    : type(TYPE_NONE)
+    , pointerValue(nullptr)
+{
+    set(list.begin(), list.end());
+}
+
+
 
 inline VariantType::Type VariantType::getType() const
 {
@@ -111,10 +119,10 @@ template<class _Type> inline void VariantType::setInternalObject(const _Type& va
         valueChangedSignal(*this);
         return;
     }
-    if (type == fieldType && *field == value)
+    if (type == fieldType && field && *field == value)
         return;
 
-    if (type == fieldType)
+    if (type == fieldType && field)
     {
         *field = value;
     }
@@ -254,7 +262,7 @@ template<> inline void VariantType::set(const VariantType& value)
         set(value.uint32Value);
         return;
     case TYPE_KEYED_ARCHIVE:
-        set(reinterpret_cast<const Archive *>(value.pointerValue));
+        setArchive(reinterpret_cast<const Archive *>(value.pointerValue));
         return;
     case TYPE_INT64:
         set(value.int64Value);
@@ -424,7 +432,7 @@ template<> inline const gameplay::Matrix& VariantType::get() const
     return *matrix4Value;
 }
 
-inline class Archive * VariantType::get() const
+inline class Archive * VariantType::getArchive() const
 {
     GP_ASSERT(type == TYPE_KEYED_ARCHIVE);
     return reinterpret_cast<class Archive *>(pointerValue);
@@ -516,6 +524,12 @@ inline bool VariantType::isEmpty() const
     return type == TYPE_NONE;
 }
 
+inline void VariantType::clear()
+{
+    release();
+    type = TYPE_NONE;
+}
+
 template<typename _Type> inline const _Type * VariantType::getBlob() const
 {
     uint32_t size;
@@ -549,7 +563,7 @@ template<typename _InputIterator> inline void VariantType::set(_InputIterator be
     std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
 
     if (type == TYPE_LIST && list->size() == (size_t)std::distance(begin, end)
-        && std::mismatch(list->begin(), list->end(), begin, [&](const VariantType& a, const _InputIterator::value_type& b) { return a == VariantType(b); }).first == list->end())
+        && std::mismatch(list->begin(), list->end(), begin, end, [&](const VariantType& a, const std::iterator_traits<_InputIterator>::value_type& b) { return a == VariantType(b); }).first == list->end())
         return;
 
     if (type != TYPE_LIST)

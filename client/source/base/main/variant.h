@@ -84,6 +84,16 @@ public:
     template<typename _InputIterator> explicit VariantType(_InputIterator begin, _InputIterator end);
 
     /**
+     * Construct VariantType from a initializer-list.
+     */
+    template<typename _Type> explicit VariantType(const std::initializer_list<_Type>& list);
+
+    /**
+     * Cope constructor.
+     */
+    VariantType(const VariantType& other);
+
+    /**
      * Assignment operator.
      */
     VariantType& operator=(const VariantType& other);
@@ -92,6 +102,11 @@ public:
      * Whether this instance has no values assigned to it.
      */
     inline bool isEmpty() const;
+
+    /**
+     * Set variant to empty.
+     */
+    inline void clear();
 
     /**
      * Get data type held by variant.
@@ -114,9 +129,9 @@ public:
      * Set the contents of a variant to an Archive instance.
      * This allows to store hierarchical structures inside VariantType.
      *
-     * @param archive Arhive instance or NULL to store empty archive.
+     * @param archive Arhive instance or NULL to create empty archive inplace.
      */
-    void set(const class Archive * archive);
+    void setArchive(const class Archive * archive = NULL);
 
     /**
      * Get the contents of variant as a given type.
@@ -126,7 +141,7 @@ public:
     /**
      * Get contents of a variant as an archive.
      */
-    inline class Archive * get() const;
+    inline class Archive * getArchive() const;
 
     /**
      * Set contents of variant as a blob (byte array).
@@ -179,6 +194,17 @@ public:
      * Get iterator to an element after the last of the list stored in the variant.
      */
     inline std::vector<VariantType>::const_iterator end() const;
+
+    /**
+     * Set contents of a variant to a data stored in the Python pickle format.
+     * This is very simple implementation of Python's Unpickler, it supports only basic types.
+     *
+     * List and tuples are treated same. Objects instantinations (OBJ, INST, NEWOBJ) are not
+     * handled properly. Instead the creation arguments are stored as a list in VariantType.
+     *
+     * @return False in case of malformed data.
+     */
+    bool unpickle(gameplay::Stream * stream);
 
     inline bool operator== (const VariantType& other) const;
     inline bool operator!= (const VariantType& other) const;
