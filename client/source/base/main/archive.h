@@ -27,9 +27,14 @@ public:
     virtual ~Archive();
 
     /**
-     * Create Archive class for a given stream.
+     * Create Archive class.
      */
     static Archive * create();
+
+    /**
+     * Create Archive class as a copy of other archive.
+     */
+    static Archive * create(const Archive& other);
 
     /**
      * Set arbitrary POD data for a given key.
@@ -124,13 +129,17 @@ public:
     bool deserialize(gameplay::Stream * stream);
 
     /**
-     * Get list of keys that present in both archives.
+     * Get list of keys that are present in both archives.
      * Useful for merging or updating one archive with contents of the other.
      *
      * \param other Second archive.
      * \param[out] outKeyList List of keys common for both archives.
      */
     void getCommonKeys(const Archive& other, std::vector<std::string> * outKeyList) const;
+
+    // TODO
+    //inline bool operator== (const Archive& other) const;
+    //inline bool operator!= (const Archive& other) const;
 
 protected:
     Archive();

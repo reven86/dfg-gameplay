@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "variant.h"
+#include "archive.h"
 
 
 
@@ -56,4 +57,75 @@ const uint8_t * VariantType::getBlob(uint32_t * size) const
         *size = static_cast<uint32_t>(buf->size());        
 
     return &(*buf->begin());
+}
+
+void VariantType::set(const Archive * archive)
+{
+    if (!valueValidatorSignal.empty())
+    {
+        VariantType newValue(archive);
+        if (!valueValidatorSignal(*this, newValue))
+            return;
+        if (newValue.type != type)
+        {
+            set(newValue);
+            return;
+        }
+
+        release();
+        type = TYPE_KEYED_ARCHIVE;
+        pointerValue = newValue.get() ? Archive::create(*newValue.get()) : Archive::create();
+        valueChangedSignal(*this);
+        return;
+    }
+
+    if (type == TYPE_KEYED_ARCHIVE && pointerValue == archive)
+        return;
+
+    release();
+    type = TYPE_KEYED_ARCHIVE;
+    pointerValue = archive ? Archive::create(*archive) : Archive::create();
+    valueChangedSignal(*this);
+}
+
+void VariantType::release()
+{
+    if (!pointerValue)
+        return;
+
+    switch (type)
+    {
+    case TYPE_VECTOR2:
+        SAFE_DELETE(vector2Value);
+        return;
+    case TYPE_VECTOR3:
+        SAFE_DELETE(vector3Value);
+        return;
+    case TYPE_VECTOR4:
+        SAFE_DELETE(vector4Value);
+        return;
+    case TYPE_MATRIX3:
+        SAFE_DELETE(matrix3Value);
+        return;
+    case TYPE_MATRIX4:
+        SAFE_DELETE(matrix4Value);
+        return;
+    case TYPE_STRING:
+        SAFE_DELETE(stringValue);
+        return;
+    case TYPE_WIDE_STRING:
+        SAFE_DELETE(wideStringValue);
+        return;
+    case TYPE_BYTE_ARRAY:
+        delete reinterpret_cast<std::vector<uint8_t> *>(pointerValue);
+        pointerValue = NULL;
+        return;
+    case TYPE_KEYED_ARCHIVE:
+        delete reinterpret_cast<class Archive *>(pointerValue);
+        pointerValue = NULL;
+        return;
+    default:
+        // do nothing, it's not an error to get here
+        break;
+    }
 }

@@ -173,11 +173,6 @@ template<> inline void VariantType::set(const std::wstring& value)
     setInternalObject(value, wideStringValue, TYPE_WIDE_STRING);
 }
 
-//template<> void VariantType::set(const class Archive& value)
-//{
-//    GP_ASSERT(!"Not implemented yet");
-//}
-
 template<> inline void VariantType::set(const gameplay::Vector2& value)
 {
     setInternalObject(value, vector2Value, TYPE_VECTOR2);
@@ -240,7 +235,7 @@ template<> inline void VariantType::set(const VariantType& value)
         set(value.uint32Value);
         return;
     case TYPE_KEYED_ARCHIVE:
-        GP_ASSERT(!"Not implemented yet");
+        set(reinterpret_cast<const Archive *>(value.pointerValue));
         return;
     case TYPE_INT64:
         set(value.int64Value);
@@ -403,42 +398,10 @@ template<> inline const gameplay::Matrix& VariantType::get() const
     return *matrix4Value;
 }
 
-inline void VariantType::release()
+inline class Archive * VariantType::get() const
 {
-    if (!pointerValue)
-        return;
-
-    switch (type)
-    {
-    case TYPE_VECTOR2:
-        SAFE_DELETE(vector2Value);
-        return;
-    case TYPE_VECTOR3:
-        SAFE_DELETE(vector3Value);
-        return;
-    case TYPE_VECTOR4:
-        SAFE_DELETE(vector4Value);
-        return;
-    case TYPE_MATRIX3:
-        SAFE_DELETE(matrix3Value);
-        return;
-    case TYPE_MATRIX4:
-        SAFE_DELETE(matrix4Value);
-        return;
-    case TYPE_STRING:
-        SAFE_DELETE(stringValue);
-        return;
-    case TYPE_WIDE_STRING:
-        SAFE_DELETE(wideStringValue);
-        return;
-    case TYPE_BYTE_ARRAY:
-        delete reinterpret_cast<std::vector<uint8_t> *>(pointerValue);
-        pointerValue = NULL;
-        return;
-    default:
-        // do nothing, it's not an error to get here
-        break;
-    }
+    GP_ASSERT(type == TYPE_KEYED_ARCHIVE);
+    return reinterpret_cast<class Archive *>(pointerValue);
 }
 
 inline bool VariantType::operator==(const VariantType& value) const
@@ -468,7 +431,6 @@ inline bool VariantType::operator==(const VariantType& value) const
     case TYPE_UINT32:
         return value.uint32Value == uint32Value;
     case TYPE_KEYED_ARCHIVE:
-        GP_ASSERT(!"Not implemented yet");
         return false;
     case TYPE_INT64:
         return value.int64Value == int64Value;

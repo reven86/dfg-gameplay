@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "archive.h"
+#include "memory_stream.h"
 
 
 
@@ -15,6 +16,14 @@ Archive::~Archive()
 Archive * Archive::create()
 {
     return new Archive();
+}
+
+Archive * Archive::create(const Archive& other)
+{
+    Archive * res = new Archive();
+    for (const auto& kv : other._values)
+        res->set(kv.first.c_str(), VariantType(kv.second));
+    return res;
 }
 
 bool Archive::serialize(gameplay::Stream * stream) const
@@ -128,8 +137,14 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
             return stream->write(&size, sizeof(size), 1) == 1 && stream->write(buf, 1, size) == size;
         }
     case VariantType::TYPE_KEYED_ARCHIVE:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        {
+            std::unique_ptr<MemoryStream> archiveStream(MemoryStream::create());
+            if(!value.get()->serialize(archiveStream.get()))
+                return false;
+
+            uint32_t len = archiveStream->length();
+            return stream->write(&len, sizeof(len), 1) == 1 && stream->write(archiveStream->getBuffer(), 1, len) == len;
+        }
     case VariantType::TYPE_VECTOR2:
         return stream->write(&value.get<gameplay::Vector2>(), sizeof(gameplay::Vector2), 1) == 1;
     case VariantType::TYPE_VECTOR3:
@@ -263,15 +278,11 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             uint32_t len;
             if (stream->read(&len, sizeof(len), 1) != 1)
                 return false;
-            char * buf = new char[len+1];
-            if (stream->read(buf, 1, len) != len)
-            {
-                   SAFE_DELETE_ARRAY(buf);
+            std::unique_ptr<char[]> buf(new char[len + 1]);
+            if (stream->read(buf.get(), 1, len) != len)
                 return false;
-            }
             buf[len] = '\0';
-            out->set(std::string(buf));
-            SAFE_DELETE_ARRAY(buf);
+            out->set(std::string(buf.get()));
         }
         return true;
     case VariantType::TYPE_WIDE_STRING:
@@ -279,15 +290,11 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             uint32_t len;
             if (stream->read(&len, sizeof(len), 1) != 1)
                 return false;
-            wchar_t * buf = new wchar_t[len+1];
-            if (stream->read(buf, sizeof(wchar_t), len) != len)
-            {
-                SAFE_DELETE_ARRAY(buf);
+            std::unique_ptr<wchar_t[]> buf(new wchar_t[len + 1]);
+            if (stream->read(buf.get(), sizeof(wchar_t), len) != len)
                 return false;
-            }
             buf[len] = L'\0';
-            out->set(std::wstring(buf));
-            SAFE_DELETE_ARRAY(buf);
+            out->set(std::wstring(buf.get()));
         }
         return true;
     case VariantType::TYPE_BYTE_ARRAY:
@@ -295,19 +302,26 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             uint32_t size;
             if (stream->read(&size, sizeof(size), 1) != 1)
                 return false;
-            uint8_t * buf = new uint8_t[size];
-            if (stream->read(buf, 1, size) != size)
-            {
-                SAFE_DELETE_ARRAY(buf);
+            std::unique_ptr<uint8_t[]> buf(new uint8_t[size]);
+            if (stream->read(buf.get(), 1, size) != size)
                 return false;
-            }
-            out->setBlob(buf, size);
-            SAFE_DELETE_ARRAY(buf);
+            out->setBlob(buf.get(), size);
         }
         return true;
     case VariantType::TYPE_KEYED_ARCHIVE:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        {
+            uint32_t size;
+            if (stream->read(&size, sizeof(size), 1) != 1)
+                return false;
+
+            std::unique_ptr<uint8_t[]> buf(new uint8_t[size]);
+            if (stream->read(buf.get(), 1, size) != size)
+                return false;
+
+            std::unique_ptr<MemoryStream> archiveStream(MemoryStream::create(buf, size));
+            out->set(NULL);
+            return out->get()->deserialize(archiveStream.get());
+        }
     case VariantType::TYPE_VECTOR2:
         {
             gameplay::Vector2 value;

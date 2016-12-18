@@ -24,7 +24,7 @@ public:
         TYPE_WIDE_STRING,
         TYPE_BYTE_ARRAY,
         TYPE_UINT32,
-        TYPE_KEYED_ARCHIVE, // not supported at the moment
+        TYPE_KEYED_ARCHIVE,
         TYPE_INT64,
         TYPE_UINT64,
         TYPE_VECTOR2,
@@ -58,6 +58,8 @@ public:
      * Performs a validation of the value. If returns false, the value is not changed.
      * Accepts current value as fist argument and new value to be set as a VariantType as a second argument.
      * Validator can also change the new value as needed since it's passed by reference.
+     *
+     * Validator signal is not invoked for blobs.
      */
     mutable sigc::signal<bool, const VariantType&, VariantType&>::accumulated<interruptable_accumulator> valueValidatorSignal;
 
@@ -93,9 +95,17 @@ public:
     /**
      * Set the contents of variant to specified value.
      *
-     * \param value Value, can be one of supported data types.
+     * @param value Value, can be one of supported data types.
      */
     template<typename _Type> inline void set(const _Type& value);
+
+    /**
+     * Set the contents of a variant to an Archive instance.
+     * This allows to store hierarchical structures inside VariantType.
+     *
+     * @param archive Arhive instance or NULL to store empty archive.
+     */
+    void set(const class Archive * archive);
 
     /**
      * Get the contents of variant as a given type.
@@ -103,25 +113,30 @@ public:
     template<typename _Type> inline const _Type& get() const;
 
     /**
+     * Get contents of a variant as an archive.
+     */
+    inline class Archive * get() const;
+
+    /**
      * Set contents of variant as a blob (byte array).
      *
-     * \param data Data source.
-     * \param size Data size.
+     * @param data Data source.
+     * @param size Data size.
      */
     void setBlob(const void * data, uint32_t size);
 
     /**
      * Get the contents of a variant as a byte array (blob).
      *
-     * \param[out] size Receives blob's size.
-     * \return Pointer to blob's first byte.
+     * @param[out] size Receives blob's size.
+     * @return Pointer to blob's first byte.
      */
     const uint8_t * getBlob(uint32_t * size) const;
 
     /**
      * Helper function to get blob and convert it to a given data type.
      *
-     * \return Pointer to a first byte of blob, converted to a given type.
+     * @return Pointer to a first byte of blob, converted to a given type.
      */
     template<typename _Type> inline const _Type* getBlob() const;
 
