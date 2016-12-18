@@ -52,9 +52,6 @@
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-extern int __argc;
-extern char ** __argv;
-
 extern "C"
 {
     void onBeforeUnload()

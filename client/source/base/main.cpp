@@ -22,8 +22,6 @@ extern struct android_app* __state;
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-extern int __argc;
-extern char ** __argv;
 #endif
 
 
@@ -140,13 +138,17 @@ void DfgGame::setGameLocale(const char * newLocale)
 
 #elif defined(__EMSCRIPTEN__)
 
+        int argc;
+        char** argv;
+        getArguments(&argc, &argv);
+
         // system locale for emscripten comes from command line
         int i = 1;
-        while (i < __argc - 1)
+        while (i < argc - 1)
         {
-            if (strcmp(__argv[i], "-l") == 0 || strcmp(__argv[i], "--language") == 0)
+            if (strcmp(argv[i], "-l") == 0 || strcmp(argv[i], "--language") == 0)
             {
-                systemLocale = __argv[++i];
+                systemLocale = argv[++i];
                 break;
             }
             i++;
