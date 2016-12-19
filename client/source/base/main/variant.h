@@ -135,6 +135,9 @@ public:
 
     /**
      * Get the contents of variant as a given type.
+     * You can use 'get' of larger types on smaller ones.
+     * For example, you variant hold INT8 value, you can
+     * call 'get<int16_t>' to get it as well.
      */
     template<typename _Type> inline const _Type& get() const;
 

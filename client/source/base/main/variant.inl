@@ -332,49 +332,49 @@ template<> inline const bool& VariantType::get() const
 
 template<> inline const int8_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_INT8);
+    GP_ASSERT(type == TYPE_INT8 || type == TYPE_BOOLEAN);
     return int8Value;
 }
 
 template<> inline const uint8_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_UINT8);
+    GP_ASSERT(type == TYPE_UINT8 || type == TYPE_BOOLEAN);
     return uint8Value;
 }
 
 template<> inline const int16_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_INT16);
+    GP_ASSERT(type == TYPE_INT16 || type == TYPE_INT8 || type == TYPE_BOOLEAN);
     return int16Value;
 }
 
 template<> inline const uint16_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_UINT16);
+    GP_ASSERT(type == TYPE_UINT16 || type == TYPE_UINT8 || type == TYPE_BOOLEAN);
     return uint16Value;
 }
 
 template<> inline const int32_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_INT32);
+    GP_ASSERT(type == TYPE_INT32 || type == TYPE_INT16 || type == TYPE_INT8 || type == TYPE_BOOLEAN);
     return int32Value;
 }
 
 template<> inline const uint32_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_UINT32);
+    GP_ASSERT(type == TYPE_UINT32 || type == TYPE_UINT16 || type == TYPE_UINT8 || type == TYPE_BOOLEAN);
     return uint32Value;
 }
 
 template<> inline const int64_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_INT64);
+    GP_ASSERT(type == TYPE_INT64 || type == TYPE_INT32 || type == TYPE_INT16 || type == TYPE_INT8 || type == TYPE_BOOLEAN);
     return int64Value;
 }
 
 template<> inline const uint64_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_UINT64);
+    GP_ASSERT(type == TYPE_UINT64 || type == TYPE_UINT32 || type == TYPE_UINT16 || type == TYPE_UINT8 || type == TYPE_BOOLEAN);
     return uint64Value;
 }
 
