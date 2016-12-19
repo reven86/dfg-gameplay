@@ -411,7 +411,17 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 if (stream->read(buf.get(), 1, len) != len)
                     return false;
                 buf[len] = '\0';
-                stack.push_back(VariantType(std::string(buf.get())));       // note: Python string can contain zero bytes, probably better to store them as blobs
+
+                // check whether string contains zero bytes, store it as blob if true
+                if (std::find(buf.get(), buf.get() + len, 0) != buf.get() + len)
+                {
+                    stack.push_back(VariantType());
+                    stack.back().setBlob(buf.get(), len);
+                }
+                else
+                {
+                    stack.push_back(VariantType(std::string(buf.get())));
+                }
             }
             break;
         case TUPLE:
