@@ -563,7 +563,7 @@ template<typename _InputIterator> inline void VariantType::set(_InputIterator be
     std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
 
     if (type == TYPE_LIST && list->size() == (size_t)std::distance(begin, end)
-        && std::mismatch(list->begin(), list->end(), begin, end, [&](const VariantType& a, const std::iterator_traits<_InputIterator>::value_type& b) { return a == VariantType(b); }).first == list->end())
+        && std::mismatch(list->begin(), list->end(), begin, [&](const VariantType& a, const typename std::iterator_traits<_InputIterator>::value_type& b) { return a == VariantType(b); }).first == list->end())
         return;
 
     if (type != TYPE_LIST)

@@ -585,10 +585,10 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 if (stream->read(&val, sizeof(val), 1) != 1)
                     return false;
 
-                itoa(val, str, 10);
-                if (memo.find(str) == memo.end())
+                std::string s = std::to_string(val);
+                if (memo.find(s) == memo.end())
                     return false;
-                stack.push_back(memo[str]);
+                stack.push_back(memo[s]);
             }
             break;
         case LONG_BINGET:
@@ -597,10 +597,10 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 if (stream->read(&val, sizeof(val), 1) != 1)
                     return false;
 
-                itoa(val, str, 10);
-                if (memo.find(str) == memo.end())
+                std::string s = std::to_string(val);
+                if (memo.find(s) == memo.end())
                     return false;
-                stack.push_back(memo[str]);
+                stack.push_back(memo[s]);
             }
             break;
         case PUT:
@@ -614,8 +614,8 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 if (stream->read(&val, sizeof(val), 1) != 1)
                     return false;
 
-                itoa(val, str, 10);
-                memo[str] = stack.back();
+                std::string s = std::to_string(val);
+                memo[s] = stack.back();
             }
             break;
         case LONG_BINPUT:
@@ -624,8 +624,8 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 if (stream->read(&val, sizeof(val), 1) != 1)
                     return false;
 
-                itoa(val, str, 10);
-                memo[str] = stack.back();
+                std::string s = std::to_string(val);
+                memo[s] = stack.back();
             }
             break;
         case APPEND:
