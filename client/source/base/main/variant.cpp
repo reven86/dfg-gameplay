@@ -223,7 +223,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
 
     while (!stream->eof() && !stopped)
     {
-        int8_t key;
+        char key;
         if (stream->read(&key, sizeof(key), 1) != 1)
             return false;
 
