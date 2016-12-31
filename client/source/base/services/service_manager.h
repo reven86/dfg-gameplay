@@ -86,7 +86,11 @@ private:
     struct ServiceData
     {
         std::unique_ptr< Service > service;
-        std::string name;
+        const char * name;  // name here acts as a key, we don't compare strings itself
+                            // instead we compare the pointers. since the services can only
+                            // be created using template methods that require that each service
+                            // provides static getTypeName method, which returns the same pointer
+                            // every time it's invoked - it's ok to compare just pointer values
     };
 
     // services, sorted by priority.

@@ -499,7 +499,12 @@ bool ParticleSystem::reload()
 ParticleSystem * ParticleSystem::clone(bool deepClone) const
 {
     ParticleSystem * res = new ParticleSystem();
-    *((BaseParticleSystem *)res) = *this;
+    res->_maxParticles = _maxParticles;
+    res->_emitterTransformation = _emitterTransformation;
+    res->_isStopped = _isStopped;
+    res->_aliveCount = _aliveCount;
+    res->_maxParticleSize = _maxParticleSize;
+
     res->setURL(getURL());
     res->_systems = _systems;
     res->_particles = _particles;

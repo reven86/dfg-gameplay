@@ -79,29 +79,29 @@ struct Particle
     starttime_variation: 1.0
 
     size_curve:
-    - key: [0, 0.5]
-    - key: [255, 1.5]
+      "0": 0.5
+      "255": 1.5
 
     velocity_curve:
-    - key: [0, 1.0]
-    - key: [255, 1.0]
+      "0": 1.0
+      "255": 1.0
 
     acceleration_curve:
-    - key: [0, 1.0]
-    - key: [255, 1.0]
+      "0": 1.0
+      "255": 1.0
 
     spin_curve:
-    - key: [0, 1.0]
-    - key: [255, 1.0]
+      "0": 1.0
+      "255": 1.0
 
     motionrand_curve:
-    - key: [0, 1.0]
-    - key: [255, 1.0]
+      "0": 1.0
+      "255": 1.0
 
     colors_curve:
-    - key: [0, 0x00ffffff]
-    - key: [127, 0x40ffffff]
-    - key: [255, 0x00ffffff]
+      "0": ffffff00
+      "127": ffffff40
+      "255": ffffff00
 \endverbatim
  *	
  *	Description:
