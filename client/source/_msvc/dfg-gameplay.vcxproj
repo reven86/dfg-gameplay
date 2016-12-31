@@ -132,6 +132,7 @@
     <ClInclude Include="..\base\ui\http_image_control.h" />
     <ClInclude Include="..\base\ui\slide_menu.h" />
     <ClInclude Include="..\base\utils\curve.h" />
+    <ClInclude Include="..\base\utils\intrusive_list.h" />
     <ClInclude Include="..\base\utils\noncopyable.h" />
     <ClInclude Include="..\base\utils\priority_signal.h" />
     <ClInclude Include="..\base\utils\profiler.h" />
@@ -150,6 +151,7 @@
     <None Include="..\base\main\settings.inl" />
     <None Include="..\base\main\variant.inl" />
     <None Include="..\base\ui\slide_menu.inl" />
+    <None Include="..\base\utils\intrusive_list.inl" />
     <None Include="..\base\utils\utils.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

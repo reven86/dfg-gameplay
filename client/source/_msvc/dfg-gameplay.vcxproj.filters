@@ -240,6 +240,9 @@
     <ClInclude Include="..\base\ui\slide_menu.h">
       <Filter>base\ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\utils\intrusive_list.h">
+      <Filter>base\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -279,6 +282,9 @@
     </None>
     <None Include="..\base\ui\slide_menu.inl">
       <Filter>base\ui</Filter>
+    </None>
+    <None Include="..\base\utils\intrusive_list.inl">
+      <Filter>base\utils</Filter>
     </None>
   </ItemGroup>
 </Project>

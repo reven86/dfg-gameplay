@@ -41,6 +41,7 @@
 #include "ui/http_image_control.h"
 #include "ui/slide_menu.h"
 #include "utils/curve.h"
+#include "utils/intrusive_list.h"
 #include "utils/noncopyable.h"
 #include "utils/priority_signal.h"
 #include "utils/profiler.h"
