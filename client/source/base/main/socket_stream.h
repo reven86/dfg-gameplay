@@ -17,7 +17,7 @@
  * SocketStream handles data transmission over the network 
  * using stream-like objects.
  *
- * You can use SocketStream with UDP or TCP sockets, either
+ * You can use SocketStream only with TCP sockets, either
  * blocking or non-blocking.
  */
 class SocketStream : public gameplay::Stream, Noncopyable
@@ -37,18 +37,18 @@ public:
      *
      * @param ipAddress IPv4 address.
      * @param port Port number.
-     * @param tcp Use TCP connection, otherwise UDP is used.
      * @param blocking Use blocking read-write operations.
      * @return Newly created SocketStream.
      */
-    static SocketStream * create(const char * ipAddress, uint16_t port, bool tcp = false, bool blocking = true);
+    static SocketStream * create(const char * ipAddress, uint16_t port, bool blocking = true);
 
     /**
      * Returns true if this stream can perform read operations.
+     * Actually checks whether any bytes are available to make socket read operation
      *
      * @return True if the stream can read, false otherwise.
      */
-    virtual bool canRead() override { return true; };
+    virtual bool canRead() override;
 
     /**
      * Returns true if this stream can perform write operations.

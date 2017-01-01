@@ -46,7 +46,7 @@ SocketStream::~SocketStream()
     close();
 }
 
-SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool tcp, bool blocking)
+SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool blocking)
 {
 #ifdef WIN32
 
@@ -63,7 +63,7 @@ SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool 
 
     SOCKET socket;
 
-    socket = tcp ? ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) : ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    socket = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (socket == -1)
     {
         int error = WSAGetLastError();
@@ -92,7 +92,7 @@ SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool 
 
 #else
 
-    int socket = ::socket(AF_INET, tcp ? SOCK_STREAM : SOCK_DGRAM, 0);
+    int socket = ::socket(AF_INET, SOCK_STREAM, 0);
     if (socket == -1)
     {
         GP_WARN("Can't create SocketStream %s:%d %d", ipAddress, port, 0);
@@ -104,15 +104,12 @@ SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool 
     setsockopt(socket, SOL_SOCKET, SO_NOSIGPIPE, &set, sizeof(set));
 #endif
 
-    if (tcp)
-    {
-        set = 1;
-        setsockopt(socket, IPPROTO_TCP, TCP_NODELAY, &set, sizeof(set));
+    set = 1;
+    setsockopt(socket, IPPROTO_TCP, TCP_NODELAY, &set, sizeof(set));
 #ifdef __EMSCRIPTEN__
-        set = 1;
-        setsockopt(socket, IPPROTO_TCP, TCP_QUICKACK, &set, sizeof(set));
+    set = 1;
+    setsockopt(socket, IPPROTO_TCP, TCP_QUICKACK, &set, sizeof(set));
 #endif
-    }
 
     struct sockaddr_in clientService;
     memset(&clientService, 0, sizeof(clientService));
@@ -141,6 +138,7 @@ SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool 
 
 void SocketStream::close()
 {
+    _connectionIsClosed = true;
     if (_socket == -1)
         return;
 
@@ -167,9 +165,16 @@ size_t SocketStream::read(void* ptr, size_t size, size_t count)
     auto result = recv(_socket, buffer, bytesRemaining, 0);
     while (result > 0 && bytesRemaining > 0)
     {
-        GP_ASSERT(bytesRemaining <= result);
+        GP_ASSERT(bytesRemaining >= result);
         bytesRemaining -= result;
-        result = recv(_socket, buffer + sizeInBytes - bytesRemaining, bytesRemaining, 0);
+        if (bytesRemaining > 0)
+            result = recv(_socket, buffer + sizeInBytes - bytesRemaining, bytesRemaining, 0);
+    }
+
+    if (result < 0)
+    {
+        int error = WSAGetLastError();
+        GP_WARN("Can't read from socket %d", error);
     }
 
     _connectionIsClosed |= result <= 0;
@@ -224,4 +229,16 @@ size_t SocketStream::write(const void* ptr, size_t size, size_t count)
 
     _totalBytes += result;
     return result / size;
+}
+
+bool SocketStream::canRead()
+{
+    unsigned long bytes = 0;
+#ifdef WIN32
+    ioctlsocket(_socket, FIONREAD, &bytes);
+#else
+    ioctl(_socket, FIONREAD, &bytes);
+#endif
+
+    return bytes != 0;
 }
