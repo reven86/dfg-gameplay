@@ -7,6 +7,7 @@ set(DFGGAMEPLAY_SRC
     base/main/gameplay_assets.cpp
     base/main/memory_stream.cpp
     base/main/settings.cpp
+    base/main/socket_stream.cpp
     base/main/variant.cpp
     base/main/zip_package.cpp
     base/main/zip_packages.cpp

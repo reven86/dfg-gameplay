@@ -66,6 +66,7 @@
     <ClCompile Include="..\base\main\gameplay_assets.cpp" />
     <ClCompile Include="..\base\main\memory_stream.cpp" />
     <ClCompile Include="..\base\main\settings.cpp" />
+    <ClCompile Include="..\base\main\socket_stream.cpp" />
     <ClCompile Include="..\base\main\variant.cpp" />
     <ClCompile Include="..\base\main\zip_package.cpp" />
     <ClCompile Include="..\base\main\zip_packages.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="..\base\main\gameplay_assets.h" />
     <ClInclude Include="..\base\main\memory_stream.h" />
     <ClInclude Include="..\base\main\settings.h" />
+    <ClInclude Include="..\base\main\socket_stream.h" />
     <ClInclude Include="..\base\main\variant.h" />
     <ClInclude Include="..\base\main\zip_package.h" />
     <ClInclude Include="..\base\main\zip_packages.h" />

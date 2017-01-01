@@ -1,81 +1,73 @@
 #pragma once
 
-#ifndef __MEMORY_STREAM_H__
-#define __MEMORY_STREAM_H__
+
+#ifndef __DFG_SOCKET_STREAM_H__
+#define __DFG_SOCKET_STREAM_H__
+
+#ifdef WIN32
+#include <winsock.h>
+#else
+#include <sys/socket.h>
+#endif
 
 
 
 
 /**
- * MemoryStream allows you to stream-like objects for memory buffers.
+ * SocketStream handles data transmission over the network 
+ * using stream-like objects.
+ *
+ * You can use SocketStream with UDP or TCP sockets, either
+ * blocking or non-blocking.
  */
-class MemoryStream : public gameplay::Stream
+class SocketStream : public gameplay::Stream, Noncopyable
 {
 public:
-    virtual ~MemoryStream();
+    virtual ~SocketStream();
 
     /**
-     * Create read-only MemoryStream stream, passing pointer to buffer of constant data.
+     * Create SocketServer for a given IPv4 address and port number.
+     * Socket connection is always happen in blocking mode.
      *
-     * @param buffer Buffer used to read data from.
-     * @param bufferSize Size of the buffer.
-     * @return Newly created MemoryStream.
-     */
-    static MemoryStream * create(const void * buffer, size_t bufferSize);
-
-    /**
-     * Create read-write MemoryStream stream, passing pointer to buffer of data.
+     * If socket is non-blocking, read and write operations may fail if 
+     * no data is ready in the pipe. You need to check EOF to make sure
+     * socket is closed and retry reading or writing again if it's not.
      *
-     * @param buffer Buffer used to read data from and write data to.
-     * @param bufferSize Size of the buffer.
-     * @return Newly created MemoryStream.
-     */
-    static MemoryStream * create(void * buffer, size_t bufferSize);
-
-    /**
-     * Create read-write MemoryStream stream, passing smart pointer to buffer of data.
+     * Non-blocking sockets are not supported at the moment.
      *
-     * @param buffer Buffer used to read data from. Ownership of memory allocated is transferred to MemoryStream.
-     * @param bufferSize Size of the buffer.
-     * @return Newly created MemoryStream.
+     * @param ipAddress IPv4 address.
+     * @param port Port number.
+     * @param tcp Use TCP connection, otherwise UDP is used.
+     * @param blocking Use blocking read-write operations.
+     * @return Newly created SocketStream.
      */
-    static MemoryStream * create(std::unique_ptr<uint8_t[]>& buffer, size_t bufferSize);
-
-    /**
-     * Create read-write MemoryStream stream, that automatically reallocates memory when trying to write beyond buffer's end.
-     * This type of stream is useful when you need to serialize some structure in memory but
-     * don't know how much space it would need. You can call write methods on this type of
-     * stream and then get the pointer to result buffer when you finish all writing operations.
-     *
-     * @return Newly created MemoryStream.
-     */
-    static MemoryStream * create();
+    static SocketStream * create(const char * ipAddress, uint16_t port, bool tcp = false, bool blocking = true);
 
     /**
      * Returns true if this stream can perform read operations.
      *
      * @return True if the stream can read, false otherwise.
      */
-    virtual bool canRead() { return true; };
+    virtual bool canRead() override { return true; };
 
     /**
      * Returns true if this stream can perform write operations.
      *
      * @return True if the stream can write, false otherwise.
      */
-    virtual bool canWrite() { return _writeBuffer != nullptr || _canAllocate; };
+    virtual bool canWrite() override { return true; };
 
     /**
      * Returns true if this stream can seek.
      *
      * @return True if the stream can seek, false otherwise.
      */
-    virtual bool canSeek() { return true; };
+    virtual bool canSeek() override { return false; };
 
     /**
      * Closes this stream.
      */
-    virtual void close();
+    virtual void close() override;
 
     /**
      * Reads an array of <code>count</code> elements, each of size <code>size</code>.
@@ -89,13 +81,13 @@ public:
      * @param ptr   The pointer to the memory to copy into.
      *              The available size should be at least (<code>size * count</code>) bytes.
      * @param size  The size of each element to be read, in bytes.
-     * @param count The number of elements to read.
+      * @param count The number of elements to read.
      *
      * @return The number of elements read.
      *
      * @see canRead()
      */
-    virtual size_t read(void* ptr, size_t size, size_t count);
+    virtual size_t read(void* ptr, size_t size, size_t count) override;
 
     /**
      * Reads a line from the stream.
@@ -111,7 +103,7 @@ public:
      *
      * @see canRead()
      */
-    virtual char* readLine(char* str, int num);
+    virtual char* readLine(char* str, int num) override;
 
     /**
      * Writes an array of <code>count</code> elements, each of size <code>size</code>.
@@ -130,14 +122,14 @@ public:
      *
      * @see canWrite()
      */
-    virtual size_t write(const void* ptr, size_t size, size_t count);
+    virtual size_t write(const void* ptr, size_t size, size_t count) override;
 
     /**
      * Returns true if the end of the stream has been reached.
      *
      * @return True if end of stream reached, false otherwise.
      */
-    virtual bool eof() { return _cursor >= _bufferSize; };
+    virtual bool eof() override { return _connectionIsClosed; };
 
     /**
      * Returns the length of the stream in bytes.
@@ -148,14 +140,15 @@ public:
      *
      * @return The length of the stream in bytes.
      */
-    virtual size_t length() { return _bufferSize; };
+    virtual size_t length() override { return 0; };
 
     /**
      * Returns the position of the file pointer. Zero is the start of the stream.
+     * For network stream total number of bytes send and received is returned.
      *
      * @return The file indicator offset in bytes.
      */
-    virtual long int position() { return static_cast<long int>(_cursor); };
+     virtual long int position() override { return _totalBytes; };
 
     /**
      * Sets the position of the file pointer.
@@ -173,7 +166,7 @@ public:
      *
      * @see canSeek()
      */
-    virtual bool seek(long int offset, int origin);
+    virtual bool seek(long int offset, int origin) override { return false; };
 
     /**
      * Moves the file pointer to the start of the file.
@@ -184,28 +177,22 @@ public:
      *
      * @see canSeek()
      */
-    virtual bool rewind() { _cursor = 0; return true; };
-
-    /**
-     * Get underlying memory buffer.
-     */
-    const uint8_t * getBuffer() const { return _readBuffer; };
+    virtual bool rewind() override { return false; };
 
 protected:
-    MemoryStream();
+    SocketStream();
 
 private:
-    const uint8_t * _readBuffer;
-    uint8_t * _writeBuffer;
-    size_t _cursor;
-    size_t _bufferSize;
-    std::unique_ptr<uint8_t[]> _ownedBuffer;
+#ifdef WIN32
+    SOCKET _socket;
+#else
+    int _socket;
+#endif
 
-    bool _canAllocate;
-    std::vector<uint8_t> _autoBuffer;
+    bool _connectionIsClosed;
+    long int _totalBytes;
 };
 
 
 
-
-#endif
+#endif // __DFG_SOCKET_STREAM_H__
