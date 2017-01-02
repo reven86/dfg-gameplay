@@ -163,19 +163,8 @@ size_t SocketStream::read(void* ptr, size_t size, size_t count)
     char * buffer = (char*)ptr;
 
     auto result = recv(_socket, buffer, bytesRemaining, 0);
-    while (result > 0 && bytesRemaining > 0)
-    {
-        GP_ASSERT(bytesRemaining >= result);
+    if (result > 0)
         bytesRemaining -= result;
-        if (bytesRemaining > 0)
-            result = recv(_socket, buffer + sizeInBytes - bytesRemaining, bytesRemaining, 0);
-    }
-
-    if (result < 0)
-    {
-        int error = WSAGetLastError();
-        GP_WARN("Can't read from socket %d", error);
-    }
 
     _connectionIsClosed |= result <= 0;
     _totalBytes += sizeInBytes - bytesRemaining;

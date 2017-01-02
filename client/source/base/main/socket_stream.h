@@ -72,6 +72,11 @@ public:
     /**
      * Reads an array of <code>count</code> elements, each of size <code>size</code>.
      *
+     * Please note, that for SocketStream read is a blocking operation, it wait until
+     * something is ready to read from queue and it may read less bytes than your asked.
+     * In this case, you need to always check how many bytes were read and call the read
+     * again to receive the rest.
+     *
      * \code
      * int numbers[3];
      * if (stream->read(numbers, sizeof(int), 3) != 3)
