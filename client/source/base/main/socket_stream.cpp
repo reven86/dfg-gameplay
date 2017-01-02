@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <sys/types.h>
 #include <sys/select.h>
+#include <sys/ioctl.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -117,12 +118,11 @@ SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool 
     clientService.sin_addr.s_addr = inet_addr(ipAddress);
     clientService.sin_port = htons(port);
 
-    int res = ::connect(socket, (sockaddr*)&clientService, sizeof(clientService));
     GP_LOG("Connecting to %s:%d...", ipAddress, port);
-    if (res < 0)
+    if (::connect(socket, (sockaddr*)&clientService, sizeof(clientService)) < 0)
     {
         int error = (int)errno;
-        close(socket);
+        ::close(socket);
         socket = -1;
         GP_WARN("Can't create SocketStream %s:%d %d", ipAddress, port, error);
         return NULL;
@@ -147,7 +147,7 @@ void SocketStream::close()
     WSACleanup();
     _socket = (SOCKET)-1;
 #else
-    close(_socket);
+    ::close(_socket);
     _socket = -1;
 #endif
 }
