@@ -362,10 +362,20 @@ bool VariantType::unpickle(gameplay::Stream * stream)
             break;
         case BINFLOAT:
             {
-                double val;
-                if (stream->read(&val, sizeof(val), 1) != 1)
+                // BINFLOAT stores doubles in big-endian format
+                union
+                {
+                    double val;
+                    int8_t b[8];
+                } val;
+
+                if (stream->read(&val.val, sizeof(val), 1) != 1)
                     return false;
-                stack.push_back(VariantType(val));
+                std::swap(val.b[0], val.b[7]);
+                std::swap(val.b[1], val.b[6]);
+                std::swap(val.b[2], val.b[5]);
+                std::swap(val.b[3], val.b[4]);
+                stack.push_back(VariantType(val.val));
             }
             break;
         case STRING:
