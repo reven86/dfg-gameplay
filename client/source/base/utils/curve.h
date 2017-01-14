@@ -84,6 +84,11 @@ public:
     void clear() { KeysType().swap(_keys); };
 
     /**
+     * Whether Curve is empty, e.g. contains no keys.
+     */
+    bool empty() const { return _keys.empty(); };
+
+    /**
      * Initialize Curve from Properties.
      */
     inline bool initialize(gameplay::Properties * properties);
