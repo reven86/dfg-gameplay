@@ -7,7 +7,7 @@
 
 SlideMenu::SlideMenu()
     : _currentItemIndex(INVALID_ITEM_INDEX)
-    , _animationDuration(0.2f)
+    , _animationDuration(0.6f)
     , _animationInterpolator(gameplay::Curve::QUARTIC_IN_OUT)
     , _itemScrollingClip(NULL)
 {
@@ -79,7 +79,7 @@ void SlideMenu::scrollToItem(unsigned itemIndex, bool immediately)
 
         float from = _controls[itemIndex]->isVisible() ? _controls[itemIndex]->getOpacity() : 0.0f;
         float to = 1.0f;
-        _fadeAnimations[_controls[itemIndex]] = _controls[itemIndex]->createAnimationFromTo("scroll-fade-in", ANIMATE_OPACITY, &from, &to, gameplay::Curve::LINEAR, _animationDuration)->getClip();
+        _fadeAnimations[_controls[itemIndex]] = _controls[itemIndex]->createAnimationFromTo("scroll-fade-in", ANIMATE_OPACITY, &from, &to, _animationInterpolator, _animationDuration)->getClip();
         _fadeAnimations[_controls[itemIndex]]->play();
         itemFadeIn(itemIndex);
 
@@ -92,7 +92,7 @@ void SlideMenu::scrollToItem(unsigned itemIndex, bool immediately)
 
         from = _controls[lastItem]->isVisible() ? _controls[lastItem]->getOpacity() : 1.0f;
         to = 0.0f;
-        _fadeAnimations[_controls[lastItem]] = _controls[lastItem]->createAnimationFromTo("scroll-fade-out", ANIMATE_OPACITY, &from, &to, gameplay::Curve::LINEAR, _animationDuration)->getClip();
+        _fadeAnimations[_controls[lastItem]] = _controls[lastItem]->createAnimationFromTo("scroll-fade-out", ANIMATE_OPACITY, &from, &to, _animationInterpolator, _animationDuration)->getClip();
         _fadeAnimations[_controls[lastItem]]->addEndListener(this);
         _fadeAnimations[_controls[lastItem]]->play();
         itemFadeOut(lastItem);
@@ -220,7 +220,7 @@ void SlideMenu::previewItem(unsigned itemIndex)
                 (*currentFadeAnimation).second->stop();
             }
 
-            _fadeAnimations[_controls[i]] = _controls[i]->createAnimationFromTo("preview-fade-out", ANIMATE_OPACITY, &from, &to, gameplay::Curve::LINEAR, _animationDuration)->getClip();
+            _fadeAnimations[_controls[i]] = _controls[i]->createAnimationFromTo("preview-fade-out", ANIMATE_OPACITY, &from, &to, _animationInterpolator, _animationDuration)->getClip();
             _fadeAnimations[_controls[i]]->addEndListener(this);
             _fadeAnimations[_controls[i]]->play();
             itemFadeOut(i);
@@ -237,7 +237,7 @@ void SlideMenu::previewItem(unsigned itemIndex)
             }
 
             _controls[i]->setVisible(true);
-            _fadeAnimations[_controls[i]] = _controls[i]->createAnimationFromTo("preview-fade-in", ANIMATE_OPACITY, &from, &to, gameplay::Curve::LINEAR, _animationDuration)->getClip();
+            _fadeAnimations[_controls[i]] = _controls[i]->createAnimationFromTo("preview-fade-in", ANIMATE_OPACITY, &from, &to, _animationInterpolator, _animationDuration)->getClip();
             _fadeAnimations[_controls[i]]->play();
             itemFadeIn(i);
         }
