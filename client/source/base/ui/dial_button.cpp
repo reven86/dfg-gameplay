@@ -68,7 +68,7 @@ void DialButton::initialize(const char* typeName, gameplay::Theme::Style* style,
 
     _freeSliding = properties->getBool("freeSliding");
 
-    setConsumeInputEvents(true);
+    _consumeInputEvents = properties->getBool("consumeInputEvents", true);
 
     for (gameplay::Control * child : getControls())
         unsetConsumeInputEvents(child);
