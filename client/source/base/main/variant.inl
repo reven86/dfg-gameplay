@@ -566,13 +566,13 @@ template<typename _InputIterator> inline void VariantType::set(_InputIterator be
         && std::mismatch(list->begin(), list->end(), begin, [&](const VariantType& a, const typename std::iterator_traits<_InputIterator>::value_type& b) { return a == VariantType(b); }).first == list->end())
         return;
 
-	list = new std::vector<VariantType>();
+    list = new std::vector<VariantType>();
     for (_InputIterator it = begin; it != end; ++it)
         list->push_back(VariantType(*it));
 
-	release();
-	type = TYPE_LIST;
-	pointerValue = list;
+    release();
+    type = TYPE_LIST;
+    pointerValue = list;
 
     valueChangedSignal(*this);
 }
