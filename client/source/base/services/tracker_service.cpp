@@ -30,7 +30,7 @@ TrackerService::TrackerService(const ServiceManager * manager)
     , _protocolVersion(1)
     , _curl(NULL)
     , _allowDispatch(true)
-    , _sessionStartTime(0)
+    , _sessionStartTime(-1.0f)
     , _lastPayloadSentTime(0)
 {
     memset(_customMetrics, 0, sizeof(_customMetrics));
@@ -241,7 +241,7 @@ void TrackerService::endSession(const char * viewName)
     forceDispatch();
 
     _dispatchMutex.lock();
-    _sessionStartTime = 0;
+    _sessionStartTime = -1.0f;
     _dispatchMutex.unlock();
 
     // if payload queue still not empty (e.g., internet connection was lost)
@@ -274,7 +274,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     int day2 = localtime(&time2)->tm_mday;
 
     if (payload.createTime >= 0 && payload.params.find("&sc=end") == payload.params.npos &&
-        (_sessionStartTime <= 0
+        (_sessionStartTime < 0.0f
         || (payload.createTime - _sessionStartTime) > 240.0f * 60.0f      // sessions in GA are automaticaly ended after some period of time
         || day1 != day2)
         )
@@ -315,7 +315,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
 
     if (res == CURLE_OK)
     {
-        if (_sessionStartTime <= 0)
+        if (_sessionStartTime < 0.0f)
             _sessionStartTime = payload.createTime;
 
         _lastPayloadSentTime = payload.createTime;
