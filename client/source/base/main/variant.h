@@ -89,7 +89,7 @@ public:
     template<typename _Type> explicit VariantType(const std::initializer_list<_Type>& list);
 
     /**
-     * Cope constructor.
+     * Copy constructor.
      */
     VariantType(const VariantType& other);
 
