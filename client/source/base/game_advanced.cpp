@@ -97,7 +97,8 @@ void DfgGameAdvanced::initialize()
     EM_ASM({
         window.onbeforeunload = function(e) {
             Module.ccall('onBeforeUnload', null,[],[]);
-        }; });
+        };
+    });
 
     _resourcePackage.reset(ZipPackage::create("resources.data"));
     if (_resourcePackage)
@@ -277,11 +278,17 @@ void DfgGameAdvanced::updateSettings()
 #ifdef __EMSCRIPTEN__
     // get the domain name where the app is running
     int stringPointer = EM_ASM_INT_V({
-        var url = (parent != = window) ? document.referrer : window.location.href;
-    var referrer = '(null)';
-    try { referrer = url.match(new RegExp('://(.[^/]+)'))[1]; }
-    catch (err) { referrer = 'exception'; };
-    return allocate(intArrayFromString(referrer), 'i8', ALLOC_STACK);
+        var url = (parent !== window) ? document.referrer : window.location.href;
+        var referrer = '(null)';
+        try
+        {
+            referrer = url.match(new RegExp('://(.[^/]+)'))[1];
+        }
+        catch (err)
+        {
+            referrer = 'exception';
+        }
+        return allocate(intArrayFromString(referrer), 'i8', ALLOC_STACK);
     });
 
     const char * referrer = reinterpret_cast<const char *>(stringPointer);
