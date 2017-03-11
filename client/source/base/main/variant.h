@@ -59,7 +59,7 @@ public:
     /**
      * Signals when value is about to be changed.
      * Performs a validation of the value. If returns false, the value is not changed.
-     * Accepts current value as fist argument and new value to be set as a VariantType as a second argument.
+     * Accepts current value as first argument and new value to be set as a VariantType as a second argument.
      * Validator can also change the new value as needed since it's passed by reference.
      *
      * Validator signal is not invoked for blobs.
