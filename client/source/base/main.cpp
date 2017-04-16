@@ -18,6 +18,22 @@
 #include <android_native_app_glue.h>
 #include <android/window.h>
 extern struct android_app* __state;
+
+
+extern "C"
+{
+
+void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject)
+{
+    const char* text = env->GetStringUTFChars(textObject, NULL);
+
+    static_cast<DfgGame *>(gameplay::Game::getInstance())->onReceiptReceived(text);
+
+    env->ReleaseStringUTFChars(textObject, text);
+}
+
+}
+
 #endif
 
 #ifdef __EMSCRIPTEN__

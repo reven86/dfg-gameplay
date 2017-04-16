@@ -4,6 +4,11 @@
 
 
 
+#ifdef __ANDROID__
+extern "C" void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject);
+#endif
+
+
 /**
  * Base class for your game. Extends the gameplay::Game class and provides
  * additional cross platform functionality like localization, notification and
@@ -58,7 +63,7 @@ public:
      */
     virtual void scheduleLocalNotification(time_t datetime, const char * utf8Body, const char * utf8ActionButton, int badgeNumber = 1, const std::unordered_map< std::string, std::string >& userDictionary = std::unordered_map< std::string, std::string >());
 
-    /** 
+    /**
      * Cancel all local notification.
      */
     virtual void cancelAllLocalNotifications();
@@ -124,6 +129,11 @@ protected:
     virtual void gestureSwipeEvent(int x, int y, int direction) override;
 
     virtual void reportError(bool isFatal, const char * errorMessage, ...) override;
+
+#ifdef __ANDROID__
+    friend void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject);
+    virtual void onReceiptReceived(const char * receiptJSON) {};
+#endif
 
     class RenderService * _renderService;
     class InputService * _inputService;
