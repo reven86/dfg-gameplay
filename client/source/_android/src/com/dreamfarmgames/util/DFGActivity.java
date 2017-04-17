@@ -189,6 +189,34 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
         });
     }
 
+    void updateReceipt(Inventory inventory)
+    {
+            int i = 0;
+            String receipt = "[";
+            for (Purchase p : inventory.getAllPurchases())
+            {
+                if (i > 0)
+                    receipt += ", ";
+                i++;
+
+                try
+                {
+                    receipt += new JSONStringer().object()
+                                    .key("itemType").value(p.getItemType())
+                                    .key("data").value(p.getOriginalJson())
+                                    .key("signature").value(p.getSignature())
+                                    .endObject().toString();
+                }
+                catch(JSONException e)
+                {
+                    Log.w(TAG, "Failed to generate receipt string.");
+                }
+            }
+            receipt += "]";
+            //Log.i(TAG, "receipt " + receipt);
+            receiptReceived(receipt);
+    }
+
     // Listener that's called when we finish querying the items and subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
@@ -219,27 +247,8 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
             }
             _IABCallbacks.finishProductsValidation();
 
-            int i = 0;
-            String receipt = "[";
             for (Purchase p : inventory.getAllPurchases())
             {
-                if (i > 0)
-                    receipt += ", ";
-                i++;
-
-                try
-                {
-                    receipt += new JSONStringer().object()
-                                    .key("itemType").value(p.getItemType())
-                                    .key("data").value(p.getOriginalJson())
-                                    .key("signature").value(p.getSignature())
-                                    .endObject().toString();
-                }
-                catch(JSONException e)
-                {
-                    Log.w(TAG, "Failed to generate receipt string.");
-                }
-
                 if (verifyDeveloperPayload(p))
                 {
                     if (_IABCallbacks.isItemConsumable(p.getSku()) != 0)
@@ -257,9 +266,8 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
                     }
                 }
             }
-            receipt += "]";
-            //Log.d(TAG, "receipt " + receipt);
-            receiptReceived(receipt);
+
+            updateReceipt(inventory);
 
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
         }
@@ -340,6 +348,15 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
             }
             else
             {
+                try
+                {
+                    updateReceipt(mHelper.queryInventory());    // sync call to update receipt before calling itemPurchased event
+                }
+                catch(IabException e)
+                {
+                    complain("Error requesting receipt.");
+                }
+
                 _IABCallbacks.itemPurchased(purchase.getSku(), purchase.getPurchaseTime(), purchase.getOrderId());
             }
 
@@ -362,6 +379,15 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
                 // successfully consumed, so we apply the effects of the item in our
                 // game world's logic, which in our case means filling the gas tank a bit
                 Log.d(TAG, "Consumption successful. Provisioning.");
+
+                try
+                {
+                    updateReceipt(mHelper.queryInventory());    // sync call to update receipt before calling itemPurchased event
+                }
+                catch(IabException e)
+                {
+                    complain("Error requesting receipt.");
+                }
 
                 _IABCallbacks.itemPurchased(purchase.getSku(), purchase.getPurchaseTime(), purchase.getOrderId());
             }
