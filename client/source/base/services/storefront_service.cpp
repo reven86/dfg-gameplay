@@ -101,6 +101,11 @@ bool StorefrontService::isProductConsumable(const char * productID)
     return _manager->signals.storefrontIsProductConsumable(productID);
 }
 
+bool StorefrontService::isSubscription(const char * productID)
+{
+    return _manager->signals.storefrontIsSubscription(productID);
+}
+
 void StorefrontService::receiptRequested(void * receiptData, int errorCode, const char * errorUTF8)
 {
     if (errorCode != 0)

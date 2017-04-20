@@ -158,7 +158,7 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
             public void run() {
             try {
                 Log.d(TAG, "flushSkuDetailsQueue");
-                mHelper.queryInventoryAsync(true, mSKUDetailsQueue, new ArrayList<String>(), mGotInventoryListener);
+                mHelper.queryInventoryAsync(true, mSKUDetailsQueue, mSKUDetailsQueue, mGotInventoryListener);	// pass the same SKUs for regular products and for subscriptions
             } catch (Exception e) {
                 Log.e(TAG, "Exception while communicating with IABHelper");
                 e.printStackTrace();
@@ -179,8 +179,16 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
             public void run() {
             try {
                 String payload = "";
-                mHelper.launchPurchaseFlow(activity, sku, RC_REQUEST,
+                if (_IABCallbacks.isSubscription(sku) != 0)
+                {
+                    mHelper.launchSubscriptionPurchaseFlow(activity, sku, RC_REQUEST,
                         mPurchaseFinishedListener, payload);
+                }
+                else
+                {
+                    mHelper.launchPurchaseFlow(activity, sku, RC_REQUEST,
+                        mPurchaseFinishedListener, payload);
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Exception while communicating with IABHelper");
                 e.printStackTrace();
@@ -236,11 +244,8 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
 
             Log.d(TAG, "Query inventory was successful.");
 
-            /*
-             * Check for items we own. Notice that for each purchase, we check
-             * the developer payload to see if it's correct! See
-             * verifyDeveloperPayload().
-             */
+            updateReceipt(inventory);
+
             for (SkuDetails d : inventory.getAllSKUs())
             {
                 _IABCallbacks.productValidated(d.getSku(), d.getPrice(), d.getTitle(), d.getDescription(), Long.toString(d.getPriceAmountMicros()), d.getPriceCurrencyCode());
@@ -266,8 +271,6 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
                     }
                 }
             }
-
-            updateReceipt(inventory);
 
             Log.d(TAG, "Initial inventory query finished; enabling main UI.");
         }

@@ -79,6 +79,11 @@ protected:
     virtual bool isProductConsumable(const char * productID);
 
     /**
+     * @see gameplay::StoreListener::isSubscription
+     */
+    virtual bool isSubscription(const char * productID);
+
+    /**
      * @see gameplay::StoreListener::receiptRequested.
      */
     virtual void receiptRequested(void * receiptData, int errorCode, const char * errorUTF8);
