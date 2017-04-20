@@ -211,6 +211,22 @@ void VariantType::release()
 #define LONG1    '\x8a' /* push long from < 256 bytes */
 #define LONG4    '\x8b' /* push really big long */
 
+// workaround for android gnustl_static which doesn't support std::to_string methods
+#if defined(__ANDROID__) && defined(_GLIBCXX_CSTDLIB)
+#include <string>
+#include <sstream>
+
+namespace std{
+template <typename T>
+std::string to_string(T value)
+{
+    std::ostringstream os;
+    os << value;
+    return os.str();
+}
+}
+#endif
+
 bool VariantType::unpickle(gameplay::Stream * stream)
 {
     bool stopped = false;
@@ -282,7 +298,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     break;
                 }
             }
-            stack.push_back(VariantType((int64_t)std::atoll(str)));
+            stack.push_back(VariantType((int64_t)atoll(str)));
             break;
         case BININT:
             {
@@ -312,7 +328,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
             {
                 if (stream->readLine(str, 1024) == NULL)
                     return false;
-                stack.push_back(VariantType((int64_t)std::atoll(str)));
+                stack.push_back(VariantType((int64_t)atoll(str)));
             }
             break;
         case LONG1:
