@@ -68,6 +68,9 @@ bool StorefrontService::isProductValid(const char * product) const
 
 const gameplay::StoreProduct * StorefrontService::getProduct(const char * product) const
 {
+    if (!product)
+        return NULL;
+
     for (std::vector< gameplay::StoreProduct >::const_iterator it = _products.begin(), end_it = _products.end(); it != end_it; it++)
         if ((*it).id == product)
             return &(*it);
