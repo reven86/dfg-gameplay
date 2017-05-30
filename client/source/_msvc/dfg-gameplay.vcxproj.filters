@@ -107,6 +107,12 @@
     <ClCompile Include="..\base\main\socket_stream.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\entity\entity.cpp">
+      <Filter>base\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\entity\entity_manager.cpp">
+      <Filter>base\entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -249,6 +255,12 @@
     <ClInclude Include="..\base\main\socket_stream.h">
       <Filter>base\main</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\entity\entity.h">
+      <Filter>base\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\entity\entity_manager.h">
+      <Filter>base\entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -272,6 +284,9 @@
     <Filter Include="base\utils\utf8">
       <UniqueIdentifier>{2fe09325-4eb7-4458-8e15-6b71d566f93c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="base\entity">
+      <UniqueIdentifier>{9e6754d9-d624-473b-888d-8e96023fe326}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\base\utils\utils.inl">
@@ -291,6 +306,12 @@
     </None>
     <None Include="..\base\utils\intrusive_list.inl">
       <Filter>base\utils</Filter>
+    </None>
+    <None Include="..\base\entity\entity.inl">
+      <Filter>base\entity</Filter>
+    </None>
+    <None Include="..\base\entity\entity_manager.inl">
+      <Filter>base\entity</Filter>
     </None>
   </ItemGroup>
 </Project>

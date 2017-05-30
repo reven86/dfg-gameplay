@@ -52,6 +52,8 @@ LOCAL_SRC_FILES := \
     uuidlib/unpack.c \
     uuidlib/unparse.c \
     uuidlib/uuid_time.c \
+    base/entity/entity.cpp \
+    base/entity/entity_manager.cpp \
     base/main/archive.cpp \
     base/main/asset.cpp \
     base/main/dictionary.cpp \
