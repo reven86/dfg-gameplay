@@ -19,6 +19,8 @@
 		EB4F76591DC3D7AE001139D4 /* settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4F76521DC3D7AE001139D4 /* settings.cpp */; };
 		EB4F765A1DC3D7AE001139D4 /* variant.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4F76551DC3D7AE001139D4 /* variant.cpp */; };
 		EB4F765B1DC3D7D4001139D4 /* game_advanced.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB4F764C1DC3D766001139D4 /* game_advanced.cpp */; };
+		EB53B66F1EE054BF009C89CB /* entity_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB53B6691EE054BF009C89CB /* entity_manager.cpp */; };
+		EB53B6701EE054BF009C89CB /* entity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB53B66C1EE054BF009C89CB /* entity.cpp */; };
 		EB54ED6B1E1A518000ADBB86 /* socket_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB54ED691E1A518000ADBB86 /* socket_stream.cpp */; };
 		EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790211B75147500E1DDB2 /* dial_button.cpp */; };
 		EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB7790211B75147500E1DDB2 /* dial_button.cpp */; };
@@ -119,6 +121,12 @@
 		EB4F76551DC3D7AE001139D4 /* variant.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = variant.cpp; sourceTree = "<group>"; };
 		EB4F76561DC3D7AE001139D4 /* variant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = variant.h; sourceTree = "<group>"; };
 		EB4F76571DC3D7AE001139D4 /* variant.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = variant.inl; sourceTree = "<group>"; };
+		EB53B6691EE054BF009C89CB /* entity_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = entity_manager.cpp; path = entity/entity_manager.cpp; sourceTree = "<group>"; };
+		EB53B66A1EE054BF009C89CB /* entity_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = entity_manager.h; path = entity/entity_manager.h; sourceTree = "<group>"; };
+		EB53B66B1EE054BF009C89CB /* entity_manager.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = entity_manager.inl; path = entity/entity_manager.inl; sourceTree = "<group>"; };
+		EB53B66C1EE054BF009C89CB /* entity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = entity.cpp; path = entity/entity.cpp; sourceTree = "<group>"; };
+		EB53B66D1EE054BF009C89CB /* entity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = entity.h; path = entity/entity.h; sourceTree = "<group>"; };
+		EB53B66E1EE054BF009C89CB /* entity.inl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = entity.inl; path = entity/entity.inl; sourceTree = "<group>"; };
 		EB54ED691E1A518000ADBB86 /* socket_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = socket_stream.cpp; sourceTree = "<group>"; };
 		EB54ED6A1E1A518000ADBB86 /* socket_stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = socket_stream.h; sourceTree = "<group>"; };
 		EB67C14E1BC98E3800E2C762 /* checked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = checked.h; sourceTree = "<group>"; };
@@ -212,6 +220,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EB53B6681EE054A4009C89CB /* entity */ = {
+			isa = PBXGroup;
+			children = (
+				EB53B6691EE054BF009C89CB /* entity_manager.cpp */,
+				EB53B66A1EE054BF009C89CB /* entity_manager.h */,
+				EB53B66B1EE054BF009C89CB /* entity_manager.inl */,
+				EB53B66C1EE054BF009C89CB /* entity.cpp */,
+				EB53B66D1EE054BF009C89CB /* entity.h */,
+				EB53B66E1EE054BF009C89CB /* entity.inl */,
+			);
+			name = entity;
+			sourceTree = "<group>";
+		};
 		EB67C14D1BC98E3800E2C762 /* utf8 */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,6 +300,7 @@
 		EB9F81121AAB25CD00839018 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				EB53B6681EE054A4009C89CB /* entity */,
 				EB4F764C1DC3D766001139D4 /* game_advanced.cpp */,
 				EB4F764D1DC3D766001139D4 /* game_advanced.h */,
 				EB7790201B75145300E1DDB2 /* ui */,
@@ -512,11 +534,13 @@
 				EB9F81491AAB25CD00839018 /* memory_stream.cpp in Sources */,
 				EB9F81501AAB25CD00839018 /* input_service.cpp in Sources */,
 				EB9F81471AAB25CD00839018 /* dictionary.cpp in Sources */,
+				EB53B66F1EE054BF009C89CB /* entity_manager.cpp in Sources */,
 				EB22EE251DCA21A3001E5328 /* slide_menu.cpp in Sources */,
 				EB7D1E0F1DC4DA400051B0F6 /* iRate.m in Sources */,
 				EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */,
 				EB4F765A1DC3D7AE001139D4 /* variant.cpp in Sources */,
 				EB54ED6B1E1A518000ADBB86 /* socket_stream.cpp in Sources */,
+				EB53B6701EE054BF009C89CB /* entity.cpp in Sources */,
 				EB9F81481AAB25CD00839018 /* gameplay_assets.cpp in Sources */,
 				EBC5B34B1B77C8FE008076C1 /* control_event_handler.cpp in Sources */,
 				EB9F81561AAB25CD00839018 /* tracker_service.cpp in Sources */,
