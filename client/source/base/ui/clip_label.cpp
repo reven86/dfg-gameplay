@@ -47,7 +47,7 @@ void ClipLabel::updateAbsoluteBounds(const gameplay::Vector2& offset)
     gameplay::Rectangle oldBounds(_textBounds);
     gameplay::Label::updateAbsoluteBounds(offset);
 
-    if (oldBounds != _textBounds)
+    if (oldBounds.width != _textBounds.width || oldBounds.height != _textBounds.height)
         clipText();
 }
 
