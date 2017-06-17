@@ -168,8 +168,8 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
     control->setCharacterSpacing(roundf(ky * control->getCharacterSpacing()));
     control->setLineSpacing(roundf(ky * control->getLineSpacing()));
 
-    if (strcmp(control->getTypeName(), "Slider") == 0)
-        static_cast<gameplay::Slider *>(control)->setScaleFactor(ky);
+    if (strcmp(control->getTypeName(), "Slider") == 0 || strcmp(control->getTypeName(), "Timeline") == 0)   // hack
+        static_cast<gameplay::Slider *>(control)->setScaleFactor(ky * static_cast<gameplay::Slider *>(control)->getScaleFactor());
 
     if (strcmp(control->getTypeName(), "ImageControl") == 0)
     {
