@@ -112,6 +112,9 @@ template<class _Type> inline void VariantType::setInternalObject(const _Type& va
 
         GP_ASSERT(field == pointerValue);
 
+        if (type == fieldType && field && *field == newValue.get<_Type>())
+            return;
+
         release();
         type = fieldType;
         pointerValue = newValue.pointerValue;   // take ownership
