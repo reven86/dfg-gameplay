@@ -21,7 +21,7 @@ inline const Entity * EntityManager::getEntity(int id) const
     return (*it).second;
 }
 
-inline unsigned EntityManager::getEntitiesCount() const
+inline unsigned EntityManager::getEntityCount() const
 {
     return _entities.size();
 }

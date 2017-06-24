@@ -53,9 +53,9 @@ public:
     inline const class Entity * getEntity(int id) const;
 
     /**
-     * Get Entities cound.
+     * Get entities count.
      */
-    inline unsigned getEntitiesCount() const;
+    inline unsigned getEntityCount() const;
 
     /**
      * Remove Entity with given ID.

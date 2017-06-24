@@ -23,8 +23,7 @@ class HTTPRequestService : public Service
 public:
     /**
      * Request structure used to send HTTP requests.
-     * Response is returned via responseCallback which accepts error code, a newly created Stream with response data and a error string.
-     * Client application is responsible to deallocate a stream with SAFE_DELETE macro.
+     * Response is returned via responseCallback which accepts error code, a Stream with response data and a error string.
      */
     struct Request
     {
@@ -33,7 +32,7 @@ public:
         std::string url;
         std::string postPayload;
         HeadersList headers;
-        std::function<void(int, class MemoryStream *, const char *, long)> responseCallback;
+        std::function<void(int, class MemoryStream *, const char *, long)> responseCallback;    // error code, response, error, http response
 
         // progress callback, can be invoked from separate thread
         // agruments and return value match the ones of CURLOPT_XFERINFOFUNCTION
