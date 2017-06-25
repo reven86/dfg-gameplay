@@ -35,7 +35,8 @@ public:
         std::function<void(int, class MemoryStream *, const char *, long)> responseCallback;    // error code, response, error, http response
 
         // progress callback, can be invoked from separate thread
-        // agruments and return value match the ones of CURLOPT_XFERINFOFUNCTION
+        // agruments and return value match the ones of CURLOPT_XFERINFOFUNCTION (dltotal, dlnow, ultotal, ulnow)
+        // return True from callback to abort the downloading or uploading
         std::function<bool(uint64_t, uint64_t, uint64_t, uint64_t)> progressCallback;
     };
 
