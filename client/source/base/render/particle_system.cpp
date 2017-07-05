@@ -30,7 +30,7 @@ void ParticleSubSystem::updateParticle(Particle& p, float dt) const
         p.velocity += dt * p.acceleration * acceleration_curve.key(normaltime) * accelerate_dir;
     if (p.motionrand > 0)
         p.velocity += dt * p.motionrand * motionrand_curve.key(normaltime) * gameplay::Vector3::random().normalize();
-    if (p.spin != 0.0f)
+    if (!align_to_motion && p.spin != 0.0f)
         p.angle += p.spin * spin_curve.key(normaltime) * dt;
     p.size = p.start_size * size_curve.key(normaltime);
     p.color = colors_curve.key(normaltime);
@@ -60,7 +60,7 @@ void ParticleSubSystem::spawnParticle(Particle& p, const gameplay::Matrix& trans
     transform.transformVector(&p.velocity);
 
     p.start_size = size + size_variation * MATH_RANDOM_MINUS1_1();
-    p.angle = align_to_motion ? angle : particleangle + particleangle_variation * MATH_RANDOM_MINUS1_1();
+    p.angle = align_to_motion ? 0 : particleangle + particleangle_variation * MATH_RANDOM_MINUS1_1();
     p.spin = spin + spin_variation * MATH_RANDOM_MINUS1_1();
     p.motionrand = motionrand + motionrand_variation * MATH_RANDOM_MINUS1_1();
     p.color = colors_curve.key(0);
@@ -338,13 +338,27 @@ unsigned int ParticleSystem::draw(bool wireframe) const
                 float size = sizeVector.length() * 0.707106f;   // we need to ignore stretching in one axis because 
                                                                 // particles are always faced to camera, so use sqrt(0.5f) instead sqrt(0.3333f)
 
+                float angle;
+                if (subSystem.align_to_motion)
+                {
+                    // project the velocity and set the angle appropriately, ignore camera projection matrix.
+                    gameplay::Vector3 nextPos;
+                    transform->transformPoint(par.position + par.velocity, &nextPos);
+
+                    angle = atan2f(nextPos.y - pos.y, nextPos.x - pos.x);
+                }
+                else
+                {
+                    angle = par.angle;
+                }
+
                 if (par.color.w != 0)
                     subSystem.spriteBatch->draw(
                     pos.x, pos.y, pos.z,
                     size * aspect, size,
                     subSystem.sourceRect.left(), 1.0f - subSystem.sourceRect.bottom(), subSystem.sourceRect.right(), 1.0f - subSystem.sourceRect.top(),
                     modulateColor ? gameplay::Vector4(_colorModulator.x * par.color.x, _colorModulator.y * par.color.y, _colorModulator.z * par.color.z, _colorModulator.w * par.color.w) : par.color,
-                    gameplay::Vector2(0.5f, 0.5f), par.angle, true);
+                    gameplay::Vector2(0.5f, 0.5f), angle, true);
             }
         }
 
