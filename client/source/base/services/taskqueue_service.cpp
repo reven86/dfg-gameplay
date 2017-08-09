@@ -106,10 +106,12 @@ bool TaskQueueService::onShutdown()
 
 void TaskQueueService::createQueue(const char * name)
 {
+#if !defined(__EMSCRIPTEN__)
     if (_queues.find(name) != _queues.end())
         return;
 
     _queues.insert(std::make_pair(std::string(name), std::shared_ptr<TaskQueue>(new TaskQueue(name, this))));
+#endif
 }
 
 void TaskQueueService::removeQueue(const char * name)
