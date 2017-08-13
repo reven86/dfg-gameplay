@@ -66,8 +66,6 @@ void DfgGame::initialize()
     Service * render_dep[] = { _inputService, NULL };
     _renderService = ServiceManager::getInstance()->registerService< RenderService >(render_dep);
 
-    setVsync(false);
-
     _userFolder = getAppPrivateFolderPath();
 #ifdef WIN32
     _mkdir(_userFolder.c_str());
