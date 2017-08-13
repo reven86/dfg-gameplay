@@ -103,6 +103,8 @@ void DfgGameAdvanced::initialize()
     _resourcePackage.reset(ZipPackage::create("resources.data"));
     if (_resourcePackage)
         gameplay::FileSystem::registerPackage(_resourcePackage.get());
+    else
+        GP_WARN("Webapp resources are missed.");
 #endif
 
     createServices();
