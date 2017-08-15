@@ -68,7 +68,9 @@ add_definitions(${GTK2_CFLAGS_OTHER})
 add_definitions(-D__linux__)
 ENDIF(LINUX)
 
-set_source_files_properties(${DFGGAMEPLAY_SRC} PROPERTIES COMPILE_FLAGS "-std=c++11")
+add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
+add_compile_options(-Wno-comment)
+add_compile_options(-Wno-return-stack-address)
 
 add_definitions(-lstdc++)
 add_definitions(-DGP_USE_SOCIAL)
