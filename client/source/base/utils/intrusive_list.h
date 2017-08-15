@@ -72,6 +72,12 @@ private:
 };
 
 
+template <typename _Type>
+IntrusiveList< _Type > * IntrusiveList< _Type >::__first = nullptr;
+template <typename _Type>
+IntrusiveList< _Type > * IntrusiveList< _Type >::__last = nullptr;
+
+
 #include "intrusive_list.inl"
 
 

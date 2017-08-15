@@ -181,7 +181,8 @@ private:
     static Cache< GameplayRefAsset< _Type > > * _cache;
 };
 
-
+template <typename _Type>
+Cache< GameplayRefAsset< _Type > > * GameplayRefAsset< _Type >::_cache = nullptr;
 
 
 
