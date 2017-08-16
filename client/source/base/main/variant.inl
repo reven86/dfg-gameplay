@@ -38,22 +38,25 @@ namespace detail
 
 template<typename _Type> inline VariantType::VariantType(const _Type& var)
     : type(TYPE_NONE)
-    , pointerValue(nullptr)
+    , int64Value(0)
 {
+    GP_ASSERT(pointerValue == nullptr);
     set(var);
 }
 
 template<typename _InputIterator> inline VariantType::VariantType(_InputIterator begin, _InputIterator end)
     : type(TYPE_NONE)
-    , pointerValue(nullptr)
+    , int64Value(0)
 {
+    GP_ASSERT(pointerValue == nullptr);
     set(begin, end);
 }
 
 template<typename _Type> inline VariantType::VariantType(const std::initializer_list<_Type>& list)
     : type(TYPE_NONE)
-    , pointerValue(nullptr)
+    , int64Value(0)
 {
+    GP_ASSERT(pointerValue == nullptr);
     set(list.begin(), list.end());
 }
 
@@ -141,36 +144,43 @@ template<class _Type> inline void VariantType::setInternalObject(const _Type& va
 template<> inline void VariantType::set(const bool& value)
 {
     setInternal(value, boolValue, TYPE_BOOLEAN);
+    uint64Value &= 0xFF;
 }
 
 template<> inline void VariantType::set(const int8_t& value)
 {
     setInternal(value, int8Value, TYPE_INT8);
+    uint64Value &= 0xFF;
 }
 
 template<> inline void VariantType::set(const uint8_t& value)
 {
     setInternal(value, uint8Value, TYPE_UINT8);
+    uint64Value &= 0xFF;
 }
 
 template<> inline void VariantType::set(const int16_t& value)
 {
     setInternal(value, int16Value, TYPE_INT16);
+    uint64Value &= 0xFFFF;
 }
 
 template<> inline void VariantType::set(const uint16_t& value)
 {
     setInternal(value, uint16Value, TYPE_UINT16);
+    uint64Value &= 0xFFFF;
 }
 
 template<> inline void VariantType::set(const int32_t& value)
 {
     setInternal(value, int32Value, TYPE_INT32);
+    uint64Value &= 0xFFFFFFFF;
 }
 
 template<> inline void VariantType::set(const uint32_t& value)
 {
     setInternal(value, uint32Value, TYPE_UINT32);
+    uint64Value &= 0xFFFFFFFF;
 }
 
 template<> inline void VariantType::set(const int64_t& value)
