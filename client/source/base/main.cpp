@@ -37,7 +37,10 @@ void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobje
 #endif
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
+extern "C"
+{
+    extern void copyTextToClipboard(const char* text);
+}
 #endif
 
 
@@ -435,27 +438,7 @@ void DfgGame::copyToClipboard(const char * textUTF8) const
 
 #elif defined (__EMSCRIPTEN__)
 
-    // fallback to document.execCommand('copy') if Clipboard API is not supported
-    // see http://stackoverflow.com/questions/25099409/copy-to-clipboard-as-plain-text
-    EM_ASM_({
-        try
-        {
-            var copyEvent = new ClipboardEvent('copy', { dataType: 'text/plain', data: Module.Pointer_stringify($0) } );
-            document.dispatchEvent(copyEvent);
-        }
-        catch(err)
-        {
-            var copyDiv = document.createElement('div');
-            copyDiv.contentEditable = true;
-            document.body.appendChild(copyDiv);
-            copyDiv.innerHTML = Module.Pointer_stringify($0);
-            copyDiv.unselectable = "off";
-            copyDiv.focus();
-            document.execCommand('SelectAll');
-            document.execCommand('Copy', false, null);
-            document.body.removeChild(copyDiv);
-        }
-    }, textUTF8);
+    copyTextToClipboard(textUTF8);
 
 #endif
 }
