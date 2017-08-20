@@ -210,6 +210,10 @@ void DfgGameAdvanced::mergeSettings(Archive& other)
         if (key == "app.version")
             continue;
 
+        // do not update "arg.XXX" settings, they are for internal use only
+        if (strncmp(key.c_str(), "arg.", 4) == 0)
+            continue;
+
         VariantType * sourceValue = Settings::getInstance()->get(key.c_str());
         const VariantType& destValue = other.get<VariantType>(key.c_str());
         GP_ASSERT(sourceValue);
