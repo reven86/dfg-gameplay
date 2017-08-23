@@ -73,15 +73,21 @@ static inline std::wstring ANSIToWCS(const std::string& str);
 
 
 /**
- * Wrapper around sprintf. Nested calls are not allowed. Max 2048 chars.
+ * Wrapper around sprintf.
  */
 static inline std::string format(const char * fmt, ...);
 
 
 /**
- * UrlEncode string. Nested calls are not allowed.
+ * UrlEncode string.
  */
 static inline std::string urlEncode(const std::string& src);
+
+
+/**
+ * UrlDecode string.
+ */
+static inline std::string urlDecode(const std::string& src);
 
 
 /**

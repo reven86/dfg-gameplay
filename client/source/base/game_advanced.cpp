@@ -51,7 +51,6 @@
 
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
 extern "C"
 {
     void onBeforeUnload()

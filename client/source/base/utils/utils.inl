@@ -80,7 +80,56 @@ inline std::string Utils::urlEncode(const std::string& source)
         }
     }
 
-    return result.c_str();
+    return result;
+}
+
+
+inline std::string Utils::urlDecode(const std::string& source)
+{
+    if (source.empty())
+        return std::string();
+
+    std::string result;
+
+    const char * src = source.c_str();
+    const char * srcEnd = src + source.length();
+    while (src < srcEnd - 2)
+    {
+        if (*src == '%')
+        {
+            uint8_t hi = std::tolower(*(src + 1));
+            uint8_t lo = std::tolower(*(src + 2));
+
+            if (std::isdigit(hi))
+                hi -= '0';
+            else
+                hi = hi - 'a' + 10;
+
+            if (std::isdigit(lo))
+                lo -= '0';
+            else
+                lo = lo - 'a' + 10;
+
+            GP_ASSERT(hi < 16 && lo < 16);
+
+            result.push_back((hi << 4) + lo);
+            src += 3;
+            continue;
+        }
+        else if (*src == '+')
+        {
+            result.push_back(' ');
+            src++;
+            continue;
+        }
+
+        result.push_back(*src++);
+    }
+
+    while (src < srcEnd)
+        result.push_back(*src++);
+
+    return result;
 }
 
 
