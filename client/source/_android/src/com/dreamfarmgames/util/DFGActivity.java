@@ -15,6 +15,7 @@ import com.dreamfarmgames.util.IabResult;
 import com.dreamfarmgames.util.Inventory;
 import com.dreamfarmgames.util.Purchase;
 import com.dreamfarmgames.util.SkuDetails;
+import com.dreamfarmgames.util.TextViewActivity;
 
 import org.gameplay3d.GamePlayNativeActivity;
 
@@ -443,6 +444,13 @@ public class DFGActivity extends GamePlayNativeActivity implements IabBroadcastL
         startMain.addCategory(Intent.CATEGORY_HOME);
         startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(startMain);
+    }
+
+    public void openTextView(String text)
+    {
+    	Intent intent = new Intent(this, TextViewActivity.class); 
+    	intent.putExtra("text", text);
+    	startActivity(intent);
     }
 
     public native void receiptReceived(String text);

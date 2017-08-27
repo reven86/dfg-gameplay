@@ -6,6 +6,7 @@
 
 #ifdef __ANDROID__
 extern "C" void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject);
+extern "C" void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject);
 #endif
 
 
@@ -132,7 +133,9 @@ protected:
 
 #ifdef __ANDROID__
     friend void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject);
+    friend void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject);
     virtual void onReceiptReceived(const char * receiptJSON) {};
+    virtual void onTextViewTextEntered(const char * textUTF8) {};
 #endif
 
     class RenderService * _renderService;
