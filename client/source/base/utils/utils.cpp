@@ -126,20 +126,11 @@ void Utils::deserializeString(gameplay::Stream * stream, std::string * str)
     if (stream->read(&size, sizeof(size), 1) != 1)
         return;
 
-    if (size < 0 || size > 65535)
-        return; // something wrong with data
+    std::unique_ptr<char[]> buf(new char[size]);
+    if (stream->read(buf.get(), 1, size) != size)
+        return;
 
-    char * buf = reinterpret_cast<char *>(alloca(sizeof(char)* (size + 1)));
-    if (buf)
-    {
-        stream->read(buf, sizeof(char), size);
-        buf[size] = '\0';
-        if (str)
-        {
-            str->clear();
-            *str = buf;
-        }
-    }
+    str->assign(buf.get(), size);
 }
 
 void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)

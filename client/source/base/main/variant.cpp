@@ -421,11 +421,10 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 uint32_t len;
                 if (stream->read(&len, sizeof(len), 1) != 1)
                     return false;
-                std::unique_ptr<wchar_t[]> buf(new wchar_t[len + 1]);
+                std::unique_ptr<wchar_t[]> buf(new wchar_t[len]);
                 if (stream->read(buf.get(), 2, len) != len)
                     return false;
-                buf[len] = '\0';
-                stack.push_back(VariantType(std::wstring(buf.get())));      // note: Python string can contain zero bytes, probably better to store them as blobs
+                stack.push_back(VariantType(std::wstring(buf.get(), len)));
             }
             break;
         case SHORT_BINSTRING:
@@ -438,16 +437,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     return false;
                 buf[len] = '\0';
 
-                // check whether string contains zero bytes, store it as blob if true
-                if (std::find(buf.get(), buf.get() + len, 0) != buf.get() + len)
-                {
-                    stack.push_back(VariantType());
-                    stack.back().setBlob(buf.get(), len);
-                }
-                else
-                {
-                    stack.push_back(VariantType(std::string(buf.get())));
-                }
+                stack.push_back(VariantType(std::string(buf.get(), len)));
             }
             break;
         case TUPLE:
