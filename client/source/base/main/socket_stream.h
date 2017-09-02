@@ -5,7 +5,7 @@
 #define __DFG_SOCKET_STREAM_H__
 
 #ifdef WIN32
-#include <winsock.h>
+#include <winsock2.h>
 #else
 #include <sys/socket.h>
 #endif
