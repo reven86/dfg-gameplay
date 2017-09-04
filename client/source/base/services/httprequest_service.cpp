@@ -148,7 +148,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
         GP_LOG("Failed to perform HTTP request: error %d - %s", res, request.url.c_str());
 
     // response is copied by value since callback is invoked on main thread
-    _taskQueueService->runOnMainThread([=]() { request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
+    _taskQueueService->runOnMainThread([=]() { response->rewind(); request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
 
 #else
     
