@@ -93,7 +93,7 @@ static inline std::string urlDecode(const std::string& src);
 /**
  * Encode binary data to base64 string.
  */
-static inline void base64Encode(const uint8_t * in, size_t len, std::string * out);
+static inline void base64Encode(const void * in, size_t len, std::string * out);
 
 /**
  * Decode base64 string to binary data.

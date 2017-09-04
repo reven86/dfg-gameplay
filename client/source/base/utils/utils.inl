@@ -181,13 +181,14 @@ inline gameplay::Vector4 Utils::RGBToHSL(const gameplay::Vector4& rgb)
 }
 
 
-inline void Utils::base64Encode(const uint8_t * in, size_t len, std::string * out)
+inline void Utils::base64Encode(const void * in, size_t len, std::string * out)
 {
     if (!out)
         return;
 
     int val = 0, valb = -6;
-    for (const uint8_t * c = in; c < in + len; c++)
+    const uint8_t * inbuf = static_cast<const uint8_t *>(in);
+    for (const uint8_t * c = inbuf; c < inbuf + len; c++)
     {
         val = (val << 8) + *c;
         valb += 8;
