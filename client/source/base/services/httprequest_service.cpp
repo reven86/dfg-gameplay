@@ -94,7 +94,7 @@ void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode
 {
     Request * request = reinterpret_cast<Request *>(arg);
     GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), errorCode, status);
-    request->responseCallback(0, NULL, status, errorCode);  // there is no 'curl' error for emscripten callback, errorCode is HTTP status code
+    request->responseCallback(-1, NULL, status, errorCode);  // there is no 'curl' error for emscripten callback, errorCode is HTTP status code
     delete request;
 }
 

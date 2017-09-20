@@ -100,8 +100,9 @@ template<class _Type> inline void VariantType::setInternal(const _Type& value, _
     valueChangedSignal(*this);
 }
 
-template<class _Type> inline void VariantType::setInternalObject(const _Type& value, _Type*& field, Type fieldType)
+template<class _Type> inline void VariantType::setInternalObject(const _Type& value, _Type* field, Type fieldType)
 {
+    GP_ASSERT(field == pointerValue);
     if (!valueValidatorSignal.empty())
     {
         VariantType newValue(value);
@@ -112,8 +113,6 @@ template<class _Type> inline void VariantType::setInternalObject(const _Type& va
             set(newValue);
             return;
         }
-
-        GP_ASSERT(field == pointerValue);
 
         if (type == fieldType && field && *field == newValue.get<_Type>())
             return;
@@ -136,7 +135,7 @@ template<class _Type> inline void VariantType::setInternalObject(const _Type& va
     {
         release();
         type = fieldType;
-        field = new _Type(value);
+        pointerValue = new _Type(value);
     }
     valueChangedSignal(*this);
 }
@@ -238,6 +237,12 @@ template<> inline void VariantType::set(const gameplay::Matrix& value)
     setInternalObject(value, matrix4Value, TYPE_MATRIX4);
 }
 
+template<> inline void VariantType::set(const gameplay::BoundingBox& value)
+{
+    gameplay::BoundingBox * bbox = reinterpret_cast<gameplay::BoundingBox *>(pointerValue);
+    setInternalObject(value, bbox, TYPE_AABBOX3);
+}
+
 template<> inline void VariantType::set(const VariantType& value)
 {
     if (this == &value)
@@ -305,7 +310,7 @@ template<> inline void VariantType::set(const VariantType& value)
         GP_ASSERT(!"Not implemented yet");
         return;
     case TYPE_AABBOX3:
-        GP_ASSERT(!"Not implemented yet");
+        set(*reinterpret_cast<gameplay::BoundingBox *>(value.pointerValue));
         return;
     case TYPE_FILEPATH:
         GP_ASSERT(!"Not implemented yet");
@@ -445,6 +450,12 @@ template<> inline const gameplay::Matrix& VariantType::get() const
     return *matrix4Value;
 }
 
+template<> inline const gameplay::BoundingBox& VariantType::get() const
+{
+    GP_ASSERT(type == TYPE_AABBOX3);
+    return *reinterpret_cast<gameplay::BoundingBox *>(pointerValue);
+}
+
 inline class Archive * VariantType::getArchive() const
 {
     GP_ASSERT(type == TYPE_KEYED_ARCHIVE);
@@ -500,8 +511,7 @@ inline bool VariantType::operator==(const VariantType& value) const
         GP_ASSERT(!"Not implemented yet");
         return false;
     case TYPE_AABBOX3:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        return *reinterpret_cast<gameplay::BoundingBox *>(value.pointerValue) == *reinterpret_cast<gameplay::BoundingBox *>(pointerValue);
     case TYPE_FILEPATH:
         GP_ASSERT(!"Not implemented yet");
         return false;

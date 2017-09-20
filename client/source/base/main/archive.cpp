@@ -165,8 +165,7 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
         GP_ASSERT(!"Not implemented yet");
         return false;
     case VariantType::TYPE_AABBOX3:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        return stream->write(&value.get<gameplay::BoundingBox>(), sizeof(gameplay::BoundingBox), 1) == 1;
     case VariantType::TYPE_FILEPATH:
         GP_ASSERT(!"Not implemented yet");
         return false;
@@ -284,6 +283,7 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
             out->set(value);
         }
         return true;
+    case VariantType::TYPE_FASTNAME:
     case VariantType::TYPE_STRING:
         {
             uint32_t len;
@@ -379,12 +379,14 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
     case VariantType::TYPE_COLOR:
         GP_ASSERT(!"Not implemented yet");
         return false;
-    case VariantType::TYPE_FASTNAME:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
     case VariantType::TYPE_AABBOX3:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
+        {
+            gameplay::BoundingBox value;
+            if (stream->read(&value, sizeof(gameplay::BoundingBox), 1) != 1)
+                return false;
+            out->set(value);
+        }
+        return true;
     case VariantType::TYPE_FILEPATH:
         GP_ASSERT(!"Not implemented yet");
         return false;

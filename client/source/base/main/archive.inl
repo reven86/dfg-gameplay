@@ -25,6 +25,12 @@ inline VariantType * Archive::get(const char * key)
     return it == _values.end() ? NULL : &(*it).second;
 }
 
+inline const VariantType * Archive::get(const char * key) const
+{
+    auto it = _values.find(key);
+    return it == _values.end() ? NULL : &(*it).second;
+}
+
 template<typename _Type> inline VariantType& Archive::set(const char * key, const _Type& value)
 {
     VariantType& archMember = _values[key];

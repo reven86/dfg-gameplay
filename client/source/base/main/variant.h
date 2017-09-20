@@ -237,7 +237,7 @@ private:
     void release();
 
     template<class _Type> inline void setInternal(const _Type& value, _Type& field, Type fieldType);
-    template<class _Type> inline void setInternalObject(const _Type& value, _Type*& field, Type fieldType);
+    template<class _Type> inline void setInternalObject(const _Type& value, _Type* field, Type fieldType);
 
 
 

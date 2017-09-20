@@ -138,6 +138,10 @@ void VariantType::release()
         delete reinterpret_cast<std::vector<VariantType>*>(pointerValue);
         pointerValue = NULL;
         return;
+    case TYPE_AABBOX3:
+        delete reinterpret_cast<gameplay::BoundingBox *>(pointerValue);
+        pointerValue = NULL;
+        return;
     default:
         // do nothing, it's not an error to get here
         break;

@@ -69,6 +69,17 @@ public:
     inline VariantType * get(const char * key);
 
     /**
+     * Get underlying variant type for a given key.
+     * Allows you to save and modify the value later without looking up it again.
+     *
+     * \param key String key.
+     * \param defaultValue Default value when key is not found.
+     *
+     * \return Value from archive for a given key or NULL.
+     */
+    inline const VariantType * get(const char * key) const;
+
+    /**
      * Insert byte array (blob) into the archive for a given key.
      *
      * \param key String key.
