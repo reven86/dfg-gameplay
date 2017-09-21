@@ -41,6 +41,7 @@ bool HTTPRequestService::onInit()
         curl_easy_setopt(_curl, CURLOPT_USERAGENT, gameplay::Game::getInstance()->getUserAgentString());
         //curl_easy_setopt( _curl, CURLOPT_DNS_CACHE_TIMEOUT, -1 );
         curl_easy_setopt(_curl, CURLOPT_NOSIGNAL, 1);
+        curl_easy_setopt(_curl, CURLOPT_TIMEOUT, 120);
         curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
         curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
