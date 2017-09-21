@@ -41,7 +41,6 @@ bool HTTPRequestService::onInit()
         curl_easy_setopt(_curl, CURLOPT_USERAGENT, gameplay::Game::getInstance()->getUserAgentString());
         //curl_easy_setopt( _curl, CURLOPT_DNS_CACHE_TIMEOUT, -1 );
         curl_easy_setopt(_curl, CURLOPT_NOSIGNAL, 1);
-        curl_easy_setopt(_curl, CURLOPT_TIMEOUT, 20);
         curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
         curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
         curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
@@ -128,7 +127,6 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
     curl_easy_setopt(_curl, CURLOPT_XFERINFODATA, &request);
     curl_easy_setopt(_curl, CURLOPT_HEADER, headOnly ? 1 : 0);
     curl_easy_setopt(_curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
-    curl_easy_setopt(_curl, CURLOPT_CONNECTTIMEOUT, request.progressCallback ? 120 : 10);
 
     struct curl_slist *list = NULL;
     if (!request.headers.empty())
