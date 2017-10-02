@@ -14,6 +14,7 @@ ZipStream::ZipStream()
 
 ZipStream::~ZipStream()
 {
+    close();
 }
 
 gameplay::Stream * ZipStream::create(const char * packageName, const char * fileName)

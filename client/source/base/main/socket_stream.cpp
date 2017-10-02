@@ -49,6 +49,8 @@ SocketStream::~SocketStream()
 
 SocketStream * SocketStream::create(const char * ipAddress, uint16_t port, bool blocking)
 {
+    GP_ASSERT(blocking && "Non-blocking SocketStrems are not implemented");
+
 #ifdef WIN32
 
     static wchar_t errorBuf[1024];

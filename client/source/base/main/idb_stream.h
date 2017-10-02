@@ -1,81 +1,65 @@
 #pragma once
 
+#ifndef __IDB_STREAM_H__
+#define __IDB_STREAM_H__
 
-#ifndef __DFG_SOCKET_STREAM_H__
-#define __DFG_SOCKET_STREAM_H__
+#ifdef __EMSCRIPTEN__
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
-#include <sys/socket.h>
-#endif
+#include "memory_stream.h"
 
 
 
 
 /**
- * SocketStream handles data transmission over the network 
- * using stream-like objects.
+ * Emscripten Indexed DB stream-like object.
+ * Allows to read and write from indexed db using the
+ * commong gameplay::Stream interface.
  *
- * You can use SocketStream only with TCP sockets, either
- * blocking or non-blocking.
+ * All operations are synchronous.
  */
-class SocketStream : public gameplay::Stream, Noncopyable
+class IndexedDBStream : public gameplay::Stream
 {
 public:
-    virtual ~SocketStream();
+    virtual ~IndexedDBStream();
 
     /**
-     * Create SocketServer for a given IPv4 address and port number.
-     * Socket connection is always happen in blocking mode.
+     * Creates IndexedDBStream for a file.
      *
-     * If socket is non-blocking, read and write operations may fail if 
-     * no data is ready in the pipe. You need to check EOF to make sure
-     * socket is closed and retry reading or writing again if it's not.
-     *
-     * Non-blocking sockets are not supported at the moment.
-     *
-     * @param ipAddress IPv4 address.
-     * @param port Port number.
-     * @param blocking Use blocking read-write operations.
-     * @return Newly created SocketStream.
+     * @param dbName IndexedDB name.
+     * @param fileName File to write to or read from IndexedDB.
+     * @param streamMode The stream mode used to open the file.
+     * @return Newly created IndexedDBStream.
      */
-    static SocketStream * create(const char * ipAddress, uint16_t port, bool blocking = true);
+    static gameplay::Stream * create(const char * dbName, const char * fileName, size_t streamMode = gameplay::FileSystem::READ);
 
     /**
      * Returns true if this stream can perform read operations.
-     * Actually checks whether any bytes are available to make socket read operation
      *
      * @return True if the stream can read, false otherwise.
      */
-    virtual bool canRead() override;
+    virtual bool canRead() { return _underlyingStream && _underlyingStream->canRead(); };
 
     /**
      * Returns true if this stream can perform write operations.
      *
      * @return True if the stream can write, false otherwise.
      */
-    virtual bool canWrite() override { return true; };
+    virtual bool canWrite() { return _underlyingStream && _underlyingStream->canWrite(); };
 
     /**
      * Returns true if this stream can seek.
      *
      * @return True if the stream can seek, false otherwise.
      */
-    virtual bool canSeek() override { return false; };
+    virtual bool canSeek() { return _underlyingStream && _underlyingStream->canSeek(); };
 
     /**
      * Closes this stream.
      */
-    virtual void close() override;
+    virtual void close();
 
     /**
      * Reads an array of <code>count</code> elements, each of size <code>size</code>.
-     *
-     * Please note, that for SocketStream read is a blocking operation, it wait until
-     * something is ready to read from queue and it may read less bytes than your asked.
-     * In this case, you need to always check how many bytes were read and call the read
-     * again to receive the rest.
      *
      * \code
      * int numbers[3];
@@ -92,7 +76,7 @@ public:
      *
      * @see canRead()
      */
-    virtual size_t read(void* ptr, size_t size, size_t count) override;
+    virtual size_t read(void* ptr, size_t size, size_t count);
 
     /**
      * Reads a line from the stream.
@@ -108,7 +92,7 @@ public:
      *
      * @see canRead()
      */
-    virtual char* readLine(char* str, int num) override;
+    virtual char* readLine(char* str, int num);
 
     /**
      * Writes an array of <code>count</code> elements, each of size <code>size</code>.
@@ -127,14 +111,14 @@ public:
      *
      * @see canWrite()
      */
-    virtual size_t write(const void* ptr, size_t size, size_t count) override;
+    virtual size_t write(const void* ptr, size_t size, size_t count);
 
     /**
      * Returns true if the end of the stream has been reached.
      *
      * @return True if end of stream reached, false otherwise.
      */
-    virtual bool eof() override { return _connectionIsClosed; };
+    virtual bool eof() { return !_underlyingStream || _underlyingStream->eof(); };
 
     /**
      * Returns the length of the stream in bytes.
@@ -145,15 +129,14 @@ public:
      *
      * @return The length of the stream in bytes.
      */
-    virtual size_t length() override { return 0; };
+    virtual size_t length() { return _underlyingStream ? _underlyingStream->length() : 0; };
 
     /**
      * Returns the position of the file pointer. Zero is the start of the stream.
-     * For network stream total number of bytes send and received is returned.
      *
      * @return The file indicator offset in bytes.
      */
-     virtual long int position() override { return _totalBytes; };
+    virtual long int position() { return _underlyingStream ? _underlyingStream->position() : 0; };
 
     /**
      * Sets the position of the file pointer.
@@ -171,7 +154,7 @@ public:
      *
      * @see canSeek()
      */
-    virtual bool seek(long int offset, int origin) override { return false; };
+    virtual bool seek(long int offset, int origin);
 
     /**
      * Moves the file pointer to the start of the file.
@@ -182,22 +165,22 @@ public:
      *
      * @see canSeek()
      */
-    virtual bool rewind() override { return false; };
+    virtual bool rewind();
 
 protected:
-    SocketStream();
+    IndexedDBStream();
 
 private:
-#ifdef WIN32
-    SOCKET _socket;
-#else
-    int _socket;
-#endif
-
-    bool _connectionIsClosed;
-    long int _totalBytes;
+    std::unique_ptr<MemoryStream> _underlyingStream;
+    size_t _streamMode;
+    void * _buffer;
+    std::string _dbName;
+    std::string _fileName;
 };
 
 
 
-#endif // __DFG_SOCKET_STREAM_H__
+
+#endif // __EMSCRIPTEN__
+
+#endif // __IDB_STREAM_H__
