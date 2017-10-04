@@ -15,22 +15,36 @@
  * Allows to read and write from indexed db using the
  * commong gameplay::Stream interface.
  *
+ * This Stream object is also derived from Ref class.
+ * Since the read/write operations happen in async manner
+ * the object should live untill request is full processed.
+ * Upon creation it automatically calls addRef, thus the 
+ * initial value of ref counter is 2. Upon processing the
+ * request it automatically calls release, decreasing ref
+ * counter by 1.
+ *
  * All operations are synchronous.
  */
-class IndexedDBStream : public gameplay::Stream
+class IndexedDBStream : public gameplay::Stream, public gameplay::Ref
 {
 public:
     virtual ~IndexedDBStream();
 
     /**
      * Creates IndexedDBStream for a file.
+     * It is not safe to call read methods before the Load/Save callback
+     * is executed.
+     *
      *
      * @param dbName IndexedDB name.
      * @param fileName File to write to or read from IndexedDB.
      * @param streamMode The stream mode used to open the file.
+     * @param callback Load/Save callback which is called when on 
+     *        creation of the stream (load) or when data is flush back
+     *        to datastore once 'close' is called (save).
      * @return Newly created IndexedDBStream.
      */
-    static gameplay::Stream * create(const char * dbName, const char * fileName, size_t streamMode = gameplay::FileSystem::READ);
+    static IndexedDBStream * create(const char * dbName, const char * fileName, size_t streamMode = gameplay::FileSystem::READ, std::function<void(gameplay::Stream*)> callback = std::function<void(gameplay::Stream*)>());
 
     /**
      * Returns true if this stream can perform read operations.
@@ -171,11 +185,17 @@ protected:
     IndexedDBStream();
 
 private:
+
+    static void onLoad(void * arg, void * buf, int size);
+    static void onStore(void * arg);
+    static void onError(void * arg);
+    
+
     std::unique_ptr<MemoryStream> _underlyingStream;
     size_t _streamMode;
-    void * _buffer;
     std::string _dbName;
     std::string _fileName;
+    std::function<void(gameplay::Stream*)> _callback;
 };
 
 

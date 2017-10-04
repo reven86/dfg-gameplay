@@ -77,6 +77,7 @@
 		EBC66C9D1C3B1E2F006AABBA /* carousel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBC66C9A1C3B1E2F006AABBA /* carousel.cpp */; };
 		EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
 		EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
+		EBF71FB81F8385890059FA9F /* idb_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF71FB61F8385890059FA9F /* idb_stream.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -200,6 +201,8 @@
 		EBD4BEDB1B45A0C0001AA0D6 /* httprequest_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = httprequest_service.h; sourceTree = "<group>"; };
 		EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = taskqueue_service.cpp; sourceTree = "<group>"; };
 		EBD4BEDD1B45A0C0001AA0D6 /* taskqueue_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taskqueue_service.h; sourceTree = "<group>"; };
+		EBF71FB61F8385890059FA9F /* idb_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idb_stream.cpp; sourceTree = "<group>"; };
+		EBF71FB71F8385890059FA9F /* idb_stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idb_stream.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,6 +321,8 @@
 		EB9F81131AAB25CD00839018 /* main */ = {
 			isa = PBXGroup;
 			children = (
+				EBF71FB61F8385890059FA9F /* idb_stream.cpp */,
+				EBF71FB71F8385890059FA9F /* idb_stream.h */,
 				EB54ED691E1A518000ADBB86 /* socket_stream.cpp */,
 				EB54ED6A1E1A518000ADBB86 /* socket_stream.h */,
 				EB4F764F1DC3D7AE001139D4 /* archive.cpp */,
@@ -535,6 +540,7 @@
 				EB9F81501AAB25CD00839018 /* input_service.cpp in Sources */,
 				EB9F81471AAB25CD00839018 /* dictionary.cpp in Sources */,
 				EB53B66F1EE054BF009C89CB /* entity_manager.cpp in Sources */,
+				EBF71FB81F8385890059FA9F /* idb_stream.cpp in Sources */,
 				EB22EE251DCA21A3001E5328 /* slide_menu.cpp in Sources */,
 				EB7D1E0F1DC4DA400051B0F6 /* iRate.m in Sources */,
 				EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */,
