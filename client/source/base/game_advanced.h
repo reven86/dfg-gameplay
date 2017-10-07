@@ -23,10 +23,12 @@ public:
     /**
      * Constructor.
      *
-     * \param emscriptenDbName Name of the indexed database where settings is supposed to be put for web version.
+     * \param emscriptenDbName Name of the indexed database where settings are supposed to be put for web version.
      * \param analyticsId Google Analytics ID.
      */
     DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsId);
+
+    static DfgGameAdvanced * getInstance() { return static_cast<DfgGameAdvanced *>(gameplay::Game::getInstance()); };
 
     /**
      * Whether this is a first run for a user (no settings file found or loaded).
@@ -46,6 +48,11 @@ public:
      * Automatically saves the settings.
      */
     virtual void pause() override;
+
+    /**
+     * Get Indexed DB name (emscripten).
+     */
+    const char * getIndexedDBName() const { return _emscriptenDbName.c_str(); };
 
 protected:
     /**

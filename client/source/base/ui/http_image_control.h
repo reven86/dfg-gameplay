@@ -26,6 +26,17 @@ public:
     static gameplay::Control* create(gameplay::Theme::Style* style, gameplay::Properties* properties = NULL);
 
     /**
+     * Creates a new HTTPImageControl.
+     *
+     * @param id The image control ID.
+     * @param style The image control style (optional).
+     *
+     * @return The new image control.
+     * @script{create}
+     */
+    static HTTPImageControl* create(const char* id, gameplay::Theme::Style* style = NULL);
+
+    /**
      * Set the path of the image for this ImageControl to display.
      * File can't be opened using path argument, it is then interpreted
      * as URL and is tried to be downloaded using HTTP request.

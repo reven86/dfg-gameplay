@@ -67,6 +67,7 @@
     <ClCompile Include="..\base\main\asset.cpp" />
     <ClCompile Include="..\base\main\dictionary.cpp" />
     <ClCompile Include="..\base\main\gameplay_assets.cpp" />
+    <ClCompile Include="..\base\main\idb_stream.cpp" />
     <ClCompile Include="..\base\main\memory_stream.cpp" />
     <ClCompile Include="..\base\main\settings.cpp" />
     <ClCompile Include="..\base\main\socket_stream.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="..\base\main\cache.h" />
     <ClInclude Include="..\base\main\dictionary.h" />
     <ClInclude Include="..\base\main\gameplay_assets.h" />
+    <ClInclude Include="..\base\main\idb_stream.h" />
     <ClInclude Include="..\base\main\memory_stream.h" />
     <ClInclude Include="..\base\main\settings.h" />
     <ClInclude Include="..\base\main\socket_stream.h" />

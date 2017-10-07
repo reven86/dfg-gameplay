@@ -113,6 +113,10 @@ int progressFunction(void * userp, curl_off_t dltotal, curl_off_t dlnow, curl_of
 
 void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
 {
+#ifdef _DEBUG
+    GP_LOG("Sending HTTP request: %s, POST: %s", request.url.c_str(), request.postPayload.c_str());
+#endif
+
     // make sure curl is used only for one thread in any moment
     std::unique_lock<std::mutex> lock(_requestProcessingMutex);
 

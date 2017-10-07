@@ -22,16 +22,25 @@ const char * HTTPImageControl::getTypeName() const
     return "HTTPImageControl";
 }
 
+HTTPImageControl * HTTPImageControl::create(const char* id, gameplay::Theme::Style* style)
+{
+    HTTPImageControl* imageControl = new HTTPImageControl();
+    imageControl->_id = id ? id : "";
+    imageControl->initialize(imageControl->getTypeName(), style, NULL);
+    return imageControl;
+}
+
 gameplay::Control * HTTPImageControl::create(gameplay::Theme::Style* style, gameplay::Properties* properties)
 {
     HTTPImageControl * control = new HTTPImageControl();
-    control->_httpRequestService = ServiceManager::getInstance()->findService<HTTPRequestService>();
     control->initialize(control->getTypeName(), style, properties);
     return control;
 }
 
 void HTTPImageControl::initialize(const char * typeName, gameplay::Theme::Style * style, gameplay::Properties * properties)
 {
+    _httpRequestService = ServiceManager::getInstance()->findService<HTTPRequestService>();
+
     gameplay::ImageControl::initialize(typeName, style, properties);
 
     if (properties)
