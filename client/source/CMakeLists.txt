@@ -1,44 +1,5 @@
 
-set(DFGGAMEPLAY_SRC
-    pch.cpp
-    base/entity/entity.cpp
-    base/entity/entity_manager.cpp
-    base/main/archive.cpp
-    base/main/asset.cpp
-    base/main/dictionary.cpp
-    base/main/gameplay_assets.cpp
-    base/main/memory_stream.cpp
-    base/main/settings.cpp
-    base/main/socket_stream.cpp
-    base/main/variant.cpp
-    base/main/zip_package.cpp
-    base/main/zip_packages.cpp
-    base/main/zip_stream.cpp
-    base/render/particle_system.cpp
-    base/services/debug_service.cpp
-    base/services/httprequest_service.cpp
-    base/services/input_service.cpp
-    base/services/render_service.cpp
-    base/services/service.cpp
-    base/services/service_manager.cpp
-    base/services/social_service.cpp
-    base/services/storefront_service.cpp
-    base/services/taskqueue_service.cpp
-    base/services/taskscheduler_service.cpp
-    base/services/tracker_service.cpp
-    base/ui/carousel.cpp
-    base/ui/clip_label.cpp
-    base/ui/control_event_handler.cpp
-    base/ui/dial_button.cpp
-    base/ui/expanded_tab.cpp
-    base/ui/http_image_control.cpp
-    base/ui/slide_menu.cpp
-    base/utils/profiler.cpp
-    base/utils/singleton.cpp
-    base/utils/utils.cpp
-    base/main.cpp
-    base/game_advanced.cpp
-)
+file(GLOB_RECURSE DFGGAMEPLAY_SRC *.cpp *.cc)
 
 set(UUIDLIB_SRC
     uuidlib/clear.c
