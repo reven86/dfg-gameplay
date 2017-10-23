@@ -428,3 +428,13 @@ void Archive::getCommonKeys(const Archive& other, std::vector<std::string> * out
 
     std::set_intersection(keys1.begin(), keys1.end(), keys2.begin(), keys2.end(), std::back_inserter(*outKeyList));
 }
+
+
+void Archive::getKeyList(std::vector<std::string> * out) const
+{
+    GP_ASSERT(out);
+
+    out->clear();
+    for (const auto& it : _values)
+        out->push_back(it.first);
+}

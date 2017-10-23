@@ -124,6 +124,13 @@ public:
     inline void clear();
 
     /**
+     * Get list of the keys.
+     *
+     * @param[out] out Vector that receives set of the keys this Archive contains.
+     */
+    void getKeyList(std::vector<std::string> * out) const;
+
+    /**
      * Serialize Archive to stream.
      *
      * \param stream Stream to serialize to.
