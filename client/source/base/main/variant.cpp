@@ -237,7 +237,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
     std::vector<VariantType> stack;
     static char str[1024];
     std::unordered_map<std::string, VariantType> memo;
-    std::vector<int> marks;
+    std::vector<size_t> marks;
 
     stack.reserve(128);
 
@@ -489,7 +489,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     return false;
 
                 stack[marks.back()].setArchive();
-                for (int i = marks.back() + 1; i < stack.size(); i += 2)
+                for (size_t i = marks.back() + 1; i < stack.size(); i += 2)
                     stack[marks.back()].getArchive()->set(stack[i].get<std::string>().c_str(), stack[i + 1]);
                 stack.resize(marks.back() +1);
                 marks.pop_back();
@@ -683,7 +683,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 if (marks.empty() || marks.back() >= stack.size())
                     return false;
 
-                for (int i = marks.back() + 1; i < stack.size(); i += 2)
+                for (size_t i = marks.back() + 1; i < stack.size(); i += 2)
                     stack[marks.back() - 1].getArchive()->set(stack[i].get<std::string>().c_str(), stack[i+1]);
 
                 stack.resize(marks.back());
