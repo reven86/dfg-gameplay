@@ -348,7 +348,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     break;
                 }
 
-                int64_t val;
+                int64_t val = 0;
                 if (stream->read(&val, 1, n) != n)
                     return false;
                 stack.push_back(VariantType(val));
@@ -367,7 +367,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     break;
                 }
 
-                int64_t val;
+                int64_t val = 0;
                 if (stream->read(&val, 1, n) != n)
                     return false;
                 stack.push_back(VariantType(val));
@@ -578,6 +578,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
             break;
         case REDUCE:
             stack[stack.size() - 2].set(stack.begin() + stack.size() - 2, stack.end());
+            stack.pop_back();
             break;
         case POP:
             stack.pop_back();
