@@ -68,6 +68,11 @@ public:
      */
     void makeRequestSync(const Request& request, bool headOnly = false);
 
+    /**
+     * Get whether or not any of HTTP requests is currently in process.
+     */
+    bool hasActiveEmscriptenHTTPRequest() const;
+
 protected:
     HTTPRequestService(const ServiceManager * manager);
     virtual ~HTTPRequestService();

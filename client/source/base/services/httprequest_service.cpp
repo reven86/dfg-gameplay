@@ -83,11 +83,14 @@ void HTTPRequestService::makeRequestSync(const Request& request, bool headOnly)
     sendRequest(request, headOnly);
 }
 
+static int __requestCount = 0;
 void HTTPRequestService::requestLoadCallback(unsigned, void * arg, void *buf, unsigned length)
 {
     Request * request = reinterpret_cast<Request *>(arg);
     request->responseCallback(CURLE_OK, MemoryStream::create(buf, length), NULL, 200);
     delete request;
+
+    __requestCount--;
 }
 
 void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode, const char * status)
@@ -96,6 +99,8 @@ void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode
     GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), errorCode, status);
     request->responseCallback(-1, NULL, status, errorCode);  // there is no 'curl' error for emscripten callback, errorCode is HTTP status code
     delete request;
+
+    __requestCount--;
 }
 
 void HTTPRequestService::requestProgressCallback(unsigned, void * arg, int dlnow, int dltotal)
@@ -109,6 +114,11 @@ int progressFunction(void * userp, curl_off_t dltotal, curl_off_t dlnow, curl_of
     HTTPRequestService::Request * request = reinterpret_cast<HTTPRequestService::Request *>(userp);
     GP_ASSERT(request->progressCallback);
     return request->progressCallback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), static_cast<uint64_t>(ultotal), static_cast<uint64_t>(ulnow));
+}
+
+bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
+{
+    return __requestCount > 0;
 }
 
 void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
@@ -180,6 +190,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
 
     Request * newRequest = new Request(request);
 
+    __requestCount++;
     emscripten_async_wget3_data(request.url.c_str(), request.postPayload.empty() ? "GET" : "POST", request.postPayload.c_str(),
         additionalHeaders.c_str(), newRequest, true, &HTTPRequestService::requestLoadCallback, &HTTPRequestService::requestErrorCallback, 
         request.progressCallback ? &HTTPRequestService::requestProgressCallback : NULL);
