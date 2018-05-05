@@ -44,7 +44,7 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
 
     //Alloc memory for its uncompressed contents
     ZipStream * res = new ZipStream();
-	std::unique_ptr<uint8_t[]> fileContent(new uint8_t[st.size]);
+    std::unique_ptr<uint8_t[]> fileContent(new uint8_t[st.size]);
 
     if (zip_fread(f, fileContent.get(), st.size) != (int)st.size)
         GP_WARN("Can't read file %s:%s", packageName, fileName);
@@ -74,57 +74,56 @@ gameplay::Stream * ZipStream::create(gameplay::Stream * compressedStream)
 
 gameplay::Stream * ZipStream::create(const void * buffer, size_t bufferSize)
 {
-	z_stream strm =
-	{
-		(unsigned char*)(buffer),
-		static_cast<uInt>(bufferSize)
-	};
+    z_stream strm =
+    {
+        (unsigned char*)(buffer),
+        static_cast<uInt>(bufferSize)
+    };
 
-	int ret = inflateInit(&strm);
+    int ret = inflateInit(&strm);
 
-	if (ret != Z_OK)
-	{
-		GP_WARN("Can't decompress the stream.");
-		return NULL;
-	}
+    if (ret != Z_OK)
+    {
+        GP_WARN("Can't decompress the stream.");
+        return NULL;
+    }
 
-	const int chunk = 1 * 1024 * 1024;
-	std::unique_ptr<uint8_t[]> out(new uint8_t[chunk]);
+    const int chunk = 1 * 1024 * 1024;
+    std::unique_ptr<uint8_t[]> out(new uint8_t[chunk]);
 
-	ZipStream * res = new ZipStream();
-	res->_underlyingStream.reset(MemoryStream::create());
+    ZipStream * res = new ZipStream();
+    res->_underlyingStream.reset(MemoryStream::create());
 
-	do 
-	{
-		strm.avail_out = chunk;
-		strm.next_out = out.get();
-		ret = inflate(&strm, Z_NO_FLUSH);
+    do
+    {
+        strm.avail_out = chunk;
+        strm.next_out = out.get();
+        ret = inflate(&strm, Z_NO_FLUSH);
 
-		assert(ret != Z_STREAM_ERROR);
-		switch (ret)
-		{
-		case Z_NEED_DICT:
-			ret = Z_DATA_ERROR;
-		case Z_DATA_ERROR:
-		case Z_MEM_ERROR:
-			(void)inflateEnd(&strm);
-		}
+        assert(ret != Z_STREAM_ERROR);
+        switch (ret)
+        {
+        case Z_NEED_DICT:
+            ret = Z_DATA_ERROR;
+        case Z_DATA_ERROR:
+        case Z_MEM_ERROR:
+            (void)inflateEnd(&strm);
+        }
 
-		int have = chunk - strm.avail_out;
+        int have = chunk - strm.avail_out;
 
-		if (res->_underlyingStream->write(out.get(), 1, have) != have)
-			GP_WARN("Can't write decompressed data.");
+        if (res->_underlyingStream->write(out.get(), 1, have) != have)
+            GP_WARN("Can't write decompressed data.");
 
-	} 
-	while (strm.avail_out == 0);
+    } while (strm.avail_out == 0);
 
-	(void)inflateEnd(&strm);
+    (void)inflateEnd(&strm);
 
-	if (ret != Z_STREAM_END && ret != Z_OK)
-		GP_WARN("Error while decompressing the stream.");
+    if (ret != Z_STREAM_END && ret != Z_OK)
+        GP_WARN("Error while decompressing the stream.");
 
-	res->_underlyingStream->seek(0, SEEK_SET);
-	return res;
+    res->_underlyingStream->seek(0, SEEK_SET);
+    return res;
 }
 
 void ZipStream::close()
