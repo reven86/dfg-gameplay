@@ -111,17 +111,39 @@ void ServiceManager::update(float elapsedTime)
     };
 
     bool allCompleted = true;
-    for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
-    {
-        const Service::State& serviceState = (*it)->service->getState();
-        if (serviceState <= _state)
-        {
-            bool res = ((*it)->service.get()->*state_funcs[serviceState])();
-            if (serviceState == _state)
-                allCompleted &= res;
 
-            if (res)
-                (*it)->service->setState(static_cast<Service::State>(serviceState + 1));
+    if (_state == Service::SHUTTING_DOWN)
+    {
+        // process all destruction of services in a reverse order
+        for (auto it = _services.rbegin(), end_it = _services.rend(); it != end_it; it++)
+        {
+            const Service::State& serviceState = (*it)->service->getState();
+            GP_ASSERT(serviceState >= Service::SHUTTING_DOWN);
+            if (serviceState == Service::SHUTTING_DOWN)
+            {
+                bool res = ((*it)->service.get()->*state_funcs[serviceState])();
+                if (serviceState == _state)
+                    allCompleted &= res;
+
+                if (res)
+                    (*it)->service->setState(static_cast<Service::State>(serviceState + 1));
+            }
+        }
+    }
+    else
+    {
+        for (ServicesType::iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
+        {
+            const Service::State& serviceState = (*it)->service->getState();
+            if (serviceState <= _state)
+            {
+                bool res = ((*it)->service.get()->*state_funcs[serviceState])();
+                if (serviceState == _state)
+                    allCompleted &= res;
+
+                if (res)
+                    (*it)->service->setState(static_cast<Service::State>(serviceState + 1));
+            }
         }
     }
 
