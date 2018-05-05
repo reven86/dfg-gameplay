@@ -35,13 +35,13 @@ const EntityComponent * Entity::getComponent(const char * name) const
 
 void Entity::clear()
 {
-    for (auto& comp : _components)
+    for (auto comp = _components.rbegin(); comp != _components.rend();)
     {
-        componentIsAboutToBeRemovedSignal(comp.first, comp.second);
-        delete comp.second;
-    }
+        componentIsAboutToBeRemovedSignal((*comp).first, (*comp).second);
+        delete (*comp).second;
 
-    _components.clear();
+        comp = std::reverse_iterator<std::list<std::pair<const char *, class EntityComponent *>>::iterator>(_components.erase(--(comp.base())));
+    }
 }
 
 
