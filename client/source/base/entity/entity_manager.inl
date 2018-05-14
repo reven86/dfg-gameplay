@@ -25,3 +25,23 @@ inline unsigned EntityManager::getEntityCount() const
 {
     return _entities.size();
 }
+
+inline std::unordered_map<int, Entity *>::iterator EntityManager::begin()
+{
+    return _entities.begin();
+}
+
+inline std::unordered_map<int, Entity *>::const_iterator EntityManager::begin() const
+{
+    return _entities.cbegin();
+}
+
+inline std::unordered_map<int, Entity *>::iterator EntityManager::end()
+{
+    return _entities.end();
+}
+
+inline std::unordered_map<int, Entity *>::const_iterator EntityManager::end() const
+{
+    return _entities.cend();
+}

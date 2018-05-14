@@ -69,6 +69,26 @@ public:
      */
     virtual void clear();
 
+    /**
+     * Get iterator to a first element of the list stored in the variant.
+     */
+    inline std::unordered_map<int, Entity *>::iterator begin();
+
+    /**
+     * Get iterator to an element after the last of the list stored in the variant.
+     */
+    inline std::unordered_map<int, Entity *>::iterator end();
+
+    /**
+     * Get iterator to a first element of the list stored in the variant.
+     */
+    inline std::unordered_map<int, Entity *>::const_iterator begin() const;
+
+    /**
+     * Get iterator to an element after the last of the list stored in the variant.
+     */
+    inline std::unordered_map<int, Entity *>::const_iterator end() const;
+
 protected:
     EntityManager();
     virtual ~EntityManager();
