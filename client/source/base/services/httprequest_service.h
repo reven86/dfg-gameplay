@@ -77,9 +77,10 @@ protected:
     HTTPRequestService(const ServiceManager * manager);
     virtual ~HTTPRequestService();
 
-    virtual bool onInit();
-    virtual bool onTick();
-    virtual bool onShutdown();
+    virtual bool onPreInit() override;
+    virtual bool onInit() override;
+    virtual bool onTick() override;
+    virtual bool onShutdown() override;
 
 private:
     void sendRequest(const Request& request, bool headOnly);

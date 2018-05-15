@@ -29,11 +29,11 @@ HTTPRequestService::~HTTPRequestService()
 {
 }
 
-bool HTTPRequestService::onInit()
+bool HTTPRequestService::onPreInit()
 {
     _taskQueueService = _manager->findService<TaskQueueService>();
     _taskQueueService->createQueue(HTTP_REQUEST_SERVICE_QUEUE);
-
+    
 #ifndef __EMSCRIPTEN__
     _curl = curl_easy_init();
     if (_curl)
@@ -50,6 +50,11 @@ bool HTTPRequestService::onInit()
     }
 #endif
 
+    return true;
+}
+
+bool HTTPRequestService::onInit()
+{
     return true;
 }
 

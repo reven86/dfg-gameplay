@@ -82,11 +82,11 @@ void HTTPImageControl::imageDownloadedCallback(int curlCode, MemoryStream * resp
     // create temporary file with an extension from original request
 #ifdef WIN32
     const char * tmpFilename = tmpnam(NULL);
-	std::string filename = std::string(tmpFilename) + gameplay::FileSystem::getExtension(path.c_str());
+    std::string filename = std::string(tmpFilename) + gameplay::FileSystem::getExtension(path.c_str());
 #else
     char tmpFilename[] = "tmp.XXXXXX";
     mktemp(tmpFilename);
-	std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpFilename + gameplay::FileSystem::getExtension(path.c_str());
+    std::string filename = std::string(gameplay::Game::getInstance()->getTemporaryFolderPath()) + tmpFilename + gameplay::FileSystem::getExtension(path.c_str());
 #endif
     std::unique_ptr<gameplay::Stream> stream(gameplay::FileSystem::open(filename.c_str(), gameplay::FileSystem::WRITE));
     if (stream && stream->write(response->getBuffer(), response->length(), 1) == 1)
