@@ -329,6 +329,7 @@ void DialButton::setAnimationPropertyValue(int propertyId, gameplay::AnimationVa
                     _menuState = false;
 
                     // scroll to nearest item
+                    _currentItemBeforeTouch = INVALID_ITEM_INDEX;
                     scrollToItem(_currentItemIndex);
                     break;
                 }
