@@ -45,3 +45,8 @@ inline std::unordered_map<int, Entity *>::const_iterator EntityManager::end() co
 {
     return _entities.cend();
 }
+
+inline int EntityManager::getNextEntityID() const
+{
+    return _highestId + 1;
+}

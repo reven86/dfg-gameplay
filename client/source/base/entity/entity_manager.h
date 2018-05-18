@@ -89,12 +89,20 @@ public:
      */
     inline std::unordered_map<int, Entity *>::const_iterator end() const;
 
+    /**
+     * Get entity ID safe to use when adding new entities, i.e. it's guaranteed
+     * that ID won't collide with any existing entity ID.
+     */
+    int getNextEntityID() const;
+
 protected:
     EntityManager();
     virtual ~EntityManager();
 
 private:
     std::unordered_map<int, Entity *> _entities;
+
+    int _highestId;
 };
 
 

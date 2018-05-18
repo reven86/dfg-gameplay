@@ -6,6 +6,7 @@
 
 
 EntityManager::EntityManager()
+    : _highestId(0)
 {
 }
 
@@ -23,6 +24,8 @@ Entity * EntityManager::addEntity(int id)
     res = new Entity(id);
     res->_entityManager = this;
     _entities.emplace(std::make_pair(id, res));
+    if (id > _highestId)
+        _highestId = id;
 
     entityAddedSignal(id, res);
 
@@ -49,4 +52,5 @@ void EntityManager::clear()
         delete it.second;
     }
     _entities.clear();
+    _highestId = 0;
 }
