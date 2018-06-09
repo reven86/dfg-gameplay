@@ -63,9 +63,12 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
 
 bool ZipPackagesCache::hasFile(const char * packageName, const char * filename)
 {
+    if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
+        return false;
+
     zip * package = findOrOpenPackage(packageName);
     if (!package)
-        return NULL;
+        return false;
 
     return zip_name_locate(package, filename, ZIP_FL_ENC_GUESS | ZIP_FL_NOCASE) >= 0;
 }
