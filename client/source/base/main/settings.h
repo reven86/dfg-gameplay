@@ -24,12 +24,12 @@ public:
     /**
      * Helper function to allow connect specialized slots to general VariantType's signals.
      */
-    template<typename _Type, typename _Fn> inline void connect(const char * key, const _Fn& fn) const;
+    template<typename _Type, typename _Fn> inline sigc::connection connect(const char * key, const _Fn& fn) const;
 
     /**
      * Helper function to allow connect specialized validators to general VariantType's signals.
      */
-    template<typename _Type, typename _Fn> inline void connectValidator(const char * key, const _Fn& fn) const;
+    template<typename _Type, typename _Fn> inline sigc::connection connectValidator(const char * key, const _Fn& fn) const;
 
 
 protected:
