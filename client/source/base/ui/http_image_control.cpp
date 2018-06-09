@@ -62,6 +62,9 @@ unsigned int HTTPImageControl::drawImages(gameplay::Form * form) const
 
 void HTTPImageControl::setImage(const char * path)
 {
+    if (!path || !*path)
+        return;
+
     if (gameplay::FileSystem::fileExists(path))
         return gameplay::ImageControl::setImage(path);
 
