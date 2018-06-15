@@ -636,6 +636,8 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     return false;
 
                 std::string s = std::to_string(val);
+                if (stack.empty())
+                    return false;
                 memo[s] = stack.back();
             }
             break;
@@ -646,6 +648,8 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     return false;
 
                 std::string s = std::to_string(val);
+                if (stack.empty())
+                    return false;
                 memo[s] = stack.back();
             }
             break;
