@@ -1,8 +1,8 @@
 mergeInto(LibraryManager.library, {
-  emscripten_async_wget3_data: function(url, request, param, additionalHeader, arg, free, onload, onerror, onprogress) {
+  emscripten_async_wget3_data: function(url, request, data, dataSize, additionalHeader, arg, free, onload, onerror, onprogress) {
     var _url = Pointer_stringify(url);
     var _request = Pointer_stringify(request);
-    var _param = Pointer_stringify(param);
+    var _param = new Uint8Array(Module.HEAPU8.buffer, data, dataSize);
 
     var http = new XMLHttpRequest();
     http.open(_request, _url, true);
@@ -57,7 +57,6 @@ mergeInto(LibraryManager.library, {
 
     if (_request == "POST") {
       //Send the proper header information along with the request
-      http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
       http.send(_param);
     } else {
       http.send(null);

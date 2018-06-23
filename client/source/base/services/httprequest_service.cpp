@@ -140,6 +140,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
 
     curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
     curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
+    curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, request.postPayload.size());
     curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
     curl_easy_setopt(_curl, CURLOPT_WRITEDATA, response);
     curl_easy_setopt(_curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
@@ -196,7 +197,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
     Request * newRequest = new Request(request);
 
     __requestCount++;
-    emscripten_async_wget3_data(request.url.c_str(), request.postPayload.empty() ? "GET" : "POST", request.postPayload.c_str(),
+    emscripten_async_wget3_data(request.url.c_str(), request.postPayload.empty() ? "GET" : "POST", request.postPayload.c_str(), request.postPayload.size(),
         additionalHeaders.c_str(), newRequest, true, &HTTPRequestService::requestLoadCallback, &HTTPRequestService::requestErrorCallback, 
         request.progressCallback ? &HTTPRequestService::requestProgressCallback : NULL);
 
