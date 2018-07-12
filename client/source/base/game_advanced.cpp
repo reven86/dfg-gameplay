@@ -295,9 +295,13 @@ void DfgGameAdvanced::updateSettings()
         }
         return allocate(intArrayFromString(referrer), 'i8', ALLOC_STACK);
     });
+    int urlPointer = EM_ASM_INT_V({
+        var url = (parent !== window) ? document.referrer : window.location.href;
+        return allocate(intArrayFromString(url), 'i8', ALLOC_STACK);
+    });
 
     const char * referrer = reinterpret_cast<const char *>(stringPointer);
-    tracker->sendEvent("Domain", referrer, "");
+    tracker->sendEvent("Domain", referrer, reinterpret_cast<const char *>(urlPointer));
 #endif
 
     Settings::getInstance()->connect<std::string>("app.language", std::bind(&DfgGameAdvanced::onLanguageChanged, this, std::placeholders::_1));
