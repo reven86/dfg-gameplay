@@ -55,6 +55,13 @@ public:
     const char * getGameLocale() const { return _gameLocale.c_str(); };
 
     /**
+     * Set game locale, or use system default one.
+     *
+     * @param newLocale Locale to be set, NULL to use system-wide locale.
+     */
+    void setGameLocale(const char * newLocale = NULL);
+
+    /**
      * Schedule local notification.
      *
      * @param[in]  datetime            Date in time (UNIX timestamp).
@@ -95,13 +102,6 @@ protected:
     virtual void render(float elapsedTime) override;
     virtual void pause() override;
     virtual void resume() override;
-
-    /**
-     * Set game locale, or use system default one.
-     *
-     * @param newLocale Locale to be set, NULL to use system-wide locale.
-     */
-    void setGameLocale(const char * newLocale = NULL);
 
     virtual void keyEvent(gameplay::Keyboard::KeyEvent evt, int key, bool processed) override;
     virtual void touchEvent(gameplay::Touch::TouchEvent evt, int x, int y, unsigned int contactIndex, bool processed) override;
