@@ -203,6 +203,24 @@ void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
         const gameplay::Vector2& scrollPos = container->getScrollPosition();
         container->setScrollPosition(gameplay::Vector2(scrollPos.x * kx, scrollPos.y * ky));
 
+        gameplay::Layout::Type layoutType = container->getLayout()->getType();
+        if (layoutType == gameplay::Layout::LAYOUT_FLOW)
+        {
+            float horizontalSpacing = static_cast<gameplay::FlowLayout *>(container->getLayout())->getHorizontalSpacing();
+            float verticalSpacing = static_cast<gameplay::FlowLayout *>(container->getLayout())->getVerticalSpacing();
+            static_cast<gameplay::FlowLayout *>(container->getLayout())->setSpacing(horizontalSpacing * kx, verticalSpacing * ky);
+        }
+        else if (layoutType == gameplay::Layout::LAYOUT_HORIZONTAL)
+        {
+            float spacing = static_cast<gameplay::HorizontalLayout *>(container->getLayout())->getSpacing();
+            static_cast<gameplay::HorizontalLayout *>(container->getLayout())->setSpacing(spacing * kx);
+        }
+        else if (layoutType == gameplay::Layout::LAYOUT_VERTICAL)
+        {
+            float spacing = static_cast<gameplay::VerticalLayout *>(container->getLayout())->getSpacing();
+            static_cast<gameplay::VerticalLayout *>(container->getLayout())->setSpacing(spacing * ky);
+        }
+
         const std::vector< gameplay::Control * >& children = container->getControls();
         for (unsigned j = 0; j < children.size(); j++)
             scaleUIControl(children[j], kx, ky);

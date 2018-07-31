@@ -71,12 +71,12 @@ void HTTPImageControl::setImage(const char * path)
     // make sure instance is present while callback is scheduled
     this->addRef();
     _httpRequestService->makeRequestAsync({ path, "", HTTPRequestService::Request::HeadersList(),
-        std::bind(&HTTPImageControl::imageDownloadedCallback, this, std::placeholders::_1, std::placeholders::_2, std::string(path), std::placeholders::_3) });
+        std::bind(&HTTPImageControl::imageDownloadedCallback, this, std::placeholders::_1, std::placeholders::_2, std::string(path), std::placeholders::_3, std::placeholders::_4) });
 }
 
-void HTTPImageControl::imageDownloadedCallback(int curlCode, MemoryStream * response, const std::string& path, const char * error)
+void HTTPImageControl::imageDownloadedCallback(int curlCode, MemoryStream * response, const std::string& path, const char * error, int httpResponseCode)
 {
-    if (curlCode != 0 || response == nullptr)
+    if (curlCode != 0 || response == nullptr || httpResponseCode != 200)
     {
         this->release();
         return;

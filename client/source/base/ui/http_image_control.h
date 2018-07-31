@@ -96,7 +96,7 @@ protected:
 
 private:
 
-    void imageDownloadedCallback(int curlCode, class MemoryStream * stream, const std::string& path, const char * error);
+    void imageDownloadedCallback(int curlCode, class MemoryStream * stream, const std::string& path, const char * error, int httpResponseCode);
 
     class HTTPRequestService * _httpRequestService;
     bool _preserveAspect;
