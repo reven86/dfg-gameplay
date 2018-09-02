@@ -689,7 +689,12 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                     return false;
 
                 for (size_t i = marks.back() + 1; i < stack.size(); i += 2)
-                    stack[marks.back() - 1].getArchive()->set(stack[i].get<std::string>().c_str(), stack[i+1]);
+                {
+                    if (stack[i].getType() == VariantType::TYPE_STRING)
+                        stack[marks.back() - 1].getArchive()->set(stack[i].get<std::string>().c_str(), stack[i + 1]);
+                    else
+                        stack[marks.back() - 1].getArchive()->set(std::to_string(stack[i].get<int32_t>()).c_str(), stack[i + 1]);
+                }
 
                 stack.resize(marks.back());
                 marks.pop_back();
