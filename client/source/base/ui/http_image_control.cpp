@@ -62,6 +62,7 @@ unsigned int HTTPImageControl::drawImages(gameplay::Form * form) const
 
 void HTTPImageControl::setImage(const char * path)
 {
+    SAFE_DELETE(_batch);
     if (!path || !*path)
         return;
 
