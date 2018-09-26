@@ -80,7 +80,12 @@ bool HTTPRequestService::onShutdown()
 int HTTPRequestService::makeRequestAsync(const Request& request, bool headOnly)
 {
     // note: request is copied by value
+#ifdef __EMSCRIPTEN__
+    sendRequest(request, headOnly);
+    return -1;
+#else
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, headOnly));
+#endif
 }
 
 void HTTPRequestService::makeRequestSync(const Request& request, bool headOnly)
