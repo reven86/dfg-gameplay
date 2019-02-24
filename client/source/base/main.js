@@ -1,7 +1,7 @@
 mergeInto(LibraryManager.library, {
   emscripten_async_wget3_data: function(url, request, data, dataSize, additionalHeader, arg, free, onload, onerror, onprogress) {
-    var _url = Pointer_stringify(url);
-    var _request = Pointer_stringify(request);
+    var _url = UTF8ToString(url);
+    var _request = UTF8ToString(request);
     var _param = new Uint8Array(Module.HEAPU8.buffer, data, dataSize);
 
     var http = new XMLHttpRequest();
@@ -16,10 +16,10 @@ mergeInto(LibraryManager.library, {
         var byteArray = new Uint8Array(http.response);
         var buffer = _malloc(byteArray.length);
         HEAPU8.set(byteArray, buffer);
-        if (onload) Runtime.dynCall('viiii', onload, [handle, arg, buffer, byteArray.length]);
+        if (onload) Module['dynCall_viiii'](onload, handle, arg, buffer, byteArray.length);
         if (free) _free(buffer);
       } else {
-        if (onerror) Runtime.dynCall('viiii', onerror, [handle, arg, http.status, http.statusText]);
+        if (onerror) Module['dynCall_viiii'](onerror, handle, arg, http.status, http.statusText);
       }
       delete Browser.wgetRequests[handle];
     };
@@ -27,14 +27,14 @@ mergeInto(LibraryManager.library, {
     // ERROR
     http.onerror = function http_onerror(e) {
       if (onerror) {
-        Runtime.dynCall('viiii', onerror, [handle, arg, http.status, http.statusText]);
+        Module['dynCall_viiii'](onerror, handle, arg, http.status, http.statusText);
       }
       delete Browser.wgetRequests[handle];
     };
 
     // PROGRESS
     http.onprogress = function http_onprogress(e) {
-      if (onprogress) Runtime.dynCall('viiii', onprogress, [handle, arg, e.loaded, e.lengthComputable || e.lengthComputable === undefined ? e.total : 0]);
+      if (onprogress) Module['dynCall_viiii'](onprogress, handle, arg, e.loaded, e.lengthComputable || e.lengthComputable === undefined ? e.total : 0);
     };
 
     // ABORT
@@ -49,7 +49,7 @@ mergeInto(LibraryManager.library, {
     } catch (ex) { /* whatever */ }
 
     try {
-      var additionalHeaderObject = JSON.parse(Pointer_stringify(additionalHeader));
+      var additionalHeaderObject = JSON.parse(UTF8ToString(additionalHeader));
       for (var entry in additionalHeaderObject) {
         http.setRequestHeader(entry, additionalHeaderObject[entry]);
       }
@@ -110,7 +110,7 @@ copyTextToClipboard:function (text) {
   textArea.style.background = 'transparent';
 
 
-  textArea.value = Pointer_stringify(text);
+  textArea.value = UTF8ToString(text);
 
   document.body.appendChild(textArea);
 
