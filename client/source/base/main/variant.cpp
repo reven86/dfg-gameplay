@@ -409,11 +409,10 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 uint32_t len;
                 if (stream->read(&len, sizeof(len), 1) != 1)
                     return false;
-                std::unique_ptr<char[]> buf(new char[len + 1]);
+                std::unique_ptr<char[]> buf(new char[len]);
                 if (stream->read(buf.get(), 1, len) != len)
                     return false;
-                buf[len] = '\0';
-                stack.push_back(VariantType(std::string(buf.get())));
+                stack.push_back(VariantType(std::string(buf.get(), len)));
             }
             break;
         case UNICODE:

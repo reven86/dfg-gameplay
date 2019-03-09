@@ -22,6 +22,9 @@ template<class T, class _KT = uint8_t, class _Interpolator = Utils::LinearInterp
 class Curve
 {
 public:
+    typedef std::pair<_KT, T> KeyType;
+    typedef std::vector<KeyType> KeysType;
+
     Curve() {};
     ~Curve() {};
 
@@ -93,10 +96,12 @@ public:
      */
     inline bool initialize(gameplay::Properties * properties);
 
-private:
-    typedef std::pair<_KT, T> KeyType;
-    typedef std::vector<KeyType> KeysType;
+    /**
+     * Access to keys.
+     */
+    const KeysType& keys() const { return _keys; };
 
+private:
     KeysType _keys;
     T _emptyKey;
 };
