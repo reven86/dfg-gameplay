@@ -35,10 +35,11 @@ bool HTTPRequestService::onPreInit()
     _taskQueueService->createQueue(HTTP_REQUEST_SERVICE_QUEUE);
     
 #ifndef __EMSCRIPTEN__
+    curl_global_init(CURL_GLOBAL_ALL);
     _curl = curl_easy_init();
     if (_curl)
     {
-        curl_easy_setopt(_curl, CURLOPT_USERAGENT, gameplay::Game::getInstance()->getUserAgentString());
+        curl_easy_setopt(_curl, CURLOPT_USERAGENT, gameplay::Game::getInstance() ? gameplay::Game::getInstance()->getUserAgentString() : "Mozilla/5.0");
         //curl_easy_setopt( _curl, CURLOPT_DNS_CACHE_TIMEOUT, -1 );
         curl_easy_setopt(_curl, CURLOPT_NOSIGNAL, 1);
         curl_easy_setopt(_curl, CURLOPT_TIMEOUT, 120);
@@ -84,13 +85,13 @@ int HTTPRequestService::makeRequestAsync(const Request& request, bool headOnly)
     sendRequest(request, headOnly);
     return -1;
 #else
-    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, headOnly));
+    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, headOnly, false));
 #endif
 }
 
 void HTTPRequestService::makeRequestSync(const Request& request, bool headOnly)
 {
-    sendRequest(request, headOnly);
+    sendRequest(request, headOnly, true);
 }
 
 static int __requestCount = 0;
@@ -131,48 +132,60 @@ bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
     return __requestCount > 0;
 }
 
-void HTTPRequestService::sendRequest(const Request& request, bool headOnly)
+void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool syncCall)
 {
 #ifdef _DEBUG
     GP_LOG("Sending HTTP request: %s, POST: %s", request.url.c_str(), request.postPayload.c_str());
 #endif
 
-    // make sure curl is used only for one thread in any moment
-    std::unique_lock<std::mutex> lock(_requestProcessingMutex);
-
 #ifndef __EMSCRIPTEN__
     MemoryStream * response = MemoryStream::create();
-
-    curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
-    curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
-    curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, request.postPayload.size());
-    curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
-    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, response);
-    curl_easy_setopt(_curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
-    curl_easy_setopt(_curl, CURLOPT_XFERINFOFUNCTION, &progressFunction);
-    curl_easy_setopt(_curl, CURLOPT_XFERINFODATA, &request);
-    curl_easy_setopt(_curl, CURLOPT_HEADER, headOnly ? 1 : 0);
-    curl_easy_setopt(_curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
-
-    struct curl_slist *list = NULL;
-    if (!request.headers.empty())
-    {
-        for (auto& h : request.headers)
-            list = curl_slist_append(list, (h.first + ": " + h.second).c_str());
-    }
-    curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, list);
-
-    CURLcode res = curl_easy_perform(_curl);
-    curl_slist_free_all(list);
-
     long httpResponseCode = 0;
-    curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &httpResponseCode);
+    CURLcode res;
 
-    if (res != CURLE_OK)
-        GP_LOG("Failed to perform HTTP request: error %d - %s", res, request.url.c_str());
+    {
+        // make sure curl is used only for one thread in any moment
+        std::unique_lock<std::mutex> lock(_requestProcessingMutex);
 
-    // response is copied by value since callback is invoked on main thread
-    _taskQueueService->runOnMainThread([=]() { response->rewind(); request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
+        curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
+        curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
+        curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, request.postPayload.size());
+        curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
+        curl_easy_setopt(_curl, CURLOPT_WRITEDATA, response);
+        curl_easy_setopt(_curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
+        curl_easy_setopt(_curl, CURLOPT_XFERINFOFUNCTION, &progressFunction);
+        curl_easy_setopt(_curl, CURLOPT_XFERINFODATA, &request);
+        curl_easy_setopt(_curl, CURLOPT_HEADER, headOnly ? 1 : 0);
+        curl_easy_setopt(_curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
+
+        struct curl_slist *list = NULL;
+        if (!request.headers.empty())
+        {
+            for (auto& h : request.headers)
+                list = curl_slist_append(list, (h.first + ": " + h.second).c_str());
+        }
+        curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, list);
+
+        res = curl_easy_perform(_curl);
+        curl_slist_free_all(list);
+
+        curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &httpResponseCode);
+
+        if (res != CURLE_OK)
+            GP_LOG("Failed to perform HTTP request: error %d - %s", res, request.url.c_str());
+    }
+
+    if (syncCall)
+    {
+        response->rewind();
+        request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode);
+        delete response;
+    }
+    else
+    {
+        // response is copied by value since callback is invoked on main thread
+        _taskQueueService->runOnMainThread([=]() { response->rewind(); request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
+    }
 
 #else
     
