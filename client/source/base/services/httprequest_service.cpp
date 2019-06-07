@@ -20,7 +20,6 @@ const char * HTTP_REQUEST_SERVICE_QUEUE = "HTTPRequestServiceQueue";
 
 HTTPRequestService::HTTPRequestService(const ServiceManager * manager)
     : Service(manager)
-    , _curl(NULL)
     , _taskQueueService(NULL)
 {
 }
@@ -36,19 +35,6 @@ bool HTTPRequestService::onPreInit()
     
 #ifndef __EMSCRIPTEN__
     curl_global_init(CURL_GLOBAL_ALL);
-    _curl = curl_easy_init();
-    if (_curl)
-    {
-        curl_easy_setopt(_curl, CURLOPT_USERAGENT, gameplay::Game::getInstance() ? gameplay::Game::getInstance()->getUserAgentString() : "Mozilla/5.0");
-        //curl_easy_setopt( _curl, CURLOPT_DNS_CACHE_TIMEOUT, -1 );
-        curl_easy_setopt(_curl, CURLOPT_NOSIGNAL, 1);
-        curl_easy_setopt(_curl, CURLOPT_TIMEOUT, 120);
-        curl_easy_setopt(_curl, CURLOPT_ERRORBUFFER, errorBuffer);
-        curl_easy_setopt(_curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
-        curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, &writeFunction);
-        curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1);
-        curl_easy_setopt(_curl, CURLOPT_SSL_VERIFYPEER, 0);
-    }
 #endif
 
     return true;
@@ -69,11 +55,6 @@ bool HTTPRequestService::onShutdown()
 {
     if (_taskQueueService)
         _taskQueueService->removeQueue(HTTP_REQUEST_SERVICE_QUEUE);
-
-#ifndef __EMSCRIPTEN__
-    if (_curl)
-        curl_easy_cleanup(_curl);
-#endif
 
     return true;
 }
@@ -144,47 +125,61 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool
     CURLcode res;
 
     {
-        // make sure curl is used only for one thread in any moment
-        std::unique_lock<std::mutex> lock(_requestProcessingMutex);
+        void * curl = NULL;
 
-        curl_easy_setopt(_curl, CURLOPT_URL, request.url.c_str());
-        curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
-        curl_easy_setopt(_curl, CURLOPT_POSTFIELDSIZE, request.postPayload.size());
-        curl_easy_setopt(_curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
-        curl_easy_setopt(_curl, CURLOPT_WRITEDATA, response);
-        curl_easy_setopt(_curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
-        curl_easy_setopt(_curl, CURLOPT_XFERINFOFUNCTION, &progressFunction);
-        curl_easy_setopt(_curl, CURLOPT_XFERINFODATA, &request);
-        curl_easy_setopt(_curl, CURLOPT_HEADER, headOnly ? 1 : 0);
-        curl_easy_setopt(_curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
+        curl = curl_easy_init();
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, gameplay::Game::getInstance() ? gameplay::Game::getInstance()->getUserAgentString() : "Mozilla/5.0");
+        //curl_easy_setopt(curl, CURLOPT_DNS_CACHE_TIMEOUT, -1);
+        curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
+        curl_easy_setopt(curl, CURLOPT_TIMEOUT, 120);
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorBuffer);
+        curl_easy_setopt(curl, CURLOPT_TCP_NODELAY, 1);  // make sure packets are sent immediately
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeFunction);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_easy_setopt(curl, CURLOPT_URL, request.url.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, request.postPayload.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, request.postPayload.size());
+        curl_easy_setopt(curl, CURLOPT_POST, request.postPayload.empty() ? 0 : 1);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, response);
+        curl_easy_setopt(curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
+        curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, &progressFunction);
+        curl_easy_setopt(curl, CURLOPT_XFERINFODATA, &request);
+        curl_easy_setopt(curl, CURLOPT_HEADER, headOnly ? 1 : 0);
+        curl_easy_setopt(curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
 
-        struct curl_slist *list = NULL;
+        curl_slist *list = NULL;
         if (!request.headers.empty())
         {
             for (auto& h : request.headers)
                 list = curl_slist_append(list, (h.first + ": " + h.second).c_str());
         }
-        curl_easy_setopt(_curl, CURLOPT_HTTPHEADER, list);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
 
-        res = curl_easy_perform(_curl);
+        res = curl_easy_perform(curl);
         curl_slist_free_all(list);
 
-        curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &httpResponseCode);
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpResponseCode);
+
+        curl_easy_cleanup(curl);
 
         if (res != CURLE_OK)
             GP_LOG("Failed to perform HTTP request: error %d - %s", res, request.url.c_str());
     }
 
-    if (syncCall)
+    if (request.responseCallback)
     {
-        response->rewind();
-        request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode);
-        delete response;
-    }
-    else
-    {
-        // response is copied by value since callback is invoked on main thread
-        _taskQueueService->runOnMainThread([=]() { response->rewind(); request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
+        if (syncCall)
+        {
+            response->rewind();
+            request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode);
+            delete response;
+        }
+        else
+        {
+            // response is copied by value since callback is invoked on main thread
+            _taskQueueService->runOnMainThread([=]() { response->rewind(); request.responseCallback(res, response, curl_easy_strerror(res), httpResponseCode); delete response; });
+        }
     }
 
 #else

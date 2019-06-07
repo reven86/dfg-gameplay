@@ -89,10 +89,7 @@ private:
     static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);
     static void requestProgressCallback(unsigned, void * arg, int dlnow, int dltotal);
 
-    void * _curl;
-
     TaskQueueService * _taskQueueService;
-    std::mutex _requestProcessingMutex;
 };
 
 
