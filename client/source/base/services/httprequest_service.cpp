@@ -33,10 +33,6 @@ bool HTTPRequestService::onPreInit()
     _taskQueueService = _manager->findService<TaskQueueService>();
     _taskQueueService->createQueue(HTTP_REQUEST_SERVICE_QUEUE);
     
-#ifndef __EMSCRIPTEN__
-    curl_global_init(CURL_GLOBAL_ALL);
-#endif
-
     return true;
 }
 
