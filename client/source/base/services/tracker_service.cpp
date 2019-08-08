@@ -56,10 +56,10 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
 
     if (stream)
     {
-        int version = 0;
+        int32_t version = 0;
         stream->read(&version, sizeof(version), 1);
 
-        if (version == 1)
+        if (version == 2)
         {
             time_t lastTrackerStartTime;
             stream->read(&lastTrackerStartTime, sizeof(lastTrackerStartTime), 1);
@@ -71,16 +71,17 @@ void TrackerService::setupTracking(const char * gaAppId, const char * clientId, 
 
             for (int i = 0; i < payloadsCount; i++)
             {
-                int size = 0;
+                int32_t size = 0;
+                static char params[1024];
 
                 stream->read(&size, sizeof(size), 1);
+                size = std::min(1023, size);
 
-                char * str = reinterpret_cast<char *>(alloca(size + 1));
-                stream->read(str, size, 1);
-                str[size] = '\0';
+                stream->read(params, size, 1);
+                params[size] = '\0';
 
                 PayloadInfo payload;
-                payload.params = str;
+                payload.params = params;
 
                 stream->read(&payload.createTime, sizeof(payload.createTime), 1);
 
@@ -165,11 +166,11 @@ void TrackerService::flushPayloads()
 
     if (stream)
     {
-        int version = 1;
+        int32_t version = 2;
         stream->write(&version, sizeof(version), 1);
         stream->write(&_trackerStartTime, sizeof(_trackerStartTime), 1);
 
-        int maxPayloadsToStore = std::min< int >(1024, static_cast<int>(_payloadsQueue.size()));
+        int32_t maxPayloadsToStore = std::min<int32_t>(1024, static_cast<int32_t>(_payloadsQueue.size()));
         stream->write(&maxPayloadsToStore, sizeof(maxPayloadsToStore), 1);
         _payloadQueueMutex.lock();
         std::deque< PayloadInfo >::iterator it = _payloadsQueue.begin();
