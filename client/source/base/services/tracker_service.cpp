@@ -255,18 +255,19 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     if (!_allowDispatch)
         return false;
 
-    static char finalRequest[4096];
     float curTime = static_cast<float>(gameplay::Game::getInstance()->getAbsoluteTime());
 
     int timeDiff = static_cast<int>((curTime - payload.createTime) * 1000.0f);
-    sprintf(finalRequest, "v=%d&tid=%s&cid=%s&an=%s&av=%s&%s",
+    static std::string finalRequest;
+    finalRequest.clear();
+    finalRequest = Utils::format("v=%d&tid=%s&cid=%s&an=%s&av=%s&%s",
         _protocolVersion, _trackingId.c_str(), _clientId.c_str(),
         _appName.c_str(),
         _appVersion.c_str(),
         payload.params.c_str());
 
     if (!_userId.empty())
-        sprintf(finalRequest, "%s&uid=%s", finalRequest, _userId.c_str());
+        finalRequest += Utils::format("&uid=%s", _userId.c_str());
 
     // reset session when time between payloads passed midnight
     time_t time1 = _trackerStartTime + static_cast<int>(_lastPayloadSentTime);
@@ -285,29 +286,24 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
         int width = gameplay::Game::getInstance()->getWidth();
         int height = gameplay::Game::getInstance()->getHeight();
 
-        sprintf(finalRequest, "%s&sr=%dx%d&ul=%s&sc=start",
-            finalRequest,
+        finalRequest += Utils::format("&sr=%dx%d&ul=%s&sc=start",
             width, height,
             static_cast<DfgGame *>(gameplay::Game::getInstance())->getGameLocale()
             );
     }
 
     if (timeDiff > 0)
-        sprintf(finalRequest, "%s&qt=%d",
-        finalRequest,
-        timeDiff
-        );
-
+        finalRequest += Utils::format("&qt=%d", timeDiff);
 
 #ifndef __EMSCRIPTEN__
     
-    curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, finalRequest);
+    curl_easy_setopt(_curl, CURLOPT_POSTFIELDS, finalRequest.c_str());
     
     CURLcode res = curl_easy_perform(_curl);
     
 #else
     
-    emscripten_async_wget2_data(__endpoint, "POST", finalRequest, NULL, 1, NULL, NULL, NULL);
+    emscripten_async_wget2_data(__endpoint, "POST", finalRequest.c_str(), NULL, 1, NULL, NULL, NULL);
     
     // do not wait for response
     CURLcode res = CURLE_OK;
@@ -330,7 +326,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     GP_LOG(
         "%02d-%02d-%02d %02d:%02d:%02d %08d %08d GA: %s - %d\n",
         t->tm_mon + 1, t->tm_mday, t->tm_year % 100, t->tm_hour, t->tm_min, t->tm_sec,
-        static_cast<int>(curTime * 1000.0f), static_cast<int>(payload.createTime * 1000.0f), finalRequest, res);
+        static_cast<int>(curTime * 1000.0f), static_cast<int>(payload.createTime * 1000.0f), finalRequest.c_str(), res);
 
     GP_ASSERT(abs(static_cast<int>(curTime * 1000.0f)-timeDiff - static_cast<int>(payload.createTime * 1000.0f)) < 2);
 #endif

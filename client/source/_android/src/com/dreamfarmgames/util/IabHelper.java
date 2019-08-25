@@ -73,7 +73,7 @@ import java.util.List;
  */
 public class IabHelper {
     // Is debug logging enabled?
-    boolean mDebugLog = false;
+    boolean mDebugLog = true;
     String mDebugTag = "IabHelper";
 
     // Is setup done?
@@ -939,6 +939,12 @@ public class IabHelper {
         logDebug("Package name: " + mContext.getPackageName());
         boolean verificationFailed = false;
         String continueToken = null;
+
+        if (mService == null)
+        {
+            logError("mService is null");
+            return IABHELPER_BAD_RESPONSE;
+        }
 
         do {
             logDebug("Calling getPurchases with continuation token: " + continueToken);

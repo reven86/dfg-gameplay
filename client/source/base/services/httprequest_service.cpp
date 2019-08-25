@@ -143,6 +143,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool
         curl_easy_setopt(curl, CURLOPT_XFERINFODATA, &request);
         curl_easy_setopt(curl, CURLOPT_HEADER, headOnly ? 1 : 0);
         curl_easy_setopt(curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
+        //curl_easy_setopt(curl, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
 
         curl_slist *list = NULL;
         if (!request.headers.empty())
