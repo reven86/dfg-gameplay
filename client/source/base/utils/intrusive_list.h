@@ -9,7 +9,7 @@
 /**
  * Template class of intrusive lists implementation.
  * Derive from this class if you need to traverse list of one kind of objects
- * and you don't want to store then in any container.
+ * and you don't want to store them in any container.
  *
  * Any new object constructed is added as a last element in the list.
  */
