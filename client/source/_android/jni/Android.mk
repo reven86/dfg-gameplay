@@ -40,6 +40,7 @@ LOCAL_PATH := $(SAMPLE_PATH)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libdfg-gameplay
+LOCAL_PCH := pch.h
 LOCAL_SRC_FILES := \
     pch.cpp \
     uuidlib/clear.c \
