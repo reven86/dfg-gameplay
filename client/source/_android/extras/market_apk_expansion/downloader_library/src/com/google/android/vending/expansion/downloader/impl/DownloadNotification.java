@@ -145,7 +145,7 @@ public class DownloadNotification implements IDownloaderClient {
                 mCurrentNotification.flags &= ~Notification.FLAG_ONGOING_EVENT;
                 mCurrentNotification.flags |= Notification.FLAG_AUTO_CANCEL;
             }
-            mNotificationManager.notify(NOTIFICATION_ID, mCurrentNotification);
+            //mNotificationManager.notify(NOTIFICATION_ID, mCurrentNotification);
         }
     }
 
@@ -171,7 +171,7 @@ public class DownloadNotification implements IDownloaderClient {
             mCustomNotification.setTimeRemaining(progress.mTimeRemaining);
             mCurrentNotification = mCustomNotification.updateNotification(mContext);
         }
-        mNotificationManager.notify(NOTIFICATION_ID, mCurrentNotification);
+        //mNotificationManager.notify(NOTIFICATION_ID, mCurrentNotification);
     }
 
     public interface ICustomNotification {

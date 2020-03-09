@@ -91,7 +91,7 @@ LOCAL_SRC_FILES := \
     base/game_advanced.cpp \
 
 # LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv2 -lOpenSLES
-LOCAL_CFLAGS    := -O3 -D__ANDROID__ -Wno-psabi -fpermissive -fexceptions \
+LOCAL_CFLAGS    := -O3 -D__ANDROID__ -fpermissive -fexceptions \
     -I"$(GAMEPLAY_PATH)external-deps/include" \
     -I"$(SAMPLE_PATH)base" \
     -I"$(GAMEPLAY_PATH)gameplay/src" \
@@ -124,7 +124,7 @@ LOCAL_CFLAGS    := -O3 -D__ANDROID__ -Wno-psabi -fpermissive -fexceptions \
     -DGP_USE_SOCIAL \
     -DGP_USE_STOREFRONT \
 
-LOCAL_CPPFLAGS := -std=c++11 -frtti -Wno-switch-enum -Wno-switch
+LOCAL_CPPFLAGS := -std=c++11 -frtti -Wno-switch-enum -Wno-switch -Wno-logical-op-parentheses
 LOCAL_STATIC_LIBRARIES := android_native_app_glue libgameplay-deps gameplay
 LOCAL_ARM_MODE := arm
 

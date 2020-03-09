@@ -40,7 +40,7 @@ public:
      */
     void flushAll()
     {
-        std::for_each(_registeredCaches.begin(), _registeredCaches.end(), std::mem_fun(&CacheBase::clear));
+        std::for_each(_registeredCaches.begin(), _registeredCaches.end(), [](CacheBase * c) { c->clear(); });
     }
 
     /**
@@ -104,8 +104,7 @@ public:
     RefPtr< const T > load(const char * url)
     {
         std::string lowerName(url);
-        std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
-            std::bind2nd(std::ptr_fun(&std::tolower< char >), std::locale("")));
+        std::for_each(lowerName.begin(), lowerName.end(), [](char & c) {c = ::tolower(c);});
         typename ResourcesType::iterator it = _resources.find(lowerName);
 
         RefPtr< const T > res;

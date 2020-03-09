@@ -89,7 +89,7 @@ bool SpriteBatchAsset::reload()
 {
     gameplay::Properties * properties = gameplay::Properties::create(getURL());
     if (!properties)
-        return NULL;
+        return false;
 
     gameplay::Material * material = gameplay::Material::create((strlen(properties->getNamespace()) > 0) ? properties : properties->getNextNamespace());
     SAFE_DELETE(properties);
