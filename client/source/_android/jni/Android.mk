@@ -21,20 +21,6 @@ GAMEPLAY_LOCAL_PATH = ../../../GamePlay/
 GAMEPLAY_PATH := $(SAMPLE_PATH)$(GAMEPLAY_LOCAL_PATH)
 GAMEPLAY_DEPS := $(SAMPLE_PATH)$(GAMEPLAY_LOCAL_PATH)external-deps/lib/android/$(TARGET_ARCH_ABI)
 
-# gameplay
-LOCAL_PATH := $(GAMEPLAY_PATH)gameplay/android/obj/local/$(TARGET_ARCH_ABI)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libgameplay
-LOCAL_SRC_FILES := libgameplay.a
-include $(PREBUILT_STATIC_LIBRARY)
-
-# libgameplay-deps
-LOCAL_PATH := $(GAMEPLAY_DEPS)
-include $(CLEAR_VARS)
-LOCAL_MODULE    := libgameplay-deps 
-LOCAL_SRC_FILES := libgameplay-deps.a
-include $(PREBUILT_STATIC_LIBRARY)
-
 # dfg-gameplay
 LOCAL_PATH := $(SAMPLE_PATH)
 include $(CLEAR_VARS)
@@ -126,7 +112,7 @@ LOCAL_CFLAGS    := -O3 -D__ANDROID__ -fpermissive -fexceptions \
     -DGP_USE_STOREFRONT \
 
 LOCAL_CPPFLAGS := -std=c++11 -frtti -Wno-switch-enum -Wno-switch -Wno-logical-op-parentheses
-LOCAL_STATIC_LIBRARIES := android_native_app_glue libgameplay-deps gameplay
+LOCAL_STATIC_LIBRARIES := android_native_app_glue
 LOCAL_ARM_MODE := arm
 
 
