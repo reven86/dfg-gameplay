@@ -2,7 +2,13 @@ mergeInto(LibraryManager.library, {
   emscripten_async_wget3_data: function(url, request, data, dataSize, additionalHeader, arg, free, onload, onerror, onprogress) {
     var _url = UTF8ToString(url);
     var _request = UTF8ToString(request);
-    var _param = new Uint8Array(Module.HEAPU8.buffer, data, dataSize);
+
+    // copy post payload to some other place in heap, since the C++ may free that memory
+    // for example, KIS proxy all requests and carry them out on next frames 
+    // which leads the garbage to be put in the original data for POST requests
+    var dataPtr = Module._malloc(dataSize);
+    var _param = new Uint8Array(Module.HEAPU8.buffer, dataPtr, dataSize);
+    _param.set(new Uint8Array(Module.HEAPU8.buffer, data, dataSize));
 
     var http = new XMLHttpRequest();
     http.open(_request, _url, true);
@@ -22,6 +28,7 @@ mergeInto(LibraryManager.library, {
         if (onerror) Module['dynCall_viiii'](onerror, handle, arg, http.status, http.statusText);
       }
       delete Browser.wgetRequests[handle];
+      Module._free(_param.byteOffset);
     };
 
     // ERROR
@@ -30,6 +37,7 @@ mergeInto(LibraryManager.library, {
         Module['dynCall_viiii'](onerror, handle, arg, http.status, http.statusText);
       }
       delete Browser.wgetRequests[handle];
+      Module._free(_param.byteOffset);
     };
 
     // PROGRESS
@@ -40,6 +48,7 @@ mergeInto(LibraryManager.library, {
     // ABORT
     http.onabort = function http_onabort(e) {
       delete Browser.wgetRequests[handle];
+      Module._free(_param.byteOffset);
     };
 
     // Useful because the browser can limit the number of redirection
