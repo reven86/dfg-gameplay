@@ -43,7 +43,8 @@ public:
         TYPE_INT16,
         TYPE_UINT16,
 
-        TYPE_LIST,  // not compatible with DAVA, list of VariantTypes
+        TYPE_UNKNOWN,
+        TYPE_LIST,
 
         TYPES_COUNT // every new type should be always added to the end for compatibility with old archives
     };
