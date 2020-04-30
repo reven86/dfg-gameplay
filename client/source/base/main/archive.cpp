@@ -407,6 +407,7 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out)
         return true;
     default:
         GP_ASSERT(!"Not implemented yet");
+        return false;
     }
 
     return true;
