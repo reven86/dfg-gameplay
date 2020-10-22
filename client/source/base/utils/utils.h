@@ -93,12 +93,12 @@ static inline std::string urlDecode(const std::string& src);
 /**
  * Encode binary data to base64 string.
  */
-static inline void base64Encode(const void * in, size_t len, std::string * out);
+static inline void base64Encode(const void * in, size_t len, std::string * out, bool urlsafe = false);
 
 /**
  * Decode base64 string to binary data.
  */
-static inline void base64Decode(const std::string& in, std::vector<uint8_t> * out);
+static inline void base64Decode(const std::string& in, std::vector<uint8_t> * out, bool urlsafe = false);
 
 
 

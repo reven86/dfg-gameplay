@@ -181,10 +181,12 @@ inline gameplay::Vector4 Utils::RGBToHSL(const gameplay::Vector4& rgb)
 }
 
 
-inline void Utils::base64Encode(const void * in, size_t len, std::string * out)
+inline void Utils::base64Encode(const void * in, size_t len, std::string * out, bool urlsafe)
 {
     if (!out)
         return;
+
+    const char * alphabet = urlsafe ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     int val = 0, valb = -6;
     const uint8_t * inbuf = static_cast<const uint8_t *>(in);
@@ -194,24 +196,26 @@ inline void Utils::base64Encode(const void * in, size_t len, std::string * out)
         valb += 8;
         while (valb >= 0)
         {
-            out->push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[(val >> valb) & 0x3F]);
+            out->push_back(alphabet[(val >> valb) & 0x3F]);
             valb -= 6;
         }
     }
     if (valb > -6)
-        out->push_back("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[((val << 8) >> (valb + 8)) & 0x3F]);
+        out->push_back(alphabet[((val << 8) >> (valb + 8)) & 0x3F]);
     while (out->size() % 4)
         out->push_back('=');
 }
 
-inline void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * out)
+inline void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * out, bool urlsafe)
 {
     if (!out)
         return;
 
+    const char * alphabet = urlsafe ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
     std::vector<int> T(256, -1);
     for (int i = 0; i<64; i++)
-        T["ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"[i]] = i;
+        T[alphabet[i]] = i;
 
     int val = 0, valb = -8;
     for (uint8_t c : in)
