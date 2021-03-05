@@ -142,9 +142,10 @@ public:
      * Deserialize Archive from stream.
      *
      * \param stream Stream to deserialize from.
+     * \param dictionary Hash to string dictionary (when deserializing v2 archives).
      * \return True if archive has been successfully loaded from the stream.
      */
-    bool deserialize(gameplay::Stream * stream);
+    bool deserialize(gameplay::Stream * stream, const Archive * dictionary = NULL);
 
     /**
      * Get list of keys that are present in both archives.
@@ -155,6 +156,13 @@ public:
      */
     void getCommonKeys(const Archive& other, std::vector<std::string> * outKeyList) const;
 
+    /**
+     * Debug print the keys and contents (where appropriate) of Archive to a log file
+     *
+     * @param ident Number or spaces.
+     */
+    void debugPrint(int ident = 0) const;
+
     // TODO
     //inline bool operator== (const Archive& other) const;
     //inline bool operator!= (const Archive& other) const;
@@ -163,7 +171,7 @@ protected:
     Archive();
 
     bool serializeVariant(gameplay::Stream * stream, const VariantType& value) const;
-    bool deserializeVariant(gameplay::Stream * stream, VariantType * out);
+    bool deserializeVariant(gameplay::Stream * stream, VariantType * out, const Archive * dictionary = NULL);
 
     std::unordered_map<std::string, VariantType> _values;
 };
