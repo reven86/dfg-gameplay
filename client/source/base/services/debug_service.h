@@ -25,6 +25,8 @@ public:
     void showProfiler(bool show) { _showProfiler = show; };
     bool isProfilerVisible() const { return _showProfiler; };
 
+    void drawTextOutline(float x, float y, const gameplay::Vector4& color, const wchar_t * text) const;
+
 protected:
     DebugService(const ServiceManager * manager);
     virtual ~DebugService();
@@ -35,7 +37,6 @@ protected:
     virtual bool onShutdown();
 
 private:
-    void drawTextOutline(float x, float y, const gameplay::Vector4& color, const wchar_t * text) const;
     void drawFPS() const;
 
     RefPtr< gameplay::Font > _systemFont;
