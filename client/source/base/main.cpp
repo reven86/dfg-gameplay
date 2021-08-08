@@ -23,14 +23,14 @@ extern struct android_app* __state;
 extern "C"
 {
 
-void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject)
+JNIEXPORT void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject)
 {
     const char* text = env->GetStringUTFChars(textObject, NULL);
     static_cast<DfgGame *>(gameplay::Game::getInstance())->onReceiptReceived(text);
     env->ReleaseStringUTFChars(textObject, text);
 }
 
-void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject)
+JNIEXPORT void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject)
 {
     const char* text = env->GetStringUTFChars(textObject, NULL);
     static_cast<DfgGame *>(gameplay::Game::getInstance())->onTextViewTextEntered(text);
