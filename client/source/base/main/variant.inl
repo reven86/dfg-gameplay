@@ -641,3 +641,17 @@ inline const VariantType& VariantType::operator[](unsigned pos) const
     std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
     return (*list)[pos];
 }
+
+inline const std::vector<VariantType> * VariantType::getList() const
+{
+    GP_ASSERT(type == TYPE_LIST);
+    const std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return list;
+}
+
+inline std::vector<VariantType> * VariantType::getList()
+{
+    GP_ASSERT(type == TYPE_LIST);
+    std::vector<VariantType> * list = reinterpret_cast<std::vector<VariantType> *>(pointerValue);
+    return list;
+}

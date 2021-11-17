@@ -171,6 +171,16 @@ public:
     template<typename _Type> inline const _Type* getBlob() const;
 
     /**
+     * Get contents of a variant as a list.
+     */
+    inline const std::vector<VariantType> * getList() const;
+
+    /**
+     * Get contents of a variant as a list.
+     */
+    inline std::vector<VariantType> * getList();
+
+    /**
      * Set the contents of a variant to a list of VariantTypes.
      *
      * @param begin Begin iterator.

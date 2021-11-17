@@ -131,8 +131,6 @@ bool Archive::deserialize(gameplay::Stream * stream, const Archive * dictionary)
 
         for (uint32_t i = 0; i < itemsCount; i++)
         {
-            VariantType value;
-
             if (stream->eof())
                 return true;
 
@@ -142,13 +140,11 @@ bool Archive::deserialize(gameplay::Stream * stream, const Archive * dictionary)
 
             const std::string& key = (*dictionary->_values.find(std::string(keyHash, 4))).second.get<std::string>();
 
-            if (!deserializeVariant(stream, &value, dictionary))
+            if (!deserializeVariant(stream, &_values[key], dictionary))
             {
                 clear();
                 return false;
             }
-
-            _values[key] = value;
         }
     }
     else if (version == 0xFF02)
@@ -484,13 +480,13 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out, c
             if (stream->read(&size, sizeof(size), 1) != 1)
                 return false;
 
-            std::vector<VariantType> list;
-            list.resize(size);
-            for (VariantType& v : list)
+            auto tmpIt = std::vector<VariantType>().end();
+            out->set(tmpIt, tmpIt); // initialize variant as an empty list
+            out->getList()->resize(size);
+            
+            for (VariantType& v : *out->getList())
                 if (!deserializeVariant(stream, &v, dictionary))
                     return false;
-
-            out->set(list.begin(), list.end());
         }
         return true;
     default:
