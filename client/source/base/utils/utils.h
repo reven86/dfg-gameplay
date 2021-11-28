@@ -73,9 +73,10 @@ static inline std::wstring ANSIToWCS(const std::string& str);
 
 
 /**
- * Wrapper around sprintf.
+ * Wrapper around sprintf. Result string length is limited to 2048 characters.
  */
 static inline std::string format(const char * fmt, ...);
+static inline std::wstring format(const wchar_t * fmt, ...);
 
 
 /**

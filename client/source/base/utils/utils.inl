@@ -51,6 +51,26 @@ inline std::string Utils::format(const char * fmt, ...)
 }
 
 
+inline std::wstring Utils::format(const wchar_t * fmt, ...)
+{
+    wchar_t result[2048];
+
+    va_list args;
+    va_start(args, fmt);
+
+#ifdef WIN32
+    int len = _vsnwprintf(result, 2048, fmt, args);
+#else
+    int len = vswprintf(result, 2048, fmt, args);
+#endif
+    GP_ASSERT(len < 2048);
+
+    va_end(args);
+
+    return std::wstring(result);
+}
+
+
 inline std::string Utils::urlEncode(const std::string& source)
 {
 	if (source.empty())
