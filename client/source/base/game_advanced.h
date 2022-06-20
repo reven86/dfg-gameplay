@@ -101,7 +101,7 @@ protected:
      * how to merge or update the data from older settings file.
      *
      * By default, only the values that are present in current settings dictionary
-     * and have the same type are update, except blobs. Blobs are only updated if
+     * and have the same type are updated, except blobs. Blobs are only updated if
      * they have the same size and the app's version is same in both archives.
      *
      * \param other Archive that contains settings dictionary, loaded from the storage.

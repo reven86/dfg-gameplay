@@ -35,7 +35,7 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
         return;
 
     if (state == MAXIMIZED)
-        ExpandedTab::minimizeAll(_groupId);
+        ExpandedTab::minimizeAll(_groupId, immediately);
 
     _state = state;
     notifyListeners(gameplay::Control::Listener::VALUE_CHANGED);
@@ -52,7 +52,7 @@ void ExpandedTab::setState(ExpandedTab::States state, bool immediately)
     float to[] = { 0.0f, _widthMaximized > 0.0f ? _widthMinimized / _widthMaximized : 0.0f, 1.0f };
     if (immediately)
     {
-        setWidth(to[_state]);
+        setWidth(to[_state] * _widthMaximized);
         if (to[_state] <= 0.0f)
             setVisible(false);
     }
@@ -145,7 +145,7 @@ const char * ExpandedTab::getTypeName() const
     return "ExpandedTab";
 }
 
-void ExpandedTab::minimizeAll(const std::string& groupId)
+void ExpandedTab::minimizeAll(const std::string& groupId, bool immediately)
 {
     std::vector<ExpandedTab*>::const_iterator it;
     for (it = __tabs.begin(); it < __tabs.end(); ++it)
@@ -153,7 +153,7 @@ void ExpandedTab::minimizeAll(const std::string& groupId)
         ExpandedTab* tab = *it;
         GP_ASSERT(tab);
         if (groupId == tab->_groupId && tab->getState() == MAXIMIZED)
-            tab->setState(MINIMIZED);
+            tab->setState(MINIMIZED, immediately);
     }
 }
 

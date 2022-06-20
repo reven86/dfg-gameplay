@@ -90,8 +90,9 @@ public:
      * Minimize all tabs in the given group.
      *
      * @param groupId The group to clear.
+     * @param immediately Immediately set state without animation.
      */
-    static void minimizeAll(const std::string& groupId);
+    static void minimizeAll(const std::string& groupId, bool immediately);
 
 protected:
 
