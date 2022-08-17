@@ -31,7 +31,6 @@ ENDIF(LINUX)
 
 add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
 
-add_definitions(-lstdc++)
 add_definitions(-DGP_USE_SOCIAL)
 add_definitions(-DGP_USE_STOREFRONT)
 add_definitions(-DCURL_STATICLIB)
