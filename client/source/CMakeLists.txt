@@ -29,8 +29,6 @@ add_definitions(${GTK2_CFLAGS_OTHER})
 add_definitions(-D__linux__)
 ENDIF(LINUX)
 
-add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-std=c++11>)
-
 add_definitions(-DGP_USE_SOCIAL)
 add_definitions(-DGP_USE_STOREFRONT)
 add_definitions(-DCURL_STATICLIB)
