@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 
 project(dfg-gameplay)
 
-set(CMAKE_C_COMPILER_INIT g++)
+set(CMAKE_CXX_STANDARD 17)
+
 
 # debug
 message( "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}" )
