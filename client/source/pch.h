@@ -1,5 +1,5 @@
-#ifndef __DFG_GAMEPLAY_PCH__
-#define __DFG_GAMEPLAY_PCH__
+#pragma once
+
 
 /*!	\file pch.h 
  *	\brief Precompiled header.
@@ -16,12 +16,10 @@
 #include <memory.h>
 #include <math.h>
 
-#include <numeric>
 #include <iterator>
 
 #include <tuple>
 #include <unordered_map>
-#include <random>
 #include <array>
 #include <string>
 
@@ -75,11 +73,4 @@
 
 
 
-extern std::minstd_rand gameRandom;
 extern Dictionary gameDictionary;       // global dictionary.
-
-#define GAME_RANDOM_0_1( )   ( static_cast< float >( gameRandom( ) ) / gameRandom.max( ) )
-
-
-
-#endif // __DFG_GAMEPLAY_PCH__
