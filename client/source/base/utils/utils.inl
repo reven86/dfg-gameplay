@@ -39,11 +39,10 @@ inline std::string Utils::format(const char * fmt, ...)
     va_start(args, fmt);
 
 #ifdef WIN32
-    int len = _vsnprintf(result, 2048, fmt, args);
+    _vsnprintf(result, 2048, fmt, args);
 #else
-    int len = vsnprintf(result, 2048, fmt, args);
+    vsnprintf(result, 2048, fmt, args);
 #endif
-    GP_ASSERT(len < 2048);
 
     va_end(args);
 
