@@ -76,6 +76,8 @@ add_library(dfg-gameplay STATIC
     ${PROJECT_SRC}
 )
 
+target_precompile_headers(${PROJECT_NAME} PRIVATE pch.h)
+
 set_target_properties(dfg-gameplay PROPERTIES
     OUTPUT_NAME "dfg-gameplay"
     CLEAN_DIRECT_OUTPUT 1
