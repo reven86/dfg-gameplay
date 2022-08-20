@@ -421,13 +421,15 @@ bool VariantType::unpickle(gameplay::Stream * stream)
             break;
         case BINUNICODE:
             {
+                // BINUNICODE uses utf8
+
                 uint32_t len;
                 if (stream->read(&len, sizeof(len), 1) != 1)
                     return false;
-                std::unique_ptr<wchar_t[]> buf(new wchar_t[len]);
-                if (stream->read(buf.get(), 2, len) != len)
+                std::unique_ptr<char[]> buf(new char[len]);
+                if (stream->read(buf.get(), 1, len) != len)
                     return false;
-                stack.push_back(VariantType(std::wstring(buf.get(), len)));
+                stack.push_back(VariantType(Utils::UTF8ToWCS(std::string(buf.get(), len))));
             }
             break;
         case SHORT_BINSTRING:
@@ -694,6 +696,9 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                 {
                     if (stack[i].getType() == VariantType::TYPE_STRING)
                         stack[marks.back() - 1].getArchive()->set(stack[i].get<std::string>().c_str(), stack[i + 1]);
+                    else if (stack[i].getType() == VariantType::TYPE_WIDE_STRING)
+                        // store keys in utf8 encoding
+                        stack[marks.back() - 1].getArchive()->set(Utils::WCSToUTF8(stack[i].get<std::wstring>()).c_str(), stack[i + 1]);
                     else
                         stack[marks.back() - 1].getArchive()->set(std::to_string(stack[i].get<int32_t>()).c_str(), stack[i + 1]);
                 }

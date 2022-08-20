@@ -35,7 +35,6 @@ add_definitions(-DCURL_STATICLIB)
 add_definitions(-DYAML_DECLARE_STATIC)
 IF(NOT WIN32)
 add_compile_options(-Wno-comment)
-add_compile_options(-Wno-return-stack-address)
 add_compile_options(-Wno-logical-op-parentheses)
 ENDIF(NOT WIN32)
 
