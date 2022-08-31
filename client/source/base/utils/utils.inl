@@ -58,11 +58,10 @@ inline std::wstring Utils::format(const wchar_t * fmt, ...)
     va_start(args, fmt);
 
 #ifdef WIN32
-    int len = _vsnwprintf(result, 2048, fmt, args);
+    _vsnwprintf(result, 2048, fmt, args);
 #else
-    int len = vswprintf(result, 2048, fmt, args);
+    vswprintf(result, 2048, fmt, args);
 #endif
-    GP_ASSERT(len < 2048);
 
     va_end(args);
 
