@@ -15,7 +15,7 @@ class ZipPackagesCache : Noncopyable
 public:
     static zip * findOrOpenPackage(const char * packageName);
     static void closePackage(const char * packageName);
-    static bool hasFile(const char * packageName, const char * filename);
+    static bool hasFile(const char * packageName, const char * filename, bool ignoreCase);
 
 protected:
     ZipPackagesCache() {};

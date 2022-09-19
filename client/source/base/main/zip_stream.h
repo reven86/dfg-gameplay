@@ -24,9 +24,10 @@ public:
      *
      * @param packageName Zip package filename.
      * @param fileName File inside the package.
+     * @param ignoreCase Ignore case when looking up the file name.
      * @return Newly created ZipStream.
      */
-    static gameplay::Stream * create(const char * packageName, const char * fileName);
+    static gameplay::Stream * create(const char * packageName, const char * fileName, bool ignoreCase);
 
     /**
      * Creates ZipStream from another zlib compressed stream.

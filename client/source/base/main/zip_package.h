@@ -12,7 +12,7 @@ class ZipPackage : public gameplay::Package, Noncopyable
 public:
     virtual ~ZipPackage();
 
-    static ZipPackage * create(const char * zipFile);
+    static ZipPackage * create(const char * zipFile, bool ignoreCase = false);
 
     virtual gameplay::Stream * open(const char * path, size_t streamMode = gameplay::FileSystem::READ);
 
@@ -38,10 +38,11 @@ public:
     const char * getPackageName() const { return _packageName.c_str(); };
 
 protected:
-    ZipPackage(const char * packageName);
+    ZipPackage(const char * packageName, bool ignoreCase);
 
 private:
     std::string _packageName;
+    bool _ignoreCase;
 };
 
 

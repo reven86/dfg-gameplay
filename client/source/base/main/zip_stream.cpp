@@ -17,7 +17,7 @@ ZipStream::~ZipStream()
     close();
 }
 
-gameplay::Stream * ZipStream::create(const char * packageName, const char * fileName)
+gameplay::Stream * ZipStream::create(const char * packageName, const char * fileName, bool ignoreCase)
 {
     if (packageName == NULL || *packageName == '\0')
         return gameplay::FileSystem::open(fileName, gameplay::FileSystem::READ);
@@ -29,7 +29,7 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
     //Search for the file of given name
     struct zip_stat st;
     zip_stat_init(&st);
-    if (zip_stat(package, fileName, ZIP_FL_NOCASE, &st) != 0)
+    if (zip_stat(package, fileName, (ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW, &st) != 0)
         return NULL;
 
     // make sure we access any zip file only from one thread
@@ -38,7 +38,7 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
     std::unique_lock<std::mutex> guard(_zipReadMutex);
 
     //Read the compressed file
-    zip_file *f = zip_fopen(package, fileName, ZIP_FL_NOCASE);
+    zip_file *f = zip_fopen_index(package, st.index, ZIP_FL_ENC_RAW);
     if (!f)
         return NULL;
 

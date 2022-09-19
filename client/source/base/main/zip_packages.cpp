@@ -61,7 +61,7 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
     return (*package).second.get();
 }
 
-bool ZipPackagesCache::hasFile(const char * packageName, const char * filename)
+bool ZipPackagesCache::hasFile(const char * packageName, const char * filename, bool ignoreCase)
 {
     if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
         return false;
@@ -70,7 +70,7 @@ bool ZipPackagesCache::hasFile(const char * packageName, const char * filename)
     if (!package)
         return false;
 
-    return zip_name_locate(package, filename, ZIP_FL_ENC_GUESS | ZIP_FL_NOCASE) >= 0;
+    return zip_name_locate(package, filename, (ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW) >= 0;
 }
 
 void ZipPackagesCache::closePackage(const char * packageName)
