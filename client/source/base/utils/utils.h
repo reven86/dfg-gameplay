@@ -136,12 +136,12 @@ static std::wstring clipTextToBounds(const wchar_t * text, float width, float he
 /**
  * Serialize string to stream.
  */
-static void serializeString(gameplay::Stream * stream, const std::string& str);
+static bool serializeString(gameplay::Stream * stream, const std::string& str);
 
 /**
  * Deserialize string from stream.
  */
-static void deserializeString(gameplay::Stream * stream, std::string * str);
+static bool deserializeString(gameplay::Stream * stream, std::string * str);
 
 
 

@@ -113,24 +113,28 @@ std::wstring Utils::clipTextToBounds(const wchar_t * text, float width, float he
 }
 
 
-void Utils::serializeString(gameplay::Stream * stream, const std::string& str)
+bool Utils::serializeString(gameplay::Stream * stream, const std::string& str)
 {
     int32_t size = static_cast<int32_t>(str.size());
-    stream->write(&size, sizeof(size), 1);
-    stream->write(str.c_str(), sizeof(char), size);
+    if (stream->write(&size, sizeof(size), 1) != 1)
+        return false;
+    if (stream->write(str.c_str(), sizeof(char), size) != size)
+        return false;
+    return true;
 }
 
-void Utils::deserializeString(gameplay::Stream * stream, std::string * str)
+bool Utils::deserializeString(gameplay::Stream * stream, std::string * str)
 {
     int32_t size = 0;
     if (stream->read(&size, sizeof(size), 1) != 1)
-        return;
+        return false;
 
     std::unique_ptr<char[]> buf(new char[size]);
     if (stream->read(buf.get(), 1, size) != size)
-        return;
+        return false;
 
     str->assign(buf.get(), size);
+    return true;
 }
 
 void Utils::scaleUIControl(gameplay::Control * control, float kx, float ky)
