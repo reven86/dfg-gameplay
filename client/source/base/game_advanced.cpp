@@ -307,8 +307,8 @@ void DfgGameAdvanced::updateSettings()
     const char * referrer = reinterpret_cast<const char *>(stringPointer);
     const char * url = reinterpret_cast<const char *>(urlPointer);
     tracker->sendEvent("Domain", referrer, url);
-    free(url);
-    free(referrer);
+    free((void *)url);
+    free((void *)referrer);
 #endif
 
     Settings::getInstance()->connect<std::string>("app.language", std::bind(&DfgGameAdvanced::onLanguageChanged, this, std::placeholders::_1));
