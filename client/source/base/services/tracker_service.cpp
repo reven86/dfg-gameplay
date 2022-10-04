@@ -258,9 +258,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     float curTime = static_cast<float>(gameplay::Game::getInstance()->getAbsoluteTime());
 
     int timeDiff = static_cast<int>((curTime - payload.createTime) * 1000.0f);
-    static std::string finalRequest;
-    finalRequest.clear();
-    finalRequest = Utils::format("v=%d&tid=%s&cid=%s&an=%s&av=%s&%s",
+    std::string finalRequest = Utils::format("v=%d&tid=%s&cid=%s&an=%s&av=%s&%s",
         _protocolVersion, _trackingId.c_str(), _clientId.c_str(),
         _appName.c_str(),
         _appVersion.c_str(),
