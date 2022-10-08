@@ -132,7 +132,7 @@ inline bool Curve<gameplay::Vector4>::initialize(gameplay::Properties * properti
         char * tmp;
 
         // assume colors are stored as hex values
-        addKey(static_cast<unsigned char>(atoi(name)), gameplay::Vector4::fromColor(strtoul(properties->getString(), &tmp, 16)));
+        addKey(static_cast<unsigned char>(atoi(name)), gameplay::Vector4::fromColor(static_cast<unsigned int>(strtoul(properties->getString(), &tmp, 16))));
     }
 
     return true;

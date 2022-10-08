@@ -215,7 +215,7 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
             if(!value.getArchive()->serialize(archiveStream.get()))
                 return false;
 
-            uint32_t len = archiveStream->length();
+            uint32_t len = static_cast<uint32_t>(archiveStream->length());
             return stream->write(&len, sizeof(len), 1) == 1 && stream->write(archiveStream->getBuffer(), 1, len) == len;
         }
     case VariantType::TYPE_VECTOR2:
@@ -244,7 +244,7 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
         return false;
     case VariantType::TYPE_LIST:
         {
-            uint32_t size = std::distance(value.begin(), value.end());
+            uint32_t size = static_cast<uint32_t>(std::distance(value.begin(), value.end()));
             if (stream->write(&size, sizeof(size), 1) != 1)
                 return false;
 
@@ -621,6 +621,8 @@ void debugPrintVariant(const VariantType& v, int ident)
                 debugPrintVariant(it, ident + 2);
         }
         break;
+    default:
+        GP_ERROR("Unsupported variant type: %d", v.getType());
     }
 }
 
