@@ -273,7 +273,7 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
     int day1 = localtime(&time1)->tm_mday;
     int day2 = localtime(&time2)->tm_mday;
 
-    if (payload.createTime >= 0 && payload.params.find("&sc=end") == payload.params.npos &&
+    if (payload.createTime >= 0 && payload.params.find("&sc=end") == payload.params.npos && gameplay::Game::getInstance() &&
         (_sessionStartTime < 0.0f
         || (payload.createTime - _sessionStartTime) > 240.0f * 60.0f      // sessions in GA are automaticaly ended after some period of time
         || day1 != day2)
