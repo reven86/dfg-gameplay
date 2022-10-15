@@ -23,7 +23,7 @@ inline const Entity * EntityManager::getEntity(int id) const
 
 inline unsigned EntityManager::getEntityCount() const
 {
-    return _entities.size();
+    return static_cast<unsigned>(_entities.size());
 }
 
 inline std::unordered_map<int, Entity *>::iterator EntityManager::begin()

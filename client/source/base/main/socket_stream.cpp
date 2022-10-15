@@ -210,9 +210,9 @@ size_t SocketStream::write(const void* ptr, size_t size, size_t count)
     GP_ASSERT(!_connectionIsClosed);
 
 #ifdef WIN32
-    int result = send(_socket, reinterpret_cast<const char *>(ptr), size * count, 0);
+    size_t result = send(_socket, reinterpret_cast<const char *>(ptr), size * count, 0);
 #else
-    int result = send(_socket, ptr, size * count, 0);
+    size_t result = send(_socket, ptr, size * count, 0);
 #endif
 
     if (result < 0)
