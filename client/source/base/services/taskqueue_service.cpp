@@ -257,7 +257,8 @@ void TaskQueue::threadProc(void * cookie)
 {
     TaskQueue * _this = reinterpret_cast<TaskQueue *>(cookie);
 
-    _this->_service->runOnMainThread([_this](){ ServiceManager::getInstance()->signals.taskQueueStartedEvent(_this->_name.c_str()); });    
+    std::string queueName = _this->_name;
+    _this->_service->runOnMainThread([queueName](){ ServiceManager::getInstance()->signals.taskQueueStartedEvent(queueName.c_str()); });
     while (_this->_workThreadIsActive)
     {
         std::pair<int, std::function<void()> > item;
@@ -273,10 +274,11 @@ void TaskQueue::threadProc(void * cookie)
             _this->_queue.pop_front();
         }
 
-        _this->_service->runOnMainThread([&item, _this]() { ServiceManager::getInstance()->signals.taskQueueWorkItemLoadedEvent(_this->_name.c_str(), item.first); });
+        int itemId = item.first;
+        _this->_service->runOnMainThread([queueName, itemId]() { ServiceManager::getInstance()->signals.taskQueueWorkItemLoadedEvent(queueName.c_str(), itemId); });
         item.second();
         _this->_queueItemRemoveMutex.unlock();
-        _this->_service->runOnMainThread([&item, _this](){ ServiceManager::getInstance()->signals.taskQueueWorkItemProcessedEvent(_this->_name.c_str(), item.first); });
+        _this->_service->runOnMainThread([queueName, itemId]() { ServiceManager::getInstance()->signals.taskQueueWorkItemProcessedEvent(queueName.c_str(), itemId); });
     }
-    _this->_service->runOnMainThread([_this](){ ServiceManager::getInstance()->signals.taskQueueStoppedEvent(_this->_name.c_str()); });
+    _this->_service->runOnMainThread([queueName](){ ServiceManager::getInstance()->signals.taskQueueStoppedEvent(queueName.c_str()); });
 }
