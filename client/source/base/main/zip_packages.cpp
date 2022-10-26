@@ -136,6 +136,9 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName, bool ignoreC
         return (*package).second.get()->getZip();
 
     ZipPackage * res = ZipPackage::create(packageName, ignoreCase);
+    if (!res)
+        return NULL;
+
     __packages.emplace(packageName, res);
     return res->getZip();
 }
