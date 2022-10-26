@@ -13,16 +13,22 @@
 class ZipPackagesCache : Noncopyable
 {
 public:
-    static zip * findOrOpenPackage(const char * packageName);
+    static zip * findOrOpenPackage(const char * packageName, bool ignoreCase = false);
     static void closePackage(const char * packageName);
-    static bool hasFile(const char * packageName, const char * filename, bool ignoreCase);
+
+    /**
+     * Set password to access zip package content.
+     *
+     * @param password Password. Set to NULL to unset password.
+     */
+    static void setPassword(const char * packageName, const char * password);
 
 protected:
     ZipPackagesCache() {};
     ~ZipPackagesCache() {};
 
 private:
-    static std::unordered_map< std::string, std::shared_ptr< zip > > _packages;
+    static std::unordered_map<std::string, std::unique_ptr<class ZipPackage>> __packages;
 };
 
 

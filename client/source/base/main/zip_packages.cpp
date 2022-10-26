@@ -1,17 +1,15 @@
 #include "pch.h"
 #include "zip_packages.h"
+#include "zip_stream.h"
 
 
-
-
-std::unordered_map< std::string, std::shared_ptr< zip > > ZipPackagesCache::_packages;
 
 
 /**
  * Gets the fully resolved path.
  * If the path is relative then it will be prefixed with the resource path.
  * Aliases will be converted to a relative path.
- * 
+ *
  * @param path The path to resolve.
  * @param fullPath The full resolved path. (out param)
  */
@@ -30,19 +28,28 @@ static void getFullPath(const char* path, std::string& fullPath)
 
 
 
-zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
+
+/** An extension to gameplay::FileSystem to be able
+ *  to stream resources from zip packages
+ */
+class ZipPackage : public gameplay::Package, Noncopyable
 {
-    if (packageName == NULL || *packageName == '\0')
-        return NULL;
-    
-    auto package = _packages.find(packageName);
-    if (package == _packages.end())
+public:
+    virtual ~ZipPackage()
     {
+        gameplay::FileSystem::unregisterPackage(this);
+    }
+
+    static ZipPackage * create(const char * zipFile, bool ignoreCase = false)
+    {
+        if (!gameplay::FileSystem::fileExists(zipFile))
+            return NULL;
+
 #ifndef __ANDROID__
         std::string fullPath;
-        getFullPath(packageName, fullPath);
+        getFullPath(zipFile, fullPath);
 #else
-        std::string fullPath(packageName);
+        std::string fullPath(zipFile);
 #endif
 
         int err = 0;
@@ -50,27 +57,87 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName)
 
         if (!res)
         {
-            GP_WARN("Can't open package %s", packageName);
+            GP_WARN("Can't open package %s", zipFile);
             return NULL;
         }
 
-        _packages.insert(std::make_pair(std::string(packageName), std::shared_ptr<zip>(res, zip_close)));
-        return res;
+        return new ZipPackage(zipFile, res, ignoreCase);
     }
 
-    return (*package).second.get();
-}
+    virtual gameplay::Stream * open(const char * path, size_t streamMode = gameplay::FileSystem::READ)
+    {
+        if (streamMode != gameplay::FileSystem::READ)
+            return NULL;
 
-bool ZipPackagesCache::hasFile(const char * packageName, const char * filename, bool ignoreCase)
+        return ZipStream::create(_packageName.c_str(), gameplay::FileSystem::resolvePath(path), _ignoreCase);
+    }
+
+    /**
+     * Checks if the file at the given path exists.
+     *
+     * @param filePath The path to the file.
+     *
+     * @return <code>true</code> if the file exists; <code>false</code> otherwise.
+     */
+    virtual bool fileExists(const char* path)
+    {
+        const char * filename = gameplay::FileSystem::resolvePath(path);
+        if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
+            return false;
+
+        return zip_name_locate(_zip.get(), filename, (_ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW) >= 0;
+    }
+
+    /**
+     * Set password to access zip package content.
+     *
+     * @param password Password. Set to NULL to unset password.
+     */
+    void setPassword(const char * password)
+    {
+        zip_set_default_password(_zip.get(), password);
+    }
+
+    zip * getZip()
+    {
+        return _zip.get();
+    }
+
+protected:
+    ZipPackage(const char * packageName, zip * zipObject, bool ignoreCase)
+        : _packageName(packageName)
+        , _ignoreCase(ignoreCase)
+    {
+        _zip.reset(zipObject, zip_close);
+
+        gameplay::FileSystem::registerPackage(this);
+    }
+
+private:
+    std::string _packageName;
+    bool _ignoreCase;
+    std::shared_ptr<zip> _zip;
+};
+
+
+
+std::unordered_map<std::string, std::unique_ptr<ZipPackage>> ZipPackagesCache::__packages;
+
+
+
+
+zip * ZipPackagesCache::findOrOpenPackage(const char * packageName, bool ignoreCase)
 {
-    if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
-        return false;
+    if (packageName == NULL || *packageName == '\0')
+        return NULL;
+    
+    auto package = __packages.find(packageName);
+    if (package != __packages.end())
+        return (*package).second.get()->getZip();
 
-    zip * package = findOrOpenPackage(packageName);
-    if (!package)
-        return false;
-
-    return zip_name_locate(package, filename, (ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW) >= 0;
+    ZipPackage * res = ZipPackage::create(packageName, ignoreCase);
+    __packages.emplace(packageName, res);
+    return res->getZip();
 }
 
 void ZipPackagesCache::closePackage(const char * packageName)
@@ -78,7 +145,14 @@ void ZipPackagesCache::closePackage(const char * packageName)
     if (packageName == NULL || *packageName == '\0')
         return;
 
-    auto package = _packages.find(packageName);
-    if (package != _packages.end())
-        _packages.erase(package);
+    auto package = __packages.find(packageName);
+    if (package != __packages.end())
+        __packages.erase(package);
+}
+
+void ZipPackagesCache::setPassword(const char * packageName, const char * password)
+{
+    auto package = __packages.find(packageName);
+    if (package != __packages.end())
+        (*package).second->setPassword(password);
 }

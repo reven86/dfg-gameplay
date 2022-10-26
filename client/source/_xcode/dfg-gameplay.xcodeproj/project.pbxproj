@@ -46,7 +46,6 @@
 		EB7991411B70C63F00A30C9F /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
 		EB7991421B70C63F00A30C9F /* zip_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81211AAB25CD00839018 /* zip_stream.cpp */; };
 		EB7991431B70C63F00A30C9F /* service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81301AAB25CD00839018 /* service.cpp */; };
-		EB7991441B70C63F00A30C9F /* zip_package.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811D1AAB25CD00839018 /* zip_package.cpp */; };
 		EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81351AAB25CD00839018 /* social_service.cpp */; };
 		EB7991461B70C63F00A30C9F /* pch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F810F1AAB21EE00839018 /* pch.cpp */; };
 		EB7D1E0F1DC4DA400051B0F6 /* iRate.m in Sources */ = {isa = PBXBuildFile; fileRef = EB7D1E0E1DC4DA400051B0F6 /* iRate.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
@@ -55,7 +54,6 @@
 		EB9F81471AAB25CD00839018 /* dictionary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81171AAB25CD00839018 /* dictionary.cpp */; };
 		EB9F81481AAB25CD00839018 /* gameplay_assets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81191AAB25CD00839018 /* gameplay_assets.cpp */; };
 		EB9F81491AAB25CD00839018 /* memory_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811B1AAB25CD00839018 /* memory_stream.cpp */; };
-		EB9F814A1AAB25CD00839018 /* zip_package.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811D1AAB25CD00839018 /* zip_package.cpp */; };
 		EB9F814B1AAB25CD00839018 /* zip_packages.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F811F1AAB25CD00839018 /* zip_packages.cpp */; };
 		EB9F814C1AAB25CD00839018 /* zip_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81211AAB25CD00839018 /* zip_stream.cpp */; };
 		EB9F814D1AAB25CD00839018 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EB9F81231AAB25CD00839018 /* main.cpp */; };
@@ -155,8 +153,6 @@
 		EB9F811A1AAB25CD00839018 /* gameplay_assets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gameplay_assets.h; sourceTree = "<group>"; };
 		EB9F811B1AAB25CD00839018 /* memory_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memory_stream.cpp; sourceTree = "<group>"; };
 		EB9F811C1AAB25CD00839018 /* memory_stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory_stream.h; sourceTree = "<group>"; };
-		EB9F811D1AAB25CD00839018 /* zip_package.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zip_package.cpp; sourceTree = "<group>"; };
-		EB9F811E1AAB25CD00839018 /* zip_package.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip_package.h; sourceTree = "<group>"; };
 		EB9F811F1AAB25CD00839018 /* zip_packages.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zip_packages.cpp; sourceTree = "<group>"; };
 		EB9F81201AAB25CD00839018 /* zip_packages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip_packages.h; sourceTree = "<group>"; };
 		EB9F81211AAB25CD00839018 /* zip_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = zip_stream.cpp; sourceTree = "<group>"; };
@@ -343,8 +339,6 @@
 				EB9F811A1AAB25CD00839018 /* gameplay_assets.h */,
 				EB9F811B1AAB25CD00839018 /* memory_stream.cpp */,
 				EB9F811C1AAB25CD00839018 /* memory_stream.h */,
-				EB9F811D1AAB25CD00839018 /* zip_package.cpp */,
-				EB9F811E1AAB25CD00839018 /* zip_package.h */,
 				EB9F811F1AAB25CD00839018 /* zip_packages.cpp */,
 				EB9F81201AAB25CD00839018 /* zip_packages.h */,
 				EB9F81211AAB25CD00839018 /* zip_stream.cpp */,
@@ -509,7 +503,6 @@
 				EB7991421B70C63F00A30C9F /* zip_stream.cpp in Sources */,
 				EB1E5E3F1BB2C8E5007A8C9E /* taskscheduler_service.cpp in Sources */,
 				EB7991431B70C63F00A30C9F /* service.cpp in Sources */,
-				EB7991441B70C63F00A30C9F /* zip_package.cpp in Sources */,
 				EB7790261B75147500E1DDB2 /* dial_button.cpp in Sources */,
 				EB30DDF21C493ECF00B01597 /* clip_label.cpp in Sources */,
 				EB7991451B70C63F00A30C9F /* social_service.cpp in Sources */,
@@ -554,7 +547,6 @@
 				EB9F814C1AAB25CD00839018 /* zip_stream.cpp in Sources */,
 				EB1E5E3E1BB2C8E5007A8C9E /* taskscheduler_service.cpp in Sources */,
 				EB9F81521AAB25CD00839018 /* service.cpp in Sources */,
-				EB9F814A1AAB25CD00839018 /* zip_package.cpp in Sources */,
 				EB7790251B75147500E1DDB2 /* dial_button.cpp in Sources */,
 				EB30DDF11C493ECF00B01597 /* clip_label.cpp in Sources */,
 				EB4F76591DC3D7AE001139D4 /* settings.cpp in Sources */,

@@ -1,11 +1,7 @@
 #pragma once
 
 
-#ifndef __DFG_GAME_ADVANCED_H__
-#define __DFG_GAME_ADVANCED_H__
-
 #include "main.h"
-#include "main/zip_package.h"
 
 
 
@@ -129,12 +125,6 @@ protected:
      */
     void confirmGameIsLoaded();
 
-
-
-    // zip package with game's data for web version
-    std::unique_ptr<class ZipPackage> _resourcePackage;
-
-
 private:
     void deleteWatchDogFile();
 
@@ -155,5 +145,3 @@ private:
 
 
 
-
-#endif // __DFG_GAME_ADVANCED_H__

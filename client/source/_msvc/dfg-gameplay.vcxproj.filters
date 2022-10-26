@@ -53,9 +53,6 @@
     <ClCompile Include="..\base\main\memory_stream.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
-    <ClCompile Include="..\base\main\zip_package.cpp">
-      <Filter>base\main</Filter>
-    </ClCompile>
     <ClCompile Include="..\base\main\zip_packages.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
@@ -186,9 +183,6 @@
       <Filter>base\main</Filter>
     </ClInclude>
     <ClInclude Include="..\base\main\memory_stream.h">
-      <Filter>base\main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\base\main\zip_package.h">
       <Filter>base\main</Filter>
     </ClInclude>
     <ClInclude Include="..\dfg_include.h" />

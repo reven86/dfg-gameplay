@@ -99,11 +99,7 @@ void DfgGameAdvanced::initialize()
         };
     });
 
-    _resourcePackage.reset(ZipPackage::create("resources.data"));
-    if (_resourcePackage)
-        gameplay::FileSystem::registerPackage(_resourcePackage.get());
-    else
-        GP_WARN("Webapp resources are missed.");
+    ZipPackagesCache::findOrOpenPackage("resources.data");
 #endif
 
     createServices();
@@ -333,6 +329,9 @@ void DfgGameAdvanced::update(float elapsedTime)
 
 void DfgGameAdvanced::finalize()
 {
+#if defined (__EMSCRIPTEN__)
+    ZipPackagesCache::closePackage("resources.data");
+#endif
     saveSettings();
     DfgGame::finalize();
 }

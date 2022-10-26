@@ -72,7 +72,6 @@
     <ClCompile Include="..\base\main\settings.cpp" />
     <ClCompile Include="..\base\main\socket_stream.cpp" />
     <ClCompile Include="..\base\main\variant.cpp" />
-    <ClCompile Include="..\base\main\zip_package.cpp" />
     <ClCompile Include="..\base\main\zip_packages.cpp" />
     <ClCompile Include="..\base\main\zip_stream.cpp" />
     <ClCompile Include="..\base\render\particle_system.cpp" />
@@ -117,7 +116,6 @@
     <ClInclude Include="..\base\main\settings.h" />
     <ClInclude Include="..\base\main\socket_stream.h" />
     <ClInclude Include="..\base\main\variant.h" />
-    <ClInclude Include="..\base\main\zip_package.h" />
     <ClInclude Include="..\base\main\zip_packages.h" />
     <ClInclude Include="..\base\main\zip_stream.h" />
     <ClInclude Include="..\base\render\particle_system.h" />

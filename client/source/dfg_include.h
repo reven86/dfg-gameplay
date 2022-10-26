@@ -19,7 +19,6 @@
 #include "main/settings.h"
 #include "main/socket_stream.h"
 #include "main/variant.h"
-#include "main/zip_package.h"
 #include "main/zip_packages.h"
 #include "main/zip_stream.h"
 #include "render/particle_system.h"

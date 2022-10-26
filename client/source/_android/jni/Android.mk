@@ -49,7 +49,6 @@ LOCAL_SRC_FILES := \
     base/main/settings.cpp \
     base/main/socket_stream.cpp \
     base/main/variant.cpp \
-    base/main/zip_package.cpp \
     base/main/zip_packages.cpp \
     base/main/zip_stream.cpp \
     base/render/particle_system.cpp \
