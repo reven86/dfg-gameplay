@@ -4,6 +4,7 @@
 #include "services/render_service.h"
 #include "services/input_service.h"
 #include "services/tracker_service.h"
+#include "main/zip_packages.h"
 #include <curl/curl.h>
 
 
@@ -192,6 +193,7 @@ void DfgGame::finalize()
 {
     ServiceManager::getInstance()->shutdown();
     Caches::getInstance()->destroyAll();
+    ZipPackagesCache::finilize();
 
 #ifndef __EMSCRIPTEN__
     // free any curl resources after it's no longer used.

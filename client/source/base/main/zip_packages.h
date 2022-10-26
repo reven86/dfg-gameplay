@@ -23,6 +23,12 @@ public:
      */
     static void setPassword(const char * packageName, const char * password);
 
+    /**
+     * Close all packages during shutdown. Normally at this point all packages already 
+     * should be closed by the client app.
+     */
+    static void finilize();
+
 protected:
     ZipPackagesCache() {};
     ~ZipPackagesCache() {};

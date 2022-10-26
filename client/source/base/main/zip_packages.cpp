@@ -126,6 +126,12 @@ std::unordered_map<std::string, std::unique_ptr<ZipPackage>> ZipPackagesCache::_
 
 
 
+void ZipPackagesCache::finilize()
+{
+    GP_ASSERT(__packages.empty());
+    __packages.clear();
+}
+
 zip * ZipPackagesCache::findOrOpenPackage(const char * packageName, bool ignoreCase)
 {
     if (packageName == NULL || *packageName == '\0')
