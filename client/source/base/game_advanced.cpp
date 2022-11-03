@@ -2,6 +2,7 @@
 #include "game_advanced.h"
 #include "main/settings.h"
 #include "main/memory_stream.h"
+#include "main/zip_packages.h"
 #include "services/service_manager.h"
 #include "services/tracker_service.h"
 
