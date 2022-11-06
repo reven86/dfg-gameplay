@@ -105,7 +105,7 @@ bool Archive::deserialize(gameplay::Stream * stream, const Archive * dictionary)
             if (stream->read(buf.get(), 1, len) != len)
                 return false;
             buf[len] = '\0';
-            keys.push_back(std::string(buf.get()));
+            keys.push_back(std::string(buf.get(), len));
         }
 
         for (i = 0; i < itemsCount; i++)
@@ -376,7 +376,7 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out, c
                 if (stream->read(buf.get(), 1, len) != len)
                     return false;
                 buf[len] = '\0';
-                out->set(std::string(buf.get()));
+                out->set(std::string(buf.get(), len));
             }
         }
         return true;
