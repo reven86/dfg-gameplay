@@ -31,14 +31,6 @@ private:
         slot_data( int p, iterator it ) : priority( p ), slot_it( it ) {};
     };
 
-    struct slot_data_cmp : public std::binary_function< bool, int, slot_data >
-    {
-        bool operator( )    ( const int& a, const slot_data& b ) const
-        {
-            return a < b.priority;
-        };
-    };
-
     typedef std::list< slot_data >  slot_data_list_type;
     slot_data_list_type _slotData;
 
@@ -58,7 +50,7 @@ public:
      */
     iterator connect(int priority, const slot_type& slot_)
     {
-        typename slot_data_list_type::iterator it = std::upper_bound( _slotData.begin( ), _slotData.end( ), priority, slot_data_cmp( ) );
+        typename slot_data_list_type::iterator it = std::upper_bound(_slotData.begin(), _slotData.end(), priority, [](const int& a, const slot_data& b) { return a < b.priority; });
         iterator res = signal.slots( ).insert( it == _slotData.end( ) ? signal.slots( ).end( ) : ( *it ).slot_it, slot_);
         _slotData.insert( it, slot_data( priority, res ) );
 

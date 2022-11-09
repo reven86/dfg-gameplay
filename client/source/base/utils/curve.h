@@ -50,19 +50,11 @@ public:
         if (_keys.empty())
             return _emptyKey;
 
-        struct key_comp : public std::binary_function < bool, KeyType, KeyType >
-        {
-            bool operator( ) (const KeyType& a, const KeyType& b) const
-            {
-                return a.first < b.first;
-            };
-        };
-
         typename KeysType::const_iterator it2 = std::lower_bound(
             _keys.begin(),
             _keys.end(),
             KeyType(t, _emptyKey),
-            key_comp()
+            [](const KeyType& a, const KeyType& b) { return a.first < b.first; }
         );
 
         if (it2 != _keys.end())
