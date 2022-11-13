@@ -121,6 +121,7 @@ private:
 
 
 
+static bool __finilized = false;
 std::unordered_map<std::string, std::unique_ptr<ZipPackage>> ZipPackagesCache::__packages;
 
 
@@ -130,11 +131,13 @@ void ZipPackagesCache::finilize()
 {
     GP_ASSERT(__packages.empty());
     __packages.clear();
+
+    __finilized = true;
 }
 
 zip * ZipPackagesCache::findOrOpenPackage(const char * packageName, bool ignoreCase)
 {
-    if (packageName == NULL || *packageName == '\0')
+    if (__finilized || packageName == NULL || *packageName == '\0')
         return NULL;
     
     auto package = __packages.find(packageName);
