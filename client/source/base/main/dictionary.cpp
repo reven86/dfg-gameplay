@@ -17,19 +17,15 @@ Dictionary::~Dictionary()
 
 void Dictionary::create(gameplay::Properties * properties)
 {
-    gameplay::Properties* subProperties = NULL;
-    while ((subProperties = properties->getNextNamespace()) != NULL)
+    const char * key = NULL;
+    while ((key = properties->getNextProperty()) != NULL)
     {
-        if (strcmp(subProperties->getNamespace(), "entry") == 0)
-        {
-            const char * key = subProperties->getString("key");
-            const char * value = subProperties->getString("value"); // utf8
+        const char * value = properties->getString(NULL, key); // utf8
 
-            GP_ASSERT(_dictionary.find(key) == _dictionary.end());
+        GP_ASSERT(_dictionary.find(key) == _dictionary.end());
 
-            _dictionary.insert(std::make_pair(key, Utils::UTF8ToWCS(value)));
-            _dictionaryUTF8.insert(std::make_pair(key, value));
-        }
+        _dictionary.insert(std::make_pair(key, Utils::UTF8ToWCS(value)));
+        _dictionaryUTF8.insert(std::make_pair(key, value));
     }
 }
 
