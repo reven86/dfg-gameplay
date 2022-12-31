@@ -1,6 +1,8 @@
 #include "utils.h"
 #include "utf8.h"
 #include <openssl/md5.h>
+#include <openssl/evp.h>
+#include <openssl/x509.h>
 
 
 
@@ -260,3 +262,33 @@ inline void Utils::MD5(const void* data, size_t length, unsigned char outDigest[
     MD5_Final(outDigest, &context);
 }
 
+inline bool Utils::verifySignature(const char * algorithm, const void * data, size_t dataLength, const std::string& base64Signature, const std::string& base64PublicKey)
+{
+    EVP_MD_CTX * ctx = EVP_MD_CTX_create();
+    const EVP_MD *md = EVP_get_digestbyname(algorithm);
+
+    if (!md)
+    {
+        EVP_MD_CTX_cleanup(ctx);
+        return false;
+    }
+
+    EVP_VerifyInit(ctx, md);
+    EVP_VerifyUpdate(ctx, data, dataLength);
+
+    std::vector<uint8_t> signatureBytes;
+    Utils::base64Decode(base64Signature, &signatureBytes);
+
+    std::vector<uint8_t> publicKeyBytes;
+    Utils::base64Decode(base64PublicKey, &publicKeyBytes);
+
+    BIO * keybio = BIO_new_mem_buf(publicKeyBytes.data(), publicKeyBytes.size());
+
+    EVP_PKEY* pubKey = d2i_PUBKEY_bio(keybio, NULL);
+
+    bool res = EVP_VerifyFinal(ctx, signatureBytes.data(), signatureBytes.size(), pubKey) == 1;
+
+    EVP_PKEY_free(pubKey);
+    EVP_MD_CTX_cleanup(ctx);
+    return res;
+}

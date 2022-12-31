@@ -101,6 +101,17 @@ static inline void base64Encode(const void * in, size_t len, std::string * out, 
  */
 static inline void base64Decode(const std::string& in, std::vector<uint8_t> * out, bool urlsafe = false);
 
+/**
+ * Verify the signature using public key and algorithm.
+ * 
+ * @param algorithm Hashing algorithm SHA1, SHA256, etc.
+ * @param data Pointer to the data.
+ * @param dataLength Length of the data.
+ * @param base64Signature Signature encoded in base64 encoding.
+ * @param base64PublicKey Public key encoded in base64 encoding.
+ * @return True if signature is valid.
+ */
+static inline bool verifySignature(const char * algorithm, const void * data, size_t dataLength, const std::string& base64Signature, const std::string& base64PublicKey);
 
 
 /**
