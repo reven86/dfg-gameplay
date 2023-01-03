@@ -131,7 +131,8 @@ void DfgGameAdvanced::initialize()
 
     const char * pkg = installerPackageName ? env->GetStringUTFChars(installerPackageName, NULL) : NULL;
 
-    _installerId = pkg;
+    if (pkg)
+        _installerId = pkg;
 
     if (installerPackageName)
         env->ReleaseStringUTFChars(installerPackageName, pkg);
