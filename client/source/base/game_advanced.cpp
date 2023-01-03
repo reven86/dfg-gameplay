@@ -49,6 +49,10 @@
 #endif
 #endif
 
+#ifdef __ANDROID__
+#include <android_native_app_glue.h>
+extern struct android_app* __state;
+#endif
 
 
 #ifdef __EMSCRIPTEN__
@@ -93,6 +97,7 @@ void DfgGameAdvanced::initialize()
     Settings::getInstance()->set("app.language", std::string(getGameLocale()));
 
 #if defined (__EMSCRIPTEN__)
+    
     // subscribe to beforeunload event to save settings
     EM_ASM({
         window.onbeforeunload = function(e) {
@@ -101,6 +106,38 @@ void DfgGameAdvanced::initialize()
     });
 
     ZipPackagesCache::findOrOpenPackage("resources.data");
+
+#elif defined (__ANDROID__)
+
+    // get installer package name
+    android_app* app = __state;
+    JNIEnv* env = app->activity->env;
+    JavaVM* vm = app->activity->vm;
+    vm->AttachCurrentThread(&env, NULL);
+
+    jclass android_content_Context = env->FindClass("android/content/Context");
+    jmethodID midGetPackageName = env->GetMethodID(android_content_Context, "getPackageName", "()Ljava/lang/String;");
+    jstring packageName = (jstring)env->CallObjectMethod(app->activity->clazz, midGetPackageName);
+
+    // context.getPackageManager()
+    jmethodID midGetPackageManager = env->GetMethodID(android_content_Context, "getPackageManager", "()Landroid/content/pm/PackageManager;");
+    jobject packageManager = env->CallObjectMethod(app->activity->clazz, midGetPackageManager);
+    jclass packageManagerClass = env->GetObjectClass(packageManager);
+
+    //packageManager.getInstallerPackageName()
+    jmethodID midGetInstallerPackageName = env->GetMethodID(packageManagerClass, "getInstallerPackageName", "(Ljava/lang/String;)Ljava/lang/String;");
+
+    jstring installerPackageName = (jstring)env->CallObjectMethod(packageManager, midGetInstallerPackageName, packageName);
+
+    const char * pkg = installerPackageName ? env->GetStringUTFChars(installerPackageName, NULL) : NULL;
+
+    _installerId = pkg;
+
+    if (installerPackageName)
+        env->ReleaseStringUTFChars(installerPackageName, pkg);
+
+    vm->DetachCurrentThread();
+
 #endif
 
     createServices();
@@ -275,7 +312,7 @@ void DfgGameAdvanced::updateSettings()
     TrackerService * tracker = ServiceManager::getInstance()->findService<TrackerService>();
 
     tracker->setTrackerEnabled(true);
-    tracker->setupTracking(_analyticsId.c_str(), Settings::getInstance()->get<std::string>("app.uuid").c_str(), "Loading");
+    tracker->setupTracking(_analyticsId.c_str(), Settings::getInstance()->get<std::string>("app.uuid").c_str(), "Loading", _installerId.c_str());
 
 #ifdef __EMSCRIPTEN__
     // get the domain name where the app is running

@@ -50,6 +50,11 @@ public:
      */
     const char * getIndexedDBName() const { return _emscriptenDbName.c_str(); };
 
+    /**
+     * Get the installer ID (installer package name for android).
+     */
+    const char * getInstallerId() const { return _installerId.c_str(); };
+
 protected:
     /**
      * Initialize callback that is called just before the first frame when the game starts.
@@ -141,6 +146,7 @@ private:
 
     std::string _emscriptenDbName;
     std::string _analyticsId;
+    std::string _installerId;
 };
 
 

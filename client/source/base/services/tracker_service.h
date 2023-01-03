@@ -22,8 +22,9 @@ public:
      *  \param[in]  gaAppId     Google Analytics Tracking ID (UA-123456-1).
      *  \param[in]  clientId    Client UUID (http://www.ietf.org/rfc/rfc4122.txt).
      *  \param[in]  startScreen Initial screen name.
+     *  \param[in]  installerId Name of installer package (source of installation).
      */
-    void setupTracking(const char * gaAppId, const char * clientId, const char * startScreen);
+    void setupTracking(const char * gaAppId, const char * clientId, const char * startScreen, const char * installerId = nullptr);
 
     void setTrackerEnabled(bool enabled) { _allowDispatch = enabled; };
     const bool& getTrackerEnabled() const { return _allowDispatch; };
@@ -115,8 +116,9 @@ private:
 
     void * _curl;
 
-    std::string _appName;       // cached app name
-    std::string _appVersion;    // cached app version
+    std::string _appName;           // cached app name
+    std::string _appVersion;        // cached app version
+    std::string _appInstallerId;    // name of the installer package (Android)
     std::string _currentView;
     std::string _userId;           // UserID
 

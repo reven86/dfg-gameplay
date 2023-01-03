@@ -42,13 +42,16 @@ TrackerService::~TrackerService()
 }
 
 static char errorBuffer[CURL_ERROR_SIZE];
-void TrackerService::setupTracking(const char * gaAppId, const char * clientId, const char * startScreen)
+void TrackerService::setupTracking(const char * gaAppId, const char * clientId, const char * startScreen, const char * installerId)
 {
     _trackingId = gaAppId;
     _clientId = clientId;
 
     _appName = Utils::urlEncode(gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("title"));
     _appVersion = Utils::urlEncode(gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("version"));
+
+    if (installerId)
+        _appInstallerId = installerId;
 
     // load previously saved payloads which weren't sent to server
     std::string filename = std::string(static_cast<DfgGame *>(gameplay::Game::getInstance())->getUserDataFolder()) + "/payloads.dat";
@@ -263,6 +266,9 @@ bool TrackerService::dispatch(const PayloadInfo& payload)
         _appName.c_str(),
         _appVersion.c_str(),
         payload.params.c_str());
+
+    if (!_appInstallerId.empty())
+        finalRequest += Utils::format("&aiid=%s", _appInstallerId.c_str());
 
     if (!_userId.empty())
         finalRequest += Utils::format("&uid=%s", _userId.c_str());
