@@ -118,7 +118,7 @@ public class DFGActivity extends GamePlayNativeActivity implements BillingDataSo
     }
 
     @Override
-    public void purchaseItem(final String sku)
+    public void purchaseItem(final String sku, final String developerPayload)
     {
         if (billingDataSource == null)
             return;

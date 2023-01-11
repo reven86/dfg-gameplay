@@ -43,8 +43,11 @@ public:
         TYPE_INT16,
         TYPE_UINT16,
 
-        TYPE_UNKNOWN,
+        TYPE_RECT,         // not supported at the moment
         TYPE_LIST,
+        TYPE_QUATERNION,   // not supported at the moment
+        TYPE_TRANSFORM,    // not supported at the moment
+        TYPE_AABBOX2,      // not supported at the moment
 
         TYPES_COUNT // every new type should be always added to the end for compatibility with old archives
     };

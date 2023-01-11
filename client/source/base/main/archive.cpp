@@ -489,6 +489,14 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out, c
                     return false;
         }
         return true;
+    case VariantType::TYPE_TRANSFORM:
+        {
+            //gameplay::Vector3 translation;
+            //gameplay::Vector3 scale;
+            //gameplay::Quaternion rotation;
+            stream->seek(40, SEEK_CUR);
+        }
+        return true;
     default:
         break;
     }
@@ -611,9 +619,6 @@ void debugPrintVariant(const VariantType& v, int ident)
     case VariantType::TYPE_UINT16:
         gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(uint16) %d\n", v.get<uint16_t>());
         break;
-    case VariantType::TYPE_UNKNOWN:
-        gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(unknown)\n");
-        break;
     case VariantType::TYPE_LIST:
         gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(list) %d\n", std::distance(v.begin(), v.end()));
         {
@@ -622,7 +627,8 @@ void debugPrintVariant(const VariantType& v, int ident)
         }
         break;
     default:
-        GP_ERROR("Unsupported variant type: %d", v.getType());
+        gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(unknown)\n");
+        GP_WARN("Unsupported variant type: %d", v.getType());
     }
 }
 
