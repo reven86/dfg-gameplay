@@ -111,7 +111,7 @@ bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
 
 void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool syncCall)
 {
-#ifdef _DEBUG
+#if 1//def _DEBUG
     GP_LOG("Sending HTTP request: %s, POST: %s", request.url.c_str(), request.postPayload.c_str());
 #endif
 
