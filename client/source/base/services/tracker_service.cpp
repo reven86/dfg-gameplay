@@ -110,7 +110,7 @@ std::string formatVariantType(const VariantType& value)
         return Utils::format("%f", value.get<double>());
 
     case VariantType::TYPE_STRING:
-        return value.get<std::string>();
+        return std::string("\"") + value.get<std::string>() + "\"";
         
     default:
         GP_ASSERT(!"Unsupported variant type");
