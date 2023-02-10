@@ -285,10 +285,6 @@ void DfgGame::pause()
     ServiceManager::getInstance()->signals.pauseEvent();
 
 #ifndef _DEBUG
-    TrackerService * trackerService = ServiceManager::getInstance()->findService< TrackerService >();
-    if (trackerService)
-        trackerService->endSession("Pause");
-
     gameplay::Game::pause();
 #endif
 }
@@ -325,9 +321,6 @@ void DfgGame::reportError(bool isFatal, const char * errorMessage, ...)
 
     exceptionDesc[149] = '\0';
     trackerService->sendException(exceptionDesc, isFatal);
-
-    if (isFatal)
-        trackerService->endSession();
 }
 
 void DfgGame::scheduleLocalNotification(time_t datetime, const char * utf8Body, const char * utf8ActionButton, int badgeNumber, const std::unordered_map< std::string, std::string >& userDictionary)

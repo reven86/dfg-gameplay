@@ -20,9 +20,9 @@ public:
      * Constructor.
      *
      * \param emscriptenDbName Name of the indexed database where settings are supposed to be put for web version.
-     * \param analyticsId Google Analytics ID.
+     * \param analyticsApiSecret GA4 API Secret for a data stream.
      */
-    DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsId);
+    DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsApiSecret);
 
     static DfgGameAdvanced * getInstance() { return static_cast<DfgGameAdvanced *>(gameplay::Game::getInstance()); };
 
@@ -145,7 +145,7 @@ private:
     bool _needToDeleteWatchDogFile;
 
     std::string _emscriptenDbName;
-    std::string _analyticsId;
+    std::string _analyticsApiSecret;
     std::string _installerId;
 };
 

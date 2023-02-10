@@ -20,28 +20,52 @@
 {
     TrackerService * tracker = ServiceManager::getInstance()->findService< TrackerService >();
     if (tracker)
-        tracker->sendEvent("Rating", "Prompt", "");
+    {
+        TrackerService::Parameter params[] = {
+            { "rate_action", VariantType(std::string("Prompt")) },
+        };
+
+        tracker->sendEvent("app_rate", params, sizeof(params) / sizeof(params[0]));
+    }
 }
 
 -(void)iRateUserDidAttemptToRateApp
 {
     TrackerService * tracker = ServiceManager::getInstance()->findService< TrackerService >();
     if (tracker)
-        tracker->sendEvent("Rating", "AttemptToRate", "");
+    {
+        TrackerService::Parameter params[] = {
+            { "rate_action", VariantType(std::string("Attempt")) },
+        };
+
+        tracker->sendEvent("app_rate", params, sizeof(params) / sizeof(params[0]));
+    }
 }
 
 -(void)iRateUserDidDeclineToRateApp
 {
     TrackerService * tracker = ServiceManager::getInstance()->findService< TrackerService >();
     if (tracker)
-        tracker->sendEvent("Rating", "Decline", "");
+    {
+        TrackerService::Parameter params[] = {
+            { "rate_action", VariantType(std::string("Decline")) },
+        };
+
+        tracker->sendEvent("app_rate", params, sizeof(params) / sizeof(params[0]));
+    }
 }
 
 -(void)iRateUserDidRequestReminderToRateApp
 {
     TrackerService * tracker = ServiceManager::getInstance()->findService< TrackerService >();
     if (tracker)
-        tracker->sendEvent("Rating", "Remind", "");
+    {
+        TrackerService::Parameter params[] = {
+            { "rate_action", VariantType(std::string("Remind")) },
+        };
+
+        tracker->sendEvent("app_rate", params, sizeof(params) / sizeof(params[0]));
+    }
 }
 
 @end
@@ -69,12 +93,12 @@ extern "C"
 
 
 
-DfgGameAdvanced::DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsId)
+DfgGameAdvanced::DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsApiSecret)
     : _firstTimeUser(false)
     , _emscriptenDbName(emscriptenDbName)
     , _previousLaunchWasUnsuccessful(false)
     , _needToDeleteWatchDogFile(false)
-    , _analyticsId(analyticsId)
+    , _analyticsApiSecret(analyticsApiSecret)
     , _readyToRun(false)
 {
 #ifdef __APPLE__
@@ -312,8 +336,7 @@ void DfgGameAdvanced::updateSettings()
 
     TrackerService * tracker = ServiceManager::getInstance()->findService<TrackerService>();
 
-    tracker->setTrackerEnabled(true);
-    tracker->setupTracking(_analyticsId.c_str(), Settings::getInstance()->get<std::string>("app.uuid").c_str(), "Loading", _installerId.c_str());
+    tracker->setupTracking(_analyticsApiSecret.c_str());
 
 #ifdef __EMSCRIPTEN__
     // get the domain name where the app is running
