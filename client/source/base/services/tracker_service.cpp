@@ -166,7 +166,7 @@ void TrackerService::sendEcommerceEvent(const char * eventName, const EcommerceI
         {
             userPropertiesPayload = ",\"user_properties\":{";
             for (const auto& prop : _userProperties)
-                userPropertiesPayload += Utils::format("\"%s\":\"%s\",", prop.first.c_str(), prop.second.c_str());
+                userPropertiesPayload += Utils::format("\"%s\":{\"value\":\"%s\"},", prop.first.c_str(), prop.second.c_str());
             userPropertiesPayload.pop_back();
             userPropertiesPayload += "}";
         }
