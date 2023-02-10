@@ -30,7 +30,14 @@ TrackerService::TrackerService(const ServiceManager * manager)
     , _httpRequestService(NULL)
 {
 #ifdef __ANDROID__
-    _firebaseApp = firebase::App::Create(__state->activity->env, __state->activity->clazz);
+    android_app* app = __state;
+    JNIEnv* env = app->activity->env;
+    JavaVM* vm = app->activity->vm;
+    vm->AttachCurrentThread(&env, NULL);
+
+    _firebaseApp = firebase::App::Create(env, __state->activity->clazz);
+
+    vm->DetachCurrentThread();
 #else
     _firebaseApp = firebase::App::Create();
 #endif
