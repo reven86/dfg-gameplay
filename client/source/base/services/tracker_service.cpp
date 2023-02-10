@@ -97,6 +97,8 @@ std::string formatVariantType(const VariantType& value)
         return value.get<bool>() ? "true" : "false";
 
     case VariantType::TYPE_FLOAT:
+        return Utils::format("%f", value.get<float>());
+
     case VariantType::TYPE_FLOAT64:
         return Utils::format("%f", value.get<double>());
 
@@ -201,6 +203,9 @@ void TrackerService::sendEvent(const char * eventName, const Parameter * paramet
             break;
 
         case VariantType::TYPE_FLOAT:
+            params[i].value.set_double_value(parameters[i].value.get<float>());
+            break;
+
         case VariantType::TYPE_FLOAT64:
             params[i].value.set_double_value(parameters[i].value.get<double>());
             break;

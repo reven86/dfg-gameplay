@@ -405,9 +405,6 @@ template<> inline const float& VariantType::get() const
 
 template<> inline const double& VariantType::get() const
 {
-    if (type == TYPE_FLOAT)
-        return static_cast<double>(floatValue);
-
     GP_ASSERT(type == TYPE_FLOAT64);
     return float64Value;
 }

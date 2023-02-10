@@ -364,7 +364,7 @@ void DfgGameAdvanced::updateSettings()
 
     const char * referrer = reinterpret_cast<const char *>(stringPointer);
     const char * url = reinterpret_cast<const char *>(urlPointer);
-    tracker->sendEvent("Domain", referrer, url);
+    //tracker->sendEvent("Domain", referrer, url);
     free((void *)url);
     free((void *)referrer);
 #endif
