@@ -93,11 +93,12 @@ extern "C"
 
 
 
-DfgGameAdvanced::DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsApiSecret)
+DfgGameAdvanced::DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsAppId, const char * analyticsApiSecret)
     : _firstTimeUser(false)
     , _emscriptenDbName(emscriptenDbName)
     , _previousLaunchWasUnsuccessful(false)
     , _needToDeleteWatchDogFile(false)
+    , _analyticsAppId(analyticsAppId)
     , _analyticsApiSecret(analyticsApiSecret)
     , _readyToRun(false)
 {
@@ -336,7 +337,7 @@ void DfgGameAdvanced::updateSettings()
 
     TrackerService * tracker = ServiceManager::getInstance()->findService<TrackerService>();
 
-    tracker->setupTracking(_analyticsApiSecret.c_str());
+    tracker->setupTracking(_analyticsAppId.c_str(), Settings::getInstance()->get<std::string>("app.uuid").c_str(), _analyticsApiSecret.c_str());
 
 #ifdef __EMSCRIPTEN__
     // get the domain name where the app is running

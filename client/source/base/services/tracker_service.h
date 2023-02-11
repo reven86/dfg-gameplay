@@ -7,7 +7,8 @@ namespace firebase { class App; };
 
 /**
  * Tracks user interactions, game events and sends data to Google Analytics.
- * A wrapper around Firebase Analytics.
+ * A wrapper around Firebase Analytics. This fallbacks to Measurement Protocol
+ * on platforms where Firebase Analytics is not supported.
  */
 
 class TrackerService : public Service
@@ -33,9 +34,11 @@ public:
      * The app id can be obtained using the firebase::AppOptions, while api_secret needs
      * to be generated in the Analytics Settings Console.
      * 
+     * @param[in] appId Application ID, or Measurement ID (web, win32)
+     * @param[in] appInstanceId App Instance ID, or Client ID (web, win32)
      * @param[in] apiSecret API secret.
      */
-    void setupTracking(const char * apiSecret);
+    void setupTracking(const char * appId, const char * appInstanceId, const char * apiSecret);
 
     void setTrackerEnabled(bool enabled);
 
@@ -99,17 +102,22 @@ protected:
     TrackerService(const ServiceManager * manager);
     virtual ~TrackerService();
 
-    virtual bool onInit();
+    virtual bool onPreInit();
     virtual bool onShutdown();
     virtual bool onTick();
 
 private:
+    std::string getJsonParamsPayload(const Parameter * parameters, unsigned parameterCount) const;
+    void sendGAEvent(const char * eventName, const std::string& paramsPayload) const;
+
     firebase::App * _firebaseApp;
 
     class HTTPRequestService * _httpRequestService;
 
     // the following variables are needed to workaround missed methods of Firebase C++ SDK
     // by using Measurement Protocol
+    std::string _appInstanceId;
+    std::string _appId;
     std::string _apiSecret;
     std::string _userId;
     std::map<std::string, std::string> _userProperties;

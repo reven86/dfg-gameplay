@@ -20,9 +20,10 @@ public:
      * Constructor.
      *
      * \param emscriptenDbName Name of the indexed database where settings are supposed to be put for web version.
+     * \param analyticsAppId GA4 Application id, only used when Firebase is not available.
      * \param analyticsApiSecret GA4 API Secret for a data stream.
      */
-    DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsApiSecret);
+    DfgGameAdvanced(const char * emscriptenDbName, const char * analyticsAppId, const char * analyticsApiSecret);
 
     static DfgGameAdvanced * getInstance() { return static_cast<DfgGameAdvanced *>(gameplay::Game::getInstance()); };
 
@@ -145,6 +146,7 @@ private:
     bool _needToDeleteWatchDogFile;
 
     std::string _emscriptenDbName;
+    std::string _analyticsAppId;
     std::string _analyticsApiSecret;
     std::string _installerId;
 };

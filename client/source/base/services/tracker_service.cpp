@@ -4,11 +4,17 @@
 #include "httprequest_service.h"
 #include "main.h"
 
+#ifdef __ANDROID__
+#define FIREBASE_AVAILABLE
+#endif
+
+#ifdef FIREBASE_AVAILABLE
 #include "firebase/analytics.h"
 #include "firebase/analytics/event_names.h"
 #include "firebase/analytics/parameter_names.h"
 #include "firebase/analytics/user_property_names.h"
 #include "firebase/app.h"
+#endif
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -29,6 +35,7 @@ TrackerService::TrackerService(const ServiceManager * manager)
     , _firebaseApp(NULL)
     , _httpRequestService(NULL)
 {
+#ifdef FIREBASE_AVAILABLE
 #ifdef __ANDROID__
     android_app* app = __state;
     JNIEnv* env = app->activity->env;
@@ -44,20 +51,48 @@ TrackerService::TrackerService(const ServiceManager * manager)
 
     if (_firebaseApp)
         firebase::analytics::Initialize(*_firebaseApp);
+#endif
 }
 
 TrackerService::~TrackerService()
 {
+#ifdef FIREBASE_AVAILABLE
     if (_firebaseApp)
         firebase::analytics::Terminate();
+#endif
 }
 
-void TrackerService::setupTracking(const char * apiSecret)
+void TrackerService::setupTracking(const char * appId, const char * appInstanceId, const char * apiSecret)
 {
+    _appId = appId;
+    _appInstanceId = appInstanceId;
     _apiSecret = apiSecret;
+
+#ifdef FIREBASE_AVAILABLE
+    auto future = firebase::analytics::GetAnalyticsInstanceId();
+    while (future.status() != firebase::kFutureStatusComplete)
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+
+    if (future.error() == 0)
+        _appInstanceId = *future.result();
+
+    _appId = _firebaseApp->options().app_id();
+#endif
+
+#if 0//def __EMSCRIPTEN__
+    // get client ID from the cookie (gtag is not convenient to use here).
+    int userIdPtr = EM_ASM_INT_V({
+        var gaClientId = document.cookie.match(/_ga=(.+?);/)[1].split('.').slice(-2).join(".");
+        var _ptr = _malloc(gaClientId.length + 1);
+        stringToUTF8(gaClientId, _ptr, gaClientId.length + 1);
+        return _ptr;
+    });
+    _appInstanceId = reinterpret_cast<const char *>(userIdPtr);
+    free((void *)userIdPtr);
+#endif
 }
 
-bool TrackerService::onInit()
+bool TrackerService::onPreInit()
 {
     _httpRequestService = _manager->findService<HTTPRequestService>();
 
@@ -77,13 +112,13 @@ bool TrackerService::onTick()
 void TrackerService::sendView(const char * screenName, const char * screenClass, const Parameter * parameters, unsigned parameterCount)
 {
     std::unique_ptr<Parameter[]> params(new Parameter[parameterCount + 2]);
-    params[0].name = firebase::analytics::kParameterScreenName;
+    params[0].name = "screen_name";
     params[0].value.set(std::string(screenName));
-    params[1].name = firebase::analytics::kParameterScreenClass;
+    params[1].name = "screen_class";
     params[1].value.set(std::string(screenClass));
     memcpy(params.get() + 2, parameters, sizeof(Parameter) * parameterCount);
 
-    sendEvent(firebase::analytics::kEventScreenView, params.get(), parameterCount + 2);
+    sendEvent("screen_view", params.get(), parameterCount + 2);
 }
 
 std::string formatVariantType(const VariantType& value)
@@ -98,7 +133,7 @@ std::string formatVariantType(const VariantType& value)
     case VariantType::TYPE_UINT16:
     case VariantType::TYPE_UINT32:
     case VariantType::TYPE_UINT64:
-        return Utils::format("lld", value.get<int64_t>());
+        return Utils::format("%lld", value.get<int64_t>());
 
     case VariantType::TYPE_BOOLEAN:
         return value.get<bool>() ? "true" : "false";
@@ -119,12 +154,8 @@ std::string formatVariantType(const VariantType& value)
     return "";
 }
 
-void TrackerService::sendEcommerceEvent(const char * eventName, const EcommerceItem * items, unsigned itemCount, const Parameter * parameters, unsigned parameterCount)
+std::string TrackerService::getJsonParamsPayload(const Parameter * parameters, unsigned parameterCount) const
 {
-    GP_ASSERT(_httpRequestService && _firebaseApp);
-    if (!_httpRequestService || !_firebaseApp)
-        return;
-
     std::string paramsPayload = "{";
     for (unsigned i = 0; i < parameterCount; i++)
     {
@@ -133,100 +164,126 @@ void TrackerService::sendEcommerceEvent(const char * eventName, const EcommerceI
         paramsPayload += ",";
     }
 
-    paramsPayload += Utils::format("\"items\":[");
+    if (parameterCount > 0)
+        paramsPayload.pop_back();
+    paramsPayload += "}";
+
+    return std::move(paramsPayload);
+}
+
+void TrackerService::sendEcommerceEvent(const char * eventName, const EcommerceItem * items, unsigned itemCount, const Parameter * parameters, unsigned parameterCount)
+{
+    std::string paramsPayload = getJsonParamsPayload(parameters, parameterCount);
+    paramsPayload.pop_back();
+    paramsPayload += ", \"items\":[";
 
     for (unsigned j = 0; j < itemCount; j++)
     {
-        paramsPayload += "{";
-        for (unsigned i = 0; i < items[j].parameterCount; i++)
-        {
-            paramsPayload += Utils::format("\"%s\":", items[j].parameters[i].name);
-            paramsPayload += formatVariantType(items[j].parameters[i].value);
-            paramsPayload += ",";
-        }
-
-        paramsPayload.pop_back();
-        paramsPayload += "},";
+        paramsPayload += getJsonParamsPayload(items[j].parameters, items[j].parameterCount);
+        paramsPayload += ",";
     }
 
     GP_ASSERT(itemCount > 0);
     paramsPayload.pop_back();
     paramsPayload += "]}";
-    
-    firebase::analytics::GetAnalyticsInstanceId().OnCompletion([this, eventName, paramsPayload](const firebase::Future<std::string>& completedFuture) {
 
-        std::string endpoint = Utils::format("https://www.google-analytics.com/mp/collect?api_secret=%s&firebase_app_id=%s", _apiSecret.c_str(), _firebaseApp->options().app_id());
-
-        std::string userIdPayload;
-        if (!_userId.empty())
-            userIdPayload = Utils::format(",\"user_id\": \"%s\"", _userId.c_str());
-
-        std::string userPropertiesPayload;
-        if (!_userProperties.empty())
-        {
-            userPropertiesPayload = ",\"user_properties\":{";
-            for (const auto& prop : _userProperties)
-                userPropertiesPayload += Utils::format("\"%s\":{\"value\":\"%s\"},", prop.first.c_str(), prop.second.c_str());
-            userPropertiesPayload.pop_back();
-            userPropertiesPayload += "}";
-        }
-
-        std::string payload = Utils::format("{\"app_instance_id\":\"%s\"%s%s,\"events\":[{\"name\":\"%s\", \"params\":%s}]}",
-            completedFuture.result()->c_str(), userIdPayload.c_str(), userPropertiesPayload.c_str(), eventName, paramsPayload.c_str());
-
-        _httpRequestService->makeRequestAsync({ endpoint.c_str(), payload.c_str(),
-            { { "Content-Type", "application/json" },
-            }
-        });
-    });
+    sendGAEvent(eventName, paramsPayload);
 }
 
 void TrackerService::sendEvent(const char * eventName, const Parameter * parameters, unsigned parameterCount)
 {
-    if (!_firebaseApp)
-        return;
-        
-    std::unique_ptr<firebase::analytics::Parameter[]> params(new firebase::analytics::Parameter[parameterCount]);
-
-    for (unsigned i = 0; i < parameterCount; i++)
+#ifdef FIREBASE_AVAILABLE
+    if (_firebaseApp)
     {
-        params[i].name = parameters[i].name;
+        std::unique_ptr<firebase::analytics::Parameter[]> params(new firebase::analytics::Parameter[parameterCount]);
 
-        switch (parameters[i].value.getType())
+        for (unsigned i = 0; i < parameterCount; i++)
         {
-        case VariantType::TYPE_INT8:
-        case VariantType::TYPE_INT16:
-        case VariantType::TYPE_INT32:
-        case VariantType::TYPE_INT64:
-        case VariantType::TYPE_UINT8:
-        case VariantType::TYPE_UINT16:
-        case VariantType::TYPE_UINT32:
-        case VariantType::TYPE_UINT64:
-            params[i].value.set_int64_value(parameters[i].value.get<int64_t>());
-            break;
+            params[i].name = parameters[i].name;
 
-        case VariantType::TYPE_BOOLEAN:
-            params[i].value.set_bool_value(parameters[i].value.get<bool>());
-            break;
+            switch (parameters[i].value.getType())
+            {
+            case VariantType::TYPE_INT8:
+            case VariantType::TYPE_INT16:
+            case VariantType::TYPE_INT32:
+            case VariantType::TYPE_INT64:
+            case VariantType::TYPE_UINT8:
+            case VariantType::TYPE_UINT16:
+            case VariantType::TYPE_UINT32:
+            case VariantType::TYPE_UINT64:
+                params[i].value.set_int64_value(parameters[i].value.get<int64_t>());
+                break;
 
-        case VariantType::TYPE_FLOAT:
-            params[i].value.set_double_value(parameters[i].value.get<float>());
-            break;
+            case VariantType::TYPE_BOOLEAN:
+                params[i].value.set_bool_value(parameters[i].value.get<bool>());
+                break;
 
-        case VariantType::TYPE_FLOAT64:
-            params[i].value.set_double_value(parameters[i].value.get<double>());
-            break;
+            case VariantType::TYPE_FLOAT:
+                params[i].value.set_double_value(parameters[i].value.get<float>());
+                break;
 
-        case VariantType::TYPE_STRING:
-            params[i].value.set_string_value(parameters[i].value.get<std::string>());
-            break;
+            case VariantType::TYPE_FLOAT64:
+                params[i].value.set_double_value(parameters[i].value.get<double>());
+                break;
 
-        default:
-            GP_ASSERT(!"Unsupported variant type");
+            case VariantType::TYPE_STRING:
+                params[i].value.set_string_value(parameters[i].value.get<std::string>());
+                break;
+
+            default:
+                GP_ASSERT(!"Unsupported variant type");
+            }
         }
+
+        firebase::analytics::LogEvent(eventName, params.get(), parameterCount);
+        return;
     }
 
-    firebase::analytics::LogEvent(eventName, params.get(), parameterCount);
+    // fallback to measurement protocol
+#endif
+
+    sendGAEvent(eventName, getJsonParamsPayload(parameters, parameterCount));
+}
+
+void TrackerService::sendGAEvent(const char * eventName, const std::string& paramsPayload) const
+{
+    GP_ASSERT(_httpRequestService);
+    if (!_httpRequestService)
+        return;
+
+#if 0//defined(__EMSCRIPTEN__) || defined(WIN32)
+    static std::string endpoint = Utils::format("https://www.google-analytics.com/mp/collect?api_secret=%s&measurement_id=%s", _apiSecret.c_str(), _appId.c_str());
+#else
+    static std::string endpoint = Utils::format("https://www.google-analytics.com/mp/collect?api_secret=%s&firebase_app_id=%s", _apiSecret.c_str(), _appId.c_str());
+#endif
+
+    std::string userIdPayload;
+    if (!_userId.empty())
+        userIdPayload = Utils::format(",\"user_id\": \"%s\"", _userId.c_str());
+
+    std::string userPropertiesPayload;
+    if (!_userProperties.empty())
+    {
+        userPropertiesPayload = ",\"user_properties\":{";
+        for (const auto& prop : _userProperties)
+            userPropertiesPayload += Utils::format("\"%s\":{\"value\":\"%s\"},", prop.first.c_str(), prop.second.c_str());
+        userPropertiesPayload.pop_back();
+        userPropertiesPayload += "}";
+    }
+
+#if 0//defined(__EMSCRIPTEN__) || defined(WIN32)
+    const char * clientKey = "client_id";
+#else
+    const char * clientKey = "app_instance_id";
+#endif
+
+    std::string payload = Utils::format("{\"%s\":\"%s\"%s%s,\"events\":[{\"name\":\"%s\", \"params\":%s}]}", clientKey,
+        _appInstanceId.c_str(), userIdPayload.c_str(), userPropertiesPayload.c_str(), eventName, paramsPayload.c_str());
+
+    _httpRequestService->makeRequestAsync({ endpoint.c_str(), payload.c_str(),
+        { { "Content-Type", "application/json" },
+        }
+    });
 }
 
 void TrackerService::sendTiming(const char * category, const char * variable, const int& timeMs, const Parameter * parameters, unsigned parameterCount)
@@ -257,30 +314,31 @@ void TrackerService::sendException(const char * type, bool isFatal, const Parame
 
 void TrackerService::setUserId(const char * userId)
 {
-    if (!_firebaseApp)
-        return;
-
     _userId = userId;
-    firebase::analytics::SetUserId(userId);
+
+#ifdef FIREBASE_AVAILABLE
+    if (_firebaseApp)
+        firebase::analytics::SetUserId(userId);
+#endif
 }
 
 void TrackerService::setUserProperty(const char * name, const char * value)
 {
-    if (!_firebaseApp)
-        return;
-
     if (value)
         _userProperties[name] = value;
     else
         _userProperties.erase(name);
 
-    firebase::analytics::SetUserProperty(name, value);
+#ifdef FIREBASE_AVAILABLE
+    if (_firebaseApp)
+        firebase::analytics::SetUserProperty(name, value);
+#endif
 }
 
 void TrackerService::setTrackerEnabled(bool enabled)
 {
-    if (!_firebaseApp)
-        return;
-
-    firebase::analytics::SetAnalyticsCollectionEnabled(enabled);
+#ifdef FIREBASE_AVAILABLE
+    if (_firebaseApp)
+        firebase::analytics::SetAnalyticsCollectionEnabled(enabled);
+#endif
 }
