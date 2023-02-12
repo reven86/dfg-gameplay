@@ -25,6 +25,10 @@
 extern struct android_app* __state;
 #endif
 
+#ifdef __APPLE__
+@import FirebaseCore;
+@import FirebaseAnalytics;
+#endif
 
 
 
@@ -46,6 +50,11 @@ TrackerService::TrackerService(const ServiceManager * manager)
 
     vm->DetachCurrentThread();
 #else
+
+#ifdef __APPLE__
+    [FIRApp configure];
+#endif
+
     _firebaseApp = firebase::App::Create();
 #endif
 
