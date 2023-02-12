@@ -4,7 +4,7 @@
 #include "httprequest_service.h"
 #include "main.h"
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__APPLE__)
 #define FIREBASE_AVAILABLE
 #endif
 
@@ -79,16 +79,23 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
     _appId = _firebaseApp->options().app_id();
 #endif
 
-#if 0//def __EMSCRIPTEN__
-    // get client ID from the cookie (gtag is not convenient to use here).
-    int userIdPtr = EM_ASM_INT_V({
-        var gaClientId = document.cookie.match(/_ga=(.+?);/)[1].split('.').slice(-2).join(".");
-        var _ptr = _malloc(gaClientId.length + 1);
-        stringToUTF8(gaClientId, _ptr, gaClientId.length + 1);
-        return _ptr;
+#ifdef __EMSCRIPTEN__
+    EM_ASM({
+        import("https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js").then((mod)=>{ 
+            Module.firebaseApp = mod;
+            import("https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js").then((mod)=>{ 
+                Module.firebaseAnalytics = mod;
+
+                if (Module.firebaseConfig)
+                {
+                    const app = Module.firebaseApp.initializeApp(Module.firebaseConfig);
+                    const analytics = Module.firebaseAnalytics.getAnalytics(app);
+
+                    Module.fa = analytics;
+                }
+            });
+        });
     });
-    _appInstanceId = reinterpret_cast<const char *>(userIdPtr);
-    free((void *)userIdPtr);
 #endif
 }
 
@@ -240,6 +247,7 @@ void TrackerService::sendEvent(const char * eventName, const Parameter * paramet
     }
 
     // fallback to measurement protocol
+
 #endif
 
     sendGAEvent(eventName, getJsonParamsPayload(parameters, parameterCount));
@@ -247,15 +255,20 @@ void TrackerService::sendEvent(const char * eventName, const Parameter * paramet
 
 void TrackerService::sendGAEvent(const char * eventName, const std::string& paramsPayload) const
 {
+#ifdef __EMSCRIPTEN__
+
+    EM_ASM_({
+        if (Module.fa)
+            Module.firebaseAnalytics.logEvent(Module.fa, Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1)));
+    }, eventName, paramsPayload.c_str());
+
+#else
+
     GP_ASSERT(_httpRequestService);
     if (!_httpRequestService)
         return;
 
-#if 0//defined(__EMSCRIPTEN__) || defined(WIN32)
-    static std::string endpoint = Utils::format("https://www.google-analytics.com/mp/collect?api_secret=%s&measurement_id=%s", _apiSecret.c_str(), _appId.c_str());
-#else
     static std::string endpoint = Utils::format("https://www.google-analytics.com/mp/collect?api_secret=%s&firebase_app_id=%s", _apiSecret.c_str(), _appId.c_str());
-#endif
 
     std::string userIdPayload;
     if (!_userId.empty())
@@ -271,11 +284,7 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
         userPropertiesPayload += "}";
     }
 
-#if 0//defined(__EMSCRIPTEN__) || defined(WIN32)
-    const char * clientKey = "client_id";
-#else
     const char * clientKey = "app_instance_id";
-#endif
 
     std::string payload = Utils::format("{\"%s\":\"%s\"%s%s,\"events\":[{\"name\":\"%s\", \"params\":%s}]}", clientKey,
         _appInstanceId.c_str(), userIdPayload.c_str(), userPropertiesPayload.c_str(), eventName, paramsPayload.c_str());
@@ -284,6 +293,8 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
         { { "Content-Type", "application/json" },
         }
     });
+
+#endif
 }
 
 void TrackerService::sendTiming(const char * category, const char * variable, const int& timeMs, const Parameter * parameters, unsigned parameterCount)
@@ -320,6 +331,13 @@ void TrackerService::setUserId(const char * userId)
     if (_firebaseApp)
         firebase::analytics::SetUserId(userId);
 #endif
+
+#ifdef __EMSCRIPTEN__
+    EM_ASM_({
+        if (Module.fa)
+            Module.firebaseAnalytics.setUserId(Module.fa, Module.UTF8ToString($0));
+    }, userId);
+#endif
 }
 
 void TrackerService::setUserProperty(const char * name, const char * value)
@@ -332,6 +350,19 @@ void TrackerService::setUserProperty(const char * name, const char * value)
 #ifdef FIREBASE_AVAILABLE
     if (_firebaseApp)
         firebase::analytics::SetUserProperty(name, value);
+#endif
+
+#ifdef __EMSCRIPTEN__
+    std::string userPropertiesPayload = "{";
+    for (const auto& prop : _userProperties)
+        userPropertiesPayload += Utils::format("\"%s\":\"%s\",", prop.first.c_str(), prop.second.c_str());
+    userPropertiesPayload.pop_back();
+    userPropertiesPayload += "}";
+
+    EM_ASM_({
+        if (Module.fa)
+            Module.firebaseAnalytics.setUserProperties(Module.fa, JSON.parse(Module.UTF8ToString($0)));
+    }, userPropertiesPayload.c_str());
 #endif
 }
 
