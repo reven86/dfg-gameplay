@@ -26,8 +26,8 @@ extern struct android_app* __state;
 #endif
 
 #ifdef __APPLE__
-@import FirebaseCore;
-@import FirebaseAnalytics;
+#import "FirebaseCore/FirebaseCore.h";
+#import "FirebaseAnalytics/FirebaseAnalytics.h";
 #endif
 
 
