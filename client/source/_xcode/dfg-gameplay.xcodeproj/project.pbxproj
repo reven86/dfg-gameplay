@@ -177,7 +177,7 @@
 		EB9F81361AAB25CD00839018 /* social_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = social_service.h; sourceTree = "<group>"; };
 		EB9F81371AAB25CD00839018 /* storefront_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = storefront_service.cpp; sourceTree = "<group>"; };
 		EB9F81381AAB25CD00839018 /* storefront_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = storefront_service.h; sourceTree = "<group>"; };
-		EB9F81391AAB25CD00839018 /* tracker_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tracker_service.cpp; sourceTree = "<group>"; };
+		EB9F81391AAB25CD00839018 /* tracker_service.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tracker_service.cpp; sourceTree = "<group>"; };
 		EB9F813A1AAB25CD00839018 /* tracker_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tracker_service.h; sourceTree = "<group>"; };
 		EB9F813C1AAB25CD00839018 /* curve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curve.h; sourceTree = "<group>"; };
 		EB9F813D1AAB25CD00839018 /* noncopyable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = noncopyable.h; sourceTree = "<group>"; };
