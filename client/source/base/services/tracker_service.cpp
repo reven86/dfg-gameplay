@@ -251,7 +251,9 @@ void TrackerService::sendEvent(const char * eventName, const Parameter * paramet
             }
         }
 
+        GP_LOG("Log event %s", eventName);
         firebase::analytics::LogEvent(eventName, params.get(), parameterCount);
+        GP_LOG("Log event done");
         return;
     }
 

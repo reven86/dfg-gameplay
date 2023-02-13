@@ -37,11 +37,14 @@ bool StorefrontService::onShutdown()
 
 void StorefrontService::refreshProducts(const char ** productsToHandle)
 {
+    GP_LOG("StorefrontService::refreshProducts");
     gameplay::Game::getInstance()->getStoreController()->getStoreFront()->getProducts(productsToHandle);
 }
 
 void StorefrontService::getProductsEvent(const std::vector< gameplay::StoreProduct >& products, const std::vector< std::string >& invalidProducts)
 {
+    GP_LOG("StorefrontService::getProductsEvent");
+
     _products = products;
     _invalidProducts = invalidProducts;
 
@@ -95,6 +98,7 @@ void StorefrontService::paymentTransactionFailedEvent(const char * productID, in
 
 void StorefrontService::paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID, void * transactionObject)
 {
+    GP_LOG("transaction restored");
     _manager->signals.storefrontTransactionRestoredEvent(productID, quantity, timestamp, transactionID, transactionObject);
 }
 
