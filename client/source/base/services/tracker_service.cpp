@@ -81,6 +81,9 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
 
 #ifdef __EMSCRIPTEN__
     EM_ASM({
+        Module.faQueue = [];
+        Module.faUserId = null;
+        Module.faUserProperties = {};
         import("https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js").then((mod)=>{ 
             Module.firebaseApp = mod;
             import("https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js").then((mod)=>{ 
@@ -92,6 +95,12 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
                     const analytics = Module.firebaseAnalytics.getAnalytics(app);
 
                     Module.fa = analytics;
+                    Module.firebaseAnalytics.setUserId(Module.fa, Module.faUserId);
+                    Module.firebaseAnalytics.setUserProperties(Module.fa, Module.faUserProperties);
+
+                    Module.faQueue.forEach(function(v) {
+                        Module.firebaseAnalytics.logEvent(Module.fa, v[0], v[1]);
+                    });
                 }
             });
         });
@@ -260,6 +269,8 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
     EM_ASM_({
         if (Module.fa)
             Module.firebaseAnalytics.logEvent(Module.fa, Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1)));
+        else
+            Module.faQueue.push([Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1)]));
     }, eventName, paramsPayload.c_str());
 
 #else
@@ -325,7 +336,7 @@ void TrackerService::sendException(const char * type, bool isFatal, const Parame
 
 void TrackerService::setUserId(const char * userId)
 {
-    _userId = userId;
+    _userId = userId ? userId : "";
 
 #ifdef FIREBASE_AVAILABLE
     if (_firebaseApp)
@@ -335,7 +346,9 @@ void TrackerService::setUserId(const char * userId)
 #ifdef __EMSCRIPTEN__
     EM_ASM_({
         if (Module.fa)
-            Module.firebaseAnalytics.setUserId(Module.fa, Module.UTF8ToString($0));
+            Module.firebaseAnalytics.setUserId(Module.fa, ($0) ? Module.UTF8ToString($0) : null);
+        else
+            Module.faUserId = ($0) ? Module.UTF8ToString($0) : null;
     }, userId);
 #endif
 }
@@ -362,6 +375,8 @@ void TrackerService::setUserProperty(const char * name, const char * value)
     EM_ASM_({
         if (Module.fa)
             Module.firebaseAnalytics.setUserProperties(Module.fa, JSON.parse(Module.UTF8ToString($0)));
+        else
+            Module.faUserProperties = JSON.parse(Module.UTF8ToString($0));
     }, userPropertiesPayload.c_str());
 #endif
 }
