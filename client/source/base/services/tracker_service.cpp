@@ -270,7 +270,7 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
         if (Module.fa)
             Module.firebaseAnalytics.logEvent(Module.fa, Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1)));
         else
-            Module.faQueue.push([Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1)]));
+            Module.faQueue.push([Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1))]);
     }, eventName, paramsPayload.c_str());
 
 #else
