@@ -69,12 +69,12 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
     _apiSecret = apiSecret;
 
 #ifdef FIREBASE_AVAILABLE
-    auto future = firebase::analytics::GetAnalyticsInstanceId();
-    while (future.status() != firebase::kFutureStatusComplete)
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    //auto future = firebase::analytics::GetAnalyticsInstanceId();
+    //while (future.status() != firebase::kFutureStatusComplete)
+    //    std::this_thread::sleep_for(std::chrono::milliseconds(20));
 
-    if (future.error() == 0)
-        _appInstanceId = *future.result();
+    //if (future.error() == 0)
+    //    _appInstanceId = *future.result();
 
     _appId = _firebaseApp->options().app_id();
 #endif
