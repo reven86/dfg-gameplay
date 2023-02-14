@@ -75,7 +75,7 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
     _apiSecret = apiSecret;
 
 #ifdef FIREBASE_AVAILABLE
-    firebase::analytics::GetAnalyticsInstanceId().OnCompletion([](const auto& future) {
+    firebase::analytics::GetAnalyticsInstanceId().OnCompletion([this](const auto& future) {
         if (future.error() == 0)
             _appInstanceId = *future.result();
     });
