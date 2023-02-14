@@ -14,6 +14,7 @@
 #include "firebase/analytics/parameter_names.h"
 #include "firebase/analytics/user_property_names.h"
 #include "firebase/app.h"
+#include "firebase/log.h"
 #endif
 
 #ifdef __EMSCRIPTEN__
