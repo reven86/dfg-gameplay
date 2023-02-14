@@ -35,6 +35,8 @@ TrackerService::TrackerService(const ServiceManager * manager)
     , _httpRequestService(NULL)
 {
 #ifdef FIREBASE_AVAILABLE
+    GP_LOG("before app create");
+
 #ifdef __ANDROID__
     android_app* app = __state;
     JNIEnv* env = app->activity->env;
@@ -49,8 +51,12 @@ TrackerService::TrackerService(const ServiceManager * manager)
     _firebaseApp = firebase::App::Create();
 #endif
 
+    GP_LOG("after app create %X", _firebaseApp);
+
     if (_firebaseApp)
         firebase::analytics::Initialize(*_firebaseApp);
+
+    GP_LOG("after app initialize %X", _firebaseApp);
 #endif
 }
 
@@ -249,9 +255,7 @@ void TrackerService::sendEvent(const char * eventName, const Parameter * paramet
             }
         }
 
-        GP_LOG("Log event %s", eventName);
         firebase::analytics::LogEvent(eventName, params.get(), parameterCount);
-        GP_LOG("Log event done");
         return;
     }
 
@@ -300,6 +304,7 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
     std::string payload = Utils::format("{\"%s\":\"%s\"%s%s,\"events\":[{\"name\":\"%s\", \"params\":%s}]}", clientKey,
         _appInstanceId.c_str(), userIdPayload.c_str(), userPropertiesPayload.c_str(), eventName, paramsPayload.c_str());
 
+    GP_LOG("making GA request %s %s", endpoint.c_str(), payload.c_str());
     _httpRequestService->makeRequestAsync({ endpoint.c_str(), payload.c_str(),
         { { "Content-Type", "application/json" },
         }
