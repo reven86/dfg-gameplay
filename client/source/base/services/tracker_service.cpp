@@ -36,9 +36,6 @@ TrackerService::TrackerService(const ServiceManager * manager)
     , _httpRequestService(NULL)
 {
 #ifdef FIREBASE_AVAILABLE
-    GP_LOG("before app create");
-    firebase::SetLogLevel(firebase::kLogLevelDebug);
-
 #ifdef __ANDROID__
     android_app* app = __state;
     JNIEnv* env = app->activity->env;
@@ -53,12 +50,10 @@ TrackerService::TrackerService(const ServiceManager * manager)
     _firebaseApp = firebase::App::Create();
 #endif
 
-    GP_LOG("after app create %X", _firebaseApp);
+    firebase::SetLogLevel(firebase::kLogLevelDebug);
 
     if (_firebaseApp)
         firebase::analytics::Initialize(*_firebaseApp);
-
-    GP_LOG("after app initialize %X", _firebaseApp);
 #endif
 }
 
