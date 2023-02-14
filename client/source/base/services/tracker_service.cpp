@@ -36,6 +36,7 @@ TrackerService::TrackerService(const ServiceManager * manager)
 {
 #ifdef FIREBASE_AVAILABLE
     GP_LOG("before app create");
+    firebase::SetLogLevel(firebase::kLogLevelDebug);
 
 #ifdef __ANDROID__
     android_app* app = __state;
