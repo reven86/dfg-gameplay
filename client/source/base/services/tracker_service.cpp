@@ -4,7 +4,7 @@
 #include "httprequest_service.h"
 #include "main.h"
 
-#if defined(__ANDROID__) || defined(__APPLE__)
+#if defined(__ANDROID__)// || defined(__APPLE__)
 #define FIREBASE_AVAILABLE
 #endif
 
@@ -50,7 +50,7 @@ TrackerService::TrackerService(const ServiceManager * manager)
     _firebaseApp = firebase::App::Create();
 #endif
 
-    firebase::SetLogLevel(firebase::kLogLevelDebug);
+    //firebase::SetLogLevel(firebase::kLogLevelDebug);
 
     if (_firebaseApp)
         firebase::analytics::Initialize(*_firebaseApp);
