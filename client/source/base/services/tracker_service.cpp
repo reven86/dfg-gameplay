@@ -50,7 +50,7 @@ TrackerService::TrackerService(const ServiceManager * manager)
     _firebaseApp = firebase::App::Create();
 #endif
 
-    firebase::SetLogLevel(firebase::kLogLevelDebug);
+    //firebase::SetLogLevel(firebase::kLogLevelDebug);
 
     if (_firebaseApp)
         firebase::analytics::Initialize(*_firebaseApp);
