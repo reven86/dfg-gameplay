@@ -4,7 +4,7 @@
 #include "httprequest_service.h"
 #include "main.h"
 
-#if defined(__ANDROID__) || defined(__APPLE__)
+#if defined(__ANDROID__)// || defined(__APPLE__)
 #define FIREBASE_AVAILABLE
 #endif
 
@@ -70,6 +70,9 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
     _appId = appId;
     _appInstanceId = appInstanceId;
     _apiSecret = apiSecret;
+
+    // GA require app instance id to be 32 digits hex number
+    _appInstanceId.erase(std::remove(_appInstanceId.begin(), _appInstanceId.end(), '-'), _appInstanceId.end());
 
 #ifdef FIREBASE_AVAILABLE
     firebase::analytics::GetAnalyticsInstanceId().OnCompletion([this](const firebase::Future<std::string>& future) {
