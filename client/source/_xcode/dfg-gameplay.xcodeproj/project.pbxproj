@@ -535,7 +535,7 @@
 				EB53B66F1EE054BF009C89CB /* entity_manager.cpp in Sources */,
 				EBF71FB81F8385890059FA9F /* idb_stream.cpp in Sources */,
 				EB22EE251DCA21A3001E5328 /* slide_menu.cpp in Sources */,
-				//EB7D1E0F1DC4DA400051B0F6 /* iRate.m in Sources */,
+				EB7D1E0F1DC4DA400051B0F6 /* iRate.m in Sources */,
 				EB9F81571AAB25CD00839018 /* profiler.cpp in Sources */,
 				EB4F765A1DC3D7AE001139D4 /* variant.cpp in Sources */,
 				EB54ED6B1E1A518000ADBB86 /* socket_stream.cpp in Sources */,

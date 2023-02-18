@@ -8,7 +8,7 @@
 
 
 #ifdef __APPLE__
-#if 0//TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
 #import "iRate/iRate.h"
 
 @interface iRateTrackingDelegate : NSObject <iRateDelegate>
@@ -103,7 +103,7 @@ DfgGameAdvanced::DfgGameAdvanced(const char * emscriptenDbName, const char * ana
     , _readyToRun(false)
 {
 #ifdef __APPLE__
-#if 0//TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
     [iRate sharedInstance].daysUntilPrompt = 4;
     [iRate sharedInstance].usesUntilPrompt = 10;
     [iRate sharedInstance].promptAtLaunch = false;

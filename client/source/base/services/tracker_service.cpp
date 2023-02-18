@@ -4,7 +4,7 @@
 #include "httprequest_service.h"
 #include "main.h"
 
-#if defined(__ANDROID__)// || defined(__APPLE__)
+#if defined(__ANDROID__) || defined(__APPLE__)
 #define FIREBASE_AVAILABLE
 #endif
 
