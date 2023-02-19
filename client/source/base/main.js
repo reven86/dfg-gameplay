@@ -1,15 +1,4 @@
 mergeInto(LibraryManager.library, {
-  $wget3: {
-    wgetRequests: {},
-    nextWgetRequestHandle: 0,
-
-    getNextWgetRequestHandle: function() {
-      var handle = wget3.nextWgetRequestHandle;
-      wget3.nextWgetRequestHandle++;
-      return handle;
-    },
-  },
-
   emscripten_async_wget3_data: function(url, request, data, dataSize, additionalHeader, arg, free, onload, onerror, onprogress) {
     var _url = UTF8ToString(url);
     var _request = UTF8ToString(request);
@@ -25,7 +14,7 @@ mergeInto(LibraryManager.library, {
     http.open(_request, _url, true);
     http.responseType = 'arraybuffer';
 
-    var handle = wget3.getNextWgetRequestHandle();
+    var handle = wget.getNextWgetRequestHandle();
 
     // LOAD
     http.onload = function http_onload(e) {
@@ -38,7 +27,7 @@ mergeInto(LibraryManager.library, {
       } else {
         if (onerror) {{{ makeDynCall('viiii', 'onerror') }}}(handle, arg, http.status, http.statusText);
       }
-      delete wget3.wgetRequests[handle];
+      delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
     };
 
@@ -47,7 +36,7 @@ mergeInto(LibraryManager.library, {
       if (onerror) {
         {{{ makeDynCall('viiii', 'onerror') }}}(handle, arg, http.status, http.statusText);
       }
-      delete wget3.wgetRequests[handle];
+      delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
     };
 
@@ -58,7 +47,7 @@ mergeInto(LibraryManager.library, {
 
     // ABORT
     http.onabort = function http_onabort(e) {
-      delete wget3.wgetRequests[handle];
+      delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
     };
 
@@ -82,10 +71,11 @@ mergeInto(LibraryManager.library, {
       http.send(null);
     }
 
-    wget3.wgetRequests[handle] = http;
+    wget.wgetRequests[handle] = http;
 
     return handle;
-  }
+  },
+  emscripten_async_wget3_data__deps: ['$wget'],
 });
 
 
