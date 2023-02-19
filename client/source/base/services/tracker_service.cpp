@@ -304,7 +304,7 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
     std::string payload = Utils::format("{\"%s\":\"%s\"%s%s,\"events\":[{\"name\":\"%s\", \"params\":%s}]}", clientKey,
         _appInstanceId.c_str(), userIdPayload.c_str(), userPropertiesPayload.c_str(), eventName, paramsPayload.c_str());
 
-    GP_LOG("making GA request %s %s", endpoint.c_str(), payload.c_str());
+    //GP_LOG("making GA request %s %s", endpoint.c_str(), payload.c_str());
     _httpRequestService->makeRequestAsync({ endpoint.c_str(), payload.c_str(),
         { { "Content-Type", "application/json" },
         }

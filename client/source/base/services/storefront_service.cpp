@@ -56,7 +56,7 @@ void StorefrontService::getProductsEvent(const std::vector< gameplay::StoreProdu
 
 void StorefrontService::getProductsFailedEvent(int errorCode, const char * error)
 {
-    GP_WARN("Can't get products information: %d", errorCode);
+    GP_WARN("Can't get products information: %d %s", errorCode, error);
     _manager->signals.storefrontGetProductsFailedEvent(errorCode, error);
 }
 
