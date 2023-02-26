@@ -193,7 +193,7 @@ void DfgGame::finalize()
 {
     ServiceManager::getInstance()->shutdown();
     Caches::getInstance()->destroyAll();
-    ZipPackagesCache::finilize();
+    ZipPackagesCache::finalize();
 
 #ifndef __EMSCRIPTEN__
     // free any curl resources after it's no longer used.

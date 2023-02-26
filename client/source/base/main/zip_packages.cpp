@@ -127,7 +127,7 @@ std::unordered_map<std::string, std::unique_ptr<ZipPackage>> ZipPackagesCache::_
 
 
 
-void ZipPackagesCache::finilize()
+void ZipPackagesCache::finalize()
 {
     GP_ASSERT(__packages.empty());
     __packages.clear();
