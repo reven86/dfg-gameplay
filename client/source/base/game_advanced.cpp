@@ -371,7 +371,7 @@ void DfgGameAdvanced::updateSettings()
         { "webapp_url", VariantType(std::string(url)) },
     };
 
-    tracker->sendEvent("webapp_domain", params, sizeof(params) / sizeof(params[0]));
+    tracker->sendEvent("webapp_init", params, sizeof(params) / sizeof(params[0]));
 
     free((void *)url);
     free((void *)referrer);
