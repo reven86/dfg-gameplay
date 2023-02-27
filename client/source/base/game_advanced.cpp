@@ -365,7 +365,14 @@ void DfgGameAdvanced::updateSettings()
 
     const char * referrer = reinterpret_cast<const char *>(stringPointer);
     const char * url = reinterpret_cast<const char *>(urlPointer);
-    //tracker->sendEvent("Domain", referrer, url);
+
+    TrackerService::Parameter params[] = {
+        { "webapp_domain", VariantType(std::string(referrer)) },
+        { "webapp_url", VariantType(std::string(url)) },
+    };
+
+    tracker->sendEvent("webapp_domain", params, sizeof(params) / sizeof(params[0]));
+
     free((void *)url);
     free((void *)referrer);
 #endif
