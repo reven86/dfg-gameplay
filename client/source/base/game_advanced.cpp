@@ -369,7 +369,7 @@ void DfgGameAdvanced::updateSettings()
     TrackerService::Parameter params[] = {
         { "webapp_domain", VariantType(std::string(referrer)) },
         { "webapp_url", VariantType(std::string(url)) },
-        { "app_version", VariantType(getConfig()->getNamespace("window", true)->getString("version")) },
+        { "app_version", VariantType(std::string(getConfig()->getNamespace("window", true)->getString("version"))) },
         { "app_language", VariantType(appLanguage) },
     };
 
@@ -377,7 +377,7 @@ void DfgGameAdvanced::updateSettings()
     free((void *)referrer);
 #else
     TrackerService::Parameter params[] = {
-        { "app_version", VariantType(getConfig()->getNamespace("window", true)->getString("version")) },
+        { "app_version", VariantType(std::string(getConfig()->getNamespace("window", true)->getString("version"))) },
         { "app_language", VariantType(appLanguage) },
     };
 #endif
