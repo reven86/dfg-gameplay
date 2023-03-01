@@ -369,13 +369,20 @@ void DfgGameAdvanced::updateSettings()
     TrackerService::Parameter params[] = {
         { "webapp_domain", VariantType(std::string(referrer)) },
         { "webapp_url", VariantType(std::string(url)) },
+        { "app_version", VariantType(getConfig()->getNamespace("window", true)->getString("version")) },
+        { "app_language", VariantType(appLanguage) },
     };
-
-    tracker->sendEvent("webapp_init", params, sizeof(params) / sizeof(params[0]));
 
     free((void *)url);
     free((void *)referrer);
+#else
+    TrackerService::Parameter params[] = {
+        { "app_version", VariantType(getConfig()->getNamespace("window", true)->getString("version")) },
+        { "app_language", VariantType(appLanguage) },
+    };
 #endif
+
+    tracker->sendEvent("app_init", params, sizeof(params) / sizeof(params[0]));
 
     Settings::getInstance()->connect<std::string>("app.language", std::bind(&DfgGameAdvanced::onLanguageChanged, this, std::placeholders::_1));
 
