@@ -55,7 +55,7 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
     return res;
 }
 
-gameplay::Stream * ZipStream::create(gameplay::Stream * compressedStream)
+ZipStream * ZipStream::create(gameplay::Stream * compressedStream)
 {
     // TODO: it not very efficient at the moment since stream is fully read and decompressed in memory
     // it would be more efficient to decompress by chunks on demand
@@ -72,7 +72,7 @@ gameplay::Stream * ZipStream::create(gameplay::Stream * compressedStream)
     return ZipStream::create(compressedData.get(), compressedLength);
 }
 
-gameplay::Stream * ZipStream::create(const void * buffer, size_t bufferSize)
+ZipStream * ZipStream::create(const void * buffer, size_t bufferSize)
 {
     z_stream strm =
     {
@@ -120,7 +120,7 @@ gameplay::Stream * ZipStream::create(const void * buffer, size_t bufferSize)
     (void)inflateEnd(&strm);
 
     if (ret != Z_STREAM_END && ret != Z_OK)
-        GP_WARN("Error while decompressing the stream.");
+        ;// GP_WARN("Error while decompressing the stream.");
 
     res->_underlyingStream->seek(0, SEEK_SET);
     return res;

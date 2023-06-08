@@ -35,7 +35,7 @@ public:
      * @param stream Stream compressed with zlib.
      * @return Newly created ZipStream.
      */
-    static gameplay::Stream * create(gameplay::Stream * compressedStream);
+    static ZipStream * create(gameplay::Stream * compressedStream);
 
     /**
      * Creates ZipStream from another compressed buffer in memory.
@@ -44,7 +44,7 @@ public:
      * @param bufferSize Size of the buffer.
      * @return Newly created ZipStream.
      */
-    static gameplay::Stream * create(const void * buffer, size_t bufferSize);
+    static ZipStream * create(const void * buffer, size_t bufferSize);
 
     /**
      * Returns true if this stream can perform read operations.
@@ -180,6 +180,11 @@ public:
      * @see canSeek()
      */
     virtual bool rewind();
+
+    /**
+     * Get underlying memory buffer.
+     */
+    const uint8_t * getBuffer() const { return _underlyingStream ? _underlyingStream->getBuffer() : nullptr; };
 
 protected:
     ZipStream();
