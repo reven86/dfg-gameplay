@@ -700,7 +700,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
                         // store keys in utf8 encoding
                         stack[marks.back() - 1].getArchive()->set(Utils::WCSToUTF8(stack[i].get<std::wstring>()).c_str(), stack[i + 1]);
                     else
-                        stack[marks.back() - 1].getArchive()->set(std::to_string(stack[i].get<int32_t>()).c_str(), stack[i + 1]);
+                        stack[marks.back() - 1].getArchive()->set(std::to_string(stack[i].get<int64_t>()).c_str(), stack[i + 1]);
                 }
 
                 stack.resize(marks.back());
