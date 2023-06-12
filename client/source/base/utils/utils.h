@@ -212,6 +212,19 @@ static inline gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
 static inline void MD5(const void* data, size_t length, unsigned char outDigest[16]);
 
 
+
+/**
+ * Compress some data using zlib to a stream.
+ * 
+ * @param data Input buffer.
+ * @param dataLength Length of input buffer.
+ * @param stream Stream to store result.
+ * @param tmpBuf Temporary intermediate buffer to store compressed data.
+ * @param tmpBufSize Size of temporary buffer.
+ */
+static void compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize);
+
+
 };
 
 #include "utils.inl"

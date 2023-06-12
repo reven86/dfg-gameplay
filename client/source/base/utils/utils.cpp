@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
+#include "zlib.h"
 
 #if defined (WIN32)
 #include <Rpc.h>
@@ -260,5 +261,32 @@ void Utils::measureChildrenBounds(gameplay::Container * container, float * width
         *width = totalWidth;
     if (height)
         *height = totalHeight;
+}
+
+
+
+void Utils::compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize)
+{
+    z_stream defstream;
+
+    defstream.zalloc = Z_NULL;
+    defstream.zfree = Z_NULL;
+    defstream.opaque = Z_NULL;
+    defstream.avail_in = dataLength;
+    defstream.next_in = (Bytef *)data;
+    deflateInit(&defstream, Z_BEST_COMPRESSION);
+
+    do
+    {
+        defstream.avail_out = tmpBufSize;
+        defstream.next_out = (Bytef *)tmpBuf;
+
+        deflate(&defstream, Z_FINISH);
+
+        if (stream)
+            stream->write(tmpBuf, tmpBufSize - defstream.avail_out, 1);
+    } while (defstream.avail_out == 0);
+
+    deflateEnd(&defstream);
 }
 
