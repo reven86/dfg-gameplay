@@ -235,7 +235,7 @@ bool VariantType::unpickle(gameplay::Stream * stream)
 {
     bool stopped = false;
     std::vector<VariantType> stack;
-    static char str[1024];
+    char str[1024];
     std::unordered_map<std::string, VariantType> memo;
     std::vector<size_t> marks;
 
