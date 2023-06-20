@@ -265,7 +265,7 @@ void Utils::measureChildrenBounds(gameplay::Container * container, float * width
 
 
 
-void Utils::compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize)
+unsigned long Utils::compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize)
 {
     z_stream defstream;
 
@@ -288,5 +288,7 @@ void Utils::compressToStream(const void * data, size_t dataLength, gameplay::Str
     } while (defstream.avail_out == 0);
 
     deflateEnd(&defstream);
+
+    return defstream.total_out;
 }
 

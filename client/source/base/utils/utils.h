@@ -221,8 +221,10 @@ static inline void MD5(const void* data, size_t length, unsigned char outDigest[
  * @param stream Stream to store result.
  * @param tmpBuf Temporary intermediate buffer to store compressed data.
  * @param tmpBufSize Size of temporary buffer.
+ * 
+ * @return Number of bytes written.
  */
-static void compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize);
+static unsigned long compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize);
 
 
 };
