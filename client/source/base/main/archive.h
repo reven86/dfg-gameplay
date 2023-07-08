@@ -134,9 +134,17 @@ public:
      * Serialize Archive to stream.
      *
      * \param stream Stream to serialize to.
-     * \return True if archive has been successfully serialized to stream;
+     * \return True if archive has been successfully serialized.
      */
     bool serialize(gameplay::Stream * stream) const;
+
+    /**
+     * Serialize Archive to JSON.
+     *
+     * \param outStr Output string to receive JSON.
+     * \return True if archive has been successfully serialized.
+     */
+    bool serializeToJSON(std::string * outStr) const;
 
     /**
      * Deserialize Archive from stream.
@@ -170,6 +178,7 @@ public:
 protected:
     Archive();
 
+    bool serializeVariantJSON(std::string * outStr, const VariantType& value) const;
     bool serializeVariant(gameplay::Stream * stream, const VariantType& value) const;
     bool deserializeVariant(gameplay::Stream * stream, VariantType * out, const Archive * dictionary = NULL);
 
