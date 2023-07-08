@@ -655,7 +655,8 @@ bool Archive::serializeToJSON(std::string * outStr) const
         *outStr += it.first;
         *outStr += "\": ";
 
-        serializeVariantJSON(outStr, it.second);
+        if (!serializeVariantJSON(outStr, it.second))
+            return false;
 
         *outStr += ", ";
     }
