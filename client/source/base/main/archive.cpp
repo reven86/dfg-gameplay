@@ -210,7 +210,14 @@ bool Archive::serializeVariant(gameplay::Stream * stream, const VariantType& val
             return stream->write(&size, sizeof(size), 1) == 1 && stream->write(buf, 1, size) == size;
         }
     case VariantType::TYPE_KEYED_ARCHIVE:
-        return value.getArchive()->serialize(stream);
+        {
+            std::unique_ptr<MemoryStream> archiveStream(MemoryStream::create());
+            if(!value.getArchive()->serialize(archiveStream.get()))
+                return false;
+
+            uint32_t len = static_cast<uint32_t>(archiveStream->length());
+            return stream->write(&len, sizeof(len), 1) == 1 && stream->write(archiveStream->getBuffer(), 1, len) == len;
+        }
     case VariantType::TYPE_VECTOR2:
         return stream->write(&value.get<gameplay::Vector2>(), sizeof(gameplay::Vector2), 1) == 1;
     case VariantType::TYPE_VECTOR3:
