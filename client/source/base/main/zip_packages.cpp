@@ -57,7 +57,7 @@ public:
 
         if (!res)
         {
-            GP_WARN("Can't open package %s", zipFile);
+            GP_WARN("Can't open package %s %d", fullPath.c_str(), err);
             return NULL;
         }
 
