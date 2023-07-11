@@ -24,13 +24,19 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
     
     zip * package = ZipPackagesCache::findOrOpenPackage(packageName);
     if (!package)
+    {
+        GP_WARN("package %s can't be found", packageName);
         return NULL;
+    }
 
     //Search for the file of given name
     struct zip_stat st;
     zip_stat_init(&st);
     if (zip_stat(package, fileName, (ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW, &st) != 0)
+    {
+        GP_WARN("file %s (ignoreCase=%d) can't be found in package %s", fileName, ignoreCase, packageName);
         return NULL;
+    }
 
     // make sure we access any zip file only from one thread
     // hint: it would be more convinient to use one mutex per 
@@ -40,7 +46,10 @@ gameplay::Stream * ZipStream::create(const char * packageName, const char * file
     //Read the compressed file
     zip_file *f = zip_fopen_index(package, st.index, ZIP_FL_ENC_RAW);
     if (!f)
+    {
+        GP_WARN("file %s can't be opened in package %s", fileName, packageName);
         return NULL;
+    }
 
     //Alloc memory for its uncompressed contents
     ZipStream * res = new ZipStream();

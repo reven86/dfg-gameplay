@@ -64,7 +64,7 @@ public:
         return new ZipPackage(zipFile, res, ignoreCase);
     }
 
-    virtual gameplay::Stream * open(const char * path, size_t streamMode = gameplay::FileSystem::READ)
+    virtual gameplay::Stream * open(const char * path, size_t streamMode = gameplay::FileSystem::READ) override
     {
         if (streamMode != gameplay::FileSystem::READ)
             return NULL;
