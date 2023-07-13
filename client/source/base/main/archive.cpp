@@ -725,10 +725,14 @@ bool Archive::serializeVariantJSON(std::string * outStr, const VariantType& valu
         *outStr += Utils::format("%f", value.get<double>());
         break;
     case VariantType::TYPE_STRING:
+        *outStr += '\"';
         *outStr += value.get<std::string>();    // TODO: support escaping of quotes
+        *outStr += '\"';
         break;
     case VariantType::TYPE_WIDE_STRING:
+        *outStr += '\"';
         *outStr += Utils::WCSToUTF8(value.get<std::wstring>());    // TODO: support escaping of quotes
+        *outStr += '\"';
         break;
     case VariantType::TYPE_BYTE_ARRAY:
         {
