@@ -55,20 +55,20 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequestAsync(const Request& request, bool headOnly)
+int HTTPRequestService::makeRequestAsync(const Request& request, const char * customRequest)
 {
     // note: request is copied by value
 #ifdef __EMSCRIPTEN__
-    sendRequest(request, headOnly);
+    sendRequest(request, customRequest ? customRequest : "");
     return -1;
 #else
-    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, headOnly, false));
+    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, false, customRequest ? customRequest : ""));
 #endif
 }
 
-void HTTPRequestService::makeRequestSync(const Request& request, bool headOnly)
+void HTTPRequestService::makeRequestSync(const Request& request, const char * customRequest)
 {
-    sendRequest(request, headOnly, true);
+    sendRequest(request, true, customRequest ? customRequest : "");
 }
 
 static int __requestCount = 0;
@@ -109,7 +109,7 @@ bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
     return __requestCount > 0;
 }
 
-void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool syncCall)
+void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std::string customRequest)
 {
 #ifdef _DEBUG
     GP_LOG("Sending HTTP request: %s, POST: %s", request.url.c_str(), request.postPayload.c_str());
@@ -141,9 +141,14 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool
         curl_easy_setopt(curl, CURLOPT_NOPROGRESS, request.progressCallback ? 0 : 1);
         curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, &progressFunction);
         curl_easy_setopt(curl, CURLOPT_XFERINFODATA, &request);
-        curl_easy_setopt(curl, CURLOPT_HEADER, headOnly ? 1 : 0);
-        curl_easy_setopt(curl, CURLOPT_NOBODY, headOnly ? 1 : 0);
         //curl_easy_setopt(curl, CURLOPT_IGNORE_CONTENT_LENGTH, 1);
+        if (customRequest == "HEAD")
+        {
+            curl_easy_setopt(curl, CURLOPT_HEADER, 1);
+            curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
+        }
+        else if (!customRequest.empty())
+                curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, customRequest.c_str());
 
         curl_slist *list = NULL;
         if (!request.headers.empty())
@@ -181,8 +186,8 @@ void HTTPRequestService::sendRequest(const Request& request, bool headOnly, bool
 
 #else
     
-    // HEAD request are currently not supported
-    if (headOnly)
+    // HEAD and custom requests are currently not supported
+    if (!customRequest.empty())
     {
         request.responseCallback(-1, NULL, "Unsupported", 404);
         return;

@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef __DFG_HTTP_REQUEST_SERVICE_H__
-#define __DFG_HTTP_REQUEST_SERVICE_H__
-
 #include "services/service.h"
 #include "services/taskqueue_service.h"
 
@@ -54,19 +51,18 @@ public:
      * there is no need to use synchonization primitives.
      *
      * @param[in] request Request data.
-     * @param[in] headOnly Make only HEAD request.
+     * @param[in] customRequest Custom request type (HEAD, PATCH, DELETE)
      * @return Work item handle.
      */
-    int makeRequestAsync(const Request& request, bool headOnly = false);
+    int makeRequestAsync(const Request& request, const char * customRequest = NULL);
 
     /** 
      * Create HTTP request and execute it immediately from calling thread.
      *
      * @param[in] request Request data.
-     * @param[in] headOnly Make only HEAD request.
-     * @param[in] responseCallback Callback functor when response is received.
+     * @param[in] customRequest Custom request type (PATCH, DELETE)
      */
-    void makeRequestSync(const Request& request, bool headOnly = false);
+    void makeRequestSync(const Request& request, const char * customRequest = NULL);
 
     /**
      * Get whether or not any of HTTP requests is currently in process.
@@ -83,7 +79,7 @@ protected:
     virtual bool onShutdown() override;
 
 private:
-    void sendRequest(const Request& request, bool headOnly, bool syncCall = false);
+    void sendRequest(const Request& request, bool syncCall = false, std::string customRequest = "");
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
     static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length);
     static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);
@@ -91,7 +87,3 @@ private:
 
     TaskQueueService * _taskQueueService;
 };
-
-
-
-#endif // __DFG_HTTP_REQUEST_SERVICE_H__
