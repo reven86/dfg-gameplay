@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "utf8.h"
 #include <openssl/md5.h>
+#include <openssl/sha.h>
 #include <openssl/evp.h>
 #include <openssl/x509.h>
 
@@ -260,6 +261,14 @@ inline void Utils::MD5(const void* data, size_t length, unsigned char outDigest[
     MD5_Init(&context);
     MD5_Update(&context, data, length);
     MD5_Final(outDigest, &context);
+}
+
+inline void Utils::SHA256(const void* data, size_t length, unsigned char outDigest[32])
+{
+    SHA256_CTX context;
+    SHA256_Init(&context);
+    SHA256_Update(&context, data, length);
+    SHA256_Final(outDigest, &context);
 }
 
 inline bool Utils::verifySignature(const char * algorithm, const void * data, size_t dataLength, const std::string& base64Signature, const std::string& base64PublicKey)

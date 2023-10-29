@@ -214,6 +214,17 @@ static inline void MD5(const void* data, size_t length, unsigned char outDigest[
 
 
 /**
+ * Computes SHA256 hash for data.
+ *
+ * @param data Input data buffer.
+ * @param length Length of the buffer.
+ * @param outDigest Buffer to save digest to.
+ */
+static inline void SHA256(const void* data, size_t length, unsigned char outDigest[32]);
+
+
+
+/**
  * Compress some data using zlib to a stream.
  * 
  * @param data Input buffer.
