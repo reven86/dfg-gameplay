@@ -61,7 +61,7 @@ int HTTPRequestService::makeRequestAsync(const Request& request, const char * cu
 {
     // note: request is copied by value
 #ifdef __EMSCRIPTEN__
-    sendRequest(request, customRequest ? customRequest : "", withCredentials);
+    sendRequest(request, true, customRequest ? customRequest : "", withCredentials);
     return -1;
 #else
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, false, customRequest ? customRequest : "", withCredentials));
@@ -214,7 +214,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std:
     Request * newRequest = new Request(request);
 
     __requestCount++;
-    emscripten_async_wget3_data(request.url.c_str(), request.postPayload.empty() ? "GET" : "POST", request.postPayload.c_str(), request.postPayload.size(),
+    emscripten_async_wget3_data(request.url.c_str(), customRequest.empty() ? (request.postPayload.empty() ? "GET" : "POST") : customRequest.c_str(), request.postPayload.c_str(), request.postPayload.size(),
         additionalHeaders.c_str(), newRequest, true, &HTTPRequestService::requestLoadCallback, &HTTPRequestService::requestErrorCallback, 
         request.progressCallback ? &HTTPRequestService::requestProgressCallback : NULL, withCredentials);
 
