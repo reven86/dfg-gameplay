@@ -42,10 +42,12 @@ inline std::string Utils::format(const char * fmt, ...)
     va_start(args, fmt);
 
 #ifdef WIN32
-    _vsnprintf(result, 2048, fmt, args);
+    int numWritten = _vsnprintf(result, 2048, fmt, args);
 #else
-    vsnprintf(result, 2048, fmt, args);
+    int numWritten = vsnprintf(result, 2048, fmt, args);
 #endif
+
+    GP_ASSERT(numWritten < 2048);
 
     va_end(args);
 
@@ -61,10 +63,12 @@ inline std::wstring Utils::format(const wchar_t * fmt, ...)
     va_start(args, fmt);
 
 #ifdef WIN32
-    _vsnwprintf(result, 2048, fmt, args);
+    int numWritten = _vsnwprintf(result, 2048, fmt, args);
 #else
-    vswprintf(result, 2048, fmt, args);
+    int numWritten = vswprintf(result, 2048, fmt, args);
 #endif
+
+    GP_ASSERT(numWritten < 2048);
 
     va_end(args);
 
@@ -207,6 +211,8 @@ inline void Utils::base64Encode(const void * in, size_t len, std::string * out, 
     if (!out)
         return;
 
+    out->clear();
+
     const char * alphabet = urlsafe ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     int val = 0, valb = -6;
@@ -231,6 +237,8 @@ inline void Utils::base64Decode(const std::string &in, std::vector<uint8_t> * ou
 {
     if (!out)
         return;
+
+    out->clear();
 
     const char * alphabet = urlsafe ? "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_" : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
