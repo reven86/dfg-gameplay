@@ -61,7 +61,7 @@ int HTTPRequestService::makeRequestAsync(const Request& request, const char * cu
 {
     // note: request is copied by value
 #ifdef __EMSCRIPTEN__
-    sendRequest(request, customRequest ? customRequest : "");
+    sendRequest(request, customRequest ? customRequest : "", withCredentials);
     return -1;
 #else
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, false, customRequest ? customRequest : "", withCredentials));
