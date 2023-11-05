@@ -13,6 +13,7 @@ mergeInto(LibraryManager.library, {
     var http = new XMLHttpRequest();
     http.open(_request, _url, true);
     http.responseType = 'arraybuffer';
+    http.withCredentials = true;
 
     var handle = wget.getNextWgetRequestHandle();
 
