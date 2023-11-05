@@ -55,20 +55,20 @@ bool HTTPRequestService::onShutdown()
     return true;
 }
 
-int HTTPRequestService::makeRequestAsync(const Request& request, const char * customRequest)
+int HTTPRequestService::makeRequestAsync(const Request& request, const char * customRequest, bool withCredentials)
 {
     // note: request is copied by value
 #ifdef __EMSCRIPTEN__
     sendRequest(request, customRequest ? customRequest : "");
     return -1;
 #else
-    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, false, customRequest ? customRequest : ""));
+    return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, false, customRequest ? customRequest : "", withCredentials));
 #endif
 }
 
-void HTTPRequestService::makeRequestSync(const Request& request, const char * customRequest)
+void HTTPRequestService::makeRequestSync(const Request& request, const char * customRequest, bool withCredentials)
 {
-    sendRequest(request, true, customRequest ? customRequest : "");
+    sendRequest(request, true, customRequest ? customRequest : "", withCredentials);
 }
 
 static int __requestCount = 0;
@@ -109,7 +109,7 @@ bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
     return __requestCount > 0;
 }
 
-void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std::string customRequest)
+void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std::string customRequest, bool withCredentials)
 {
 #ifdef _DEBUG
     GP_LOG("Sending HTTP request: %s, POST: %s", request.url.c_str(), request.postPayload.c_str());
@@ -214,7 +214,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std:
     __requestCount++;
     emscripten_async_wget3_data(request.url.c_str(), request.postPayload.empty() ? "GET" : "POST", request.postPayload.c_str(), request.postPayload.size(),
         additionalHeaders.c_str(), newRequest, true, &HTTPRequestService::requestLoadCallback, &HTTPRequestService::requestErrorCallback, 
-        request.progressCallback ? &HTTPRequestService::requestProgressCallback : NULL);
+        request.progressCallback ? &HTTPRequestService::requestProgressCallback : NULL, withCredentials);
 
 #endif
 }

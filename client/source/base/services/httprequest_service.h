@@ -52,17 +52,19 @@ public:
      *
      * @param[in] request Request data.
      * @param[in] customRequest Custom request type (HEAD, PATCH, DELETE)
+     * @param[in] withCredentials Send credentials (cookies) on emscripten.
      * @return Work item handle.
      */
-    int makeRequestAsync(const Request& request, const char * customRequest = NULL);
+    int makeRequestAsync(const Request& request, const char * customRequest = NULL, bool withCredentials = false);
 
     /** 
      * Create HTTP request and execute it immediately from calling thread.
      *
      * @param[in] request Request data.
      * @param[in] customRequest Custom request type (PATCH, DELETE)
+     * @param[in] withCredentials Send credentials (cookies) on emscripten.
      */
-    void makeRequestSync(const Request& request, const char * customRequest = NULL);
+    void makeRequestSync(const Request& request, const char * customRequest = NULL, bool withCredentials = false);
 
     /**
      * Get whether or not any of HTTP requests is currently in process.
@@ -79,7 +81,7 @@ protected:
     virtual bool onShutdown() override;
 
 private:
-    void sendRequest(const Request& request, bool syncCall = false, std::string customRequest = "");
+    void sendRequest(const Request& request, bool syncCall = false, std::string customRequest = "", bool withCredentials = false);
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
     static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length);
     static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);

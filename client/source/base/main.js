@@ -1,5 +1,5 @@
 mergeInto(LibraryManager.library, {
-  emscripten_async_wget3_data: function(url, request, data, dataSize, additionalHeader, arg, free, onload, onerror, onprogress) {
+  emscripten_async_wget3_data: function(url, request, data, dataSize, additionalHeader, arg, free, onload, onerror, onprogress, withCredentials) {
     var _url = UTF8ToString(url);
     var _request = UTF8ToString(request);
 
@@ -13,7 +13,7 @@ mergeInto(LibraryManager.library, {
     var http = new XMLHttpRequest();
     http.open(_request, _url, true);
     http.responseType = 'arraybuffer';
-    http.withCredentials = true;
+    http.withCredentials = withCredentials;
 
     var handle = wget.getNextWgetRequestHandle();
 
