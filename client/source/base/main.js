@@ -65,7 +65,7 @@ mergeInto(LibraryManager.library, {
       }
     } catch (ex) { }
 
-    if (_request == "POST") {
+    if (dataSize !== 0) {
       //Send the proper header information along with the request
       http.send(_param);
     } else {
