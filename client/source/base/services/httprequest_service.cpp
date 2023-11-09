@@ -188,13 +188,6 @@ void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std:
 
 #else
     
-    // HEAD and custom requests are currently not supported
-    if (!customRequest.empty())
-    {
-        request.responseCallback(-1, NULL, "Unsupported", 404);
-        return;
-    }
-
     std::string additionalHeaders;  // headers in JSON format
     if (!request.headers.empty())
     {
