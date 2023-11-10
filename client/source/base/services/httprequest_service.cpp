@@ -114,7 +114,8 @@ bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
 void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std::string customRequest, bool withCredentials)
 {
 #ifdef _DEBUG
-    GP_LOG("Sending HTTP request: %s, POST: %s", request.url.c_str(), request.postPayload.c_str());
+    GP_LOG("Sending HTTP request: %s, %s: %s", request.url.c_str(),
+        customRequest.empty() ? (request.postPayload.empty() ? "GET" : "POST") : customRequest.c_str(), request.postPayload.c_str());
 #endif
 
 #ifndef __EMSCRIPTEN__
