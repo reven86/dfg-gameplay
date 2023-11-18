@@ -1,5 +1,4 @@
-#ifndef __DFG_STOREFRONTSERVICE__
-#define __DFG_STOREFRONTSERVICE__
+#pragma once
 
 #include "service.h"
 
@@ -90,9 +89,5 @@ protected:
 
 private:
     std::vector< gameplay::StoreProduct > _products;
-    std::vector< std::string > _invalidProducts;
 };
 
-
-
-#endif //__DFG_STOREFRONTSERVICE__

@@ -43,7 +43,6 @@ void StorefrontService::refreshProducts(const char ** productsToHandle)
 void StorefrontService::getProductsEvent(const std::vector< gameplay::StoreProduct >& products, const std::vector< std::string >& invalidProducts)
 {
     _products = products;
-    _invalidProducts = invalidProducts;
 
 #ifdef _DEBUG
     if (strcmp(gameplay::Game::getInstance()->getStoreController()->getStoreFront()->getName(), "Null"))
@@ -62,7 +61,7 @@ void StorefrontService::getProductsFailedEvent(int errorCode, const char * error
 
 bool StorefrontService::isProductValid(const char * product) const
 {
-    return std::find(_invalidProducts.begin(), _invalidProducts.end(), product) == _invalidProducts.end();
+    return getProduct(product) != nullptr;
 }
 
 const gameplay::StoreProduct * StorefrontService::getProduct(const char * product) const
