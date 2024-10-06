@@ -393,7 +393,7 @@ template<> inline const int64_t& VariantType::get() const
 
 template<> inline const uint64_t& VariantType::get() const
 {
-    GP_ASSERT(type == TYPE_UINT64 || type == TYPE_UINT32 || type == TYPE_UINT16 || type == TYPE_UINT8 || type == TYPE_BOOLEAN);
+    GP_ASSERT(type == TYPE_UINT64 || type == TYPE_UINT32 || type == TYPE_INT32 || type == TYPE_UINT16 || type == TYPE_INT16 || type == TYPE_UINT8 || type == TYPE_INT8 || type == TYPE_BOOLEAN);
     return uint64Value;
 }
 

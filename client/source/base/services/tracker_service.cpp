@@ -88,9 +88,9 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
         Module.faQueue = [];
         Module.faUserId = null;
         Module.faUserProperties = {};
-        import("https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js").then((mod)=>{ 
+        import("https://www.gstatic.com/firebasejs/10.13/firebase-app.js").then((mod)=>{ 
             Module.firebaseApp = mod;
-            import("https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js").then((mod)=>{ 
+            import("https://www.gstatic.com/firebasejs/10.13/firebase-analytics.js").then((mod)=>{ 
                 Module.firebaseAnalytics = mod;
 
                 if (Module.firebaseConfig)
@@ -279,7 +279,7 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
 
 #else
 
-    GP_ASSERT(_httpRequestService);
+    //GP_ASSERT(_httpRequestService);
     if (!_httpRequestService)
         return;
 
