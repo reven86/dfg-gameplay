@@ -88,7 +88,7 @@ void TrackerService::setupTracking(const char * appId, const char * appInstanceI
         Module.faQueue = [];
         Module.faUserId = null;
         Module.faUserProperties = {};
-        import("https://www.gstatic.com/firebasejs/10.13/firebase-app.js").then((mod)=>{ 
+        import("https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js").then((mod)=>{ 
             Module.firebaseApp = mod;
             import("https://www.gstatic.com/firebasejs/10.13/firebase-analytics.js").then((mod)=>{ 
                 Module.firebaseAnalytics = mod;
