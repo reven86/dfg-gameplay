@@ -83,8 +83,8 @@ protected:
 private:
     void sendRequest(const Request& request, bool syncCall = false, std::string customRequest = "", bool withCredentials = false);
     static size_t writeFunction(void *contents, size_t size, size_t nmemb, void *userp);
-    static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length);
-    static void requestErrorCallback(unsigned, void * arg, int errorCode, const char * status);
+    static void requestLoadCallback(unsigned, void * arg, void *buf, unsigned length, int statusCode, const char * status);
+    static void requestErrorCallback(unsigned, void * arg, int statusCode, const char * status);
     static void requestProgressCallback(unsigned, void * arg, int dlnow, int dltotal);
 
     TaskQueueService * _taskQueueService;

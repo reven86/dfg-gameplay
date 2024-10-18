@@ -74,20 +74,22 @@ void HTTPRequestService::makeRequestSync(const Request& request, const char * cu
 }
 
 static int __requestCount = 0;
-void HTTPRequestService::requestLoadCallback(unsigned, void * arg, void *buf, unsigned length)
+void HTTPRequestService::requestLoadCallback(unsigned, void * arg, void *buf, unsigned length, int statusCode, const char * status)
 {
     Request * request = reinterpret_cast<Request *>(arg);
-    request->responseCallback(CURLE_OK, MemoryStream::create(buf, length), NULL, 200);
+    MemoryStream * response = MemoryStream::create(buf, length);
+    request->responseCallback(CURLE_OK, response, status, statusCode);
+    delete response;
     delete request;
 
     __requestCount--;
 }
 
-void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int errorCode, const char * status)
+void HTTPRequestService::requestErrorCallback(unsigned, void *arg, int statusCode, const char * status)
 {
     Request * request = reinterpret_cast<Request *>(arg);
-    GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), errorCode, status);
-    request->responseCallback(-1, NULL, status, errorCode);  // there is no 'curl' error for emscripten callback, errorCode is HTTP status code
+    GP_LOG("Failed to perform HTTP request to %s: error %d %s", request->url.c_str(), statusCode, status);
+    request->responseCallback(-1, NULL, status, statusCode);  // there is no 'curl' error for emscripten callback, errorCode is HTTP status code
     delete request;
 
     __requestCount--;

@@ -19,15 +19,13 @@ mergeInto(LibraryManager.library, {
 
     // LOAD
     http.onload = function http_onload(e) {
-      if (http.status == 200 || _url.substr(0,4).toLowerCase() != "http") {
-        var byteArray = new Uint8Array(http.response);
-        var buffer = _malloc(byteArray.length);
-        HEAPU8.set(byteArray, buffer);
-        if (onload) {{{ makeDynCall('viiii', 'onload') }}}(handle, arg, buffer, byteArray.length);
-        if (free) _free(buffer);
-      } else {
-        if (onerror) {{{ makeDynCall('viiii', 'onerror') }}}(handle, arg, http.status, http.statusText);
-      }
+      var byteArray = new Uint8Array(http.response);
+      var buffer = _malloc(byteArray.length);
+      HEAPU8.set(byteArray, buffer);
+
+      if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, byteArray.length, http.status, http.statusText);
+
+      if (free) _free(buffer);
       delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
     };
