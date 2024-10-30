@@ -37,7 +37,6 @@ class ZipPackage : public gameplay::Package, Noncopyable
 public:
     virtual ~ZipPackage()
     {
-        gameplay::FileSystem::unregisterPackage(this);
     }
 
     static ZipPackage * create(const char * zipFile, bool ignoreCase = false)
@@ -109,8 +108,6 @@ protected:
         , _ignoreCase(ignoreCase)
     {
         _zip.reset(zipObject, zip_close);
-
-        gameplay::FileSystem::registerPackage(this);
     }
 
 private:
@@ -130,6 +127,10 @@ std::unordered_map<std::string, std::unique_ptr<ZipPackage>> ZipPackagesCache::_
 void ZipPackagesCache::finalize()
 {
     GP_ASSERT(__packages.empty());
+
+    for (auto& it : __packages)
+        gameplay::FileSystem::unregisterPackage(it.second.get());
+
     __packages.clear();
 
     __finilized = true;
@@ -149,6 +150,7 @@ zip * ZipPackagesCache::findOrOpenPackage(const char * packageName, bool ignoreC
         return NULL;
 
     __packages.emplace(packageName, res);
+    gameplay::FileSystem::registerPackage(res);
     return res->getZip();
 }
 
@@ -159,7 +161,10 @@ void ZipPackagesCache::closePackage(const char * packageName)
 
     auto package = __packages.find(packageName);
     if (package != __packages.end())
+    {
+        gameplay::FileSystem::unregisterPackage((*package).second.get());
         __packages.erase(package);
+    }
 }
 
 void ZipPackagesCache::setPassword(const char * packageName, const char * password)
