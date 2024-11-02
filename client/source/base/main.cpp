@@ -71,7 +71,7 @@ void DfgGame::initialize()
     curl_global_init(CURL_GLOBAL_ALL);
     bool hasRenderer = true;
 #else
-    char * canvasName = (char *)EM_ASM_PTR({ return Module.canvas !== undefined ? stringToNewUTF8(Module.canvas) : 0; });
+    char * canvasName = (char *)EM_ASM_PTR({ return Module.canvas !== undefined ? stringToNewUTF8(Module.canvas.id) : 0; });
     bool hasRenderer = canvasName != nullptr;
     if (canvasName)
         free(canvasName);
