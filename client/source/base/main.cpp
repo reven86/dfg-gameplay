@@ -54,6 +54,8 @@ extern "C"
 
 DfgGame::DfgGame()
     : _hyperKeyPressed(false)
+    , _inputService(nullptr)
+    , _renderService(nullptr)
 {
 #ifdef __EMSCRIPTEN__
     _hasIndexedDB = EM_ASM_INT_V({
@@ -67,13 +69,22 @@ void DfgGame::initialize()
 #ifndef __EMSCRIPTEN__
     // initialize curl before any services get created
     curl_global_init(CURL_GLOBAL_ALL);
+    bool hasRenderer = true;
+#else
+    const char * canvasName = (const char *)EM_ASM_PTR({ return Module.canvas !== undefined ? stringToNewUTF8(Module.canvas) : 0; });
+    bool hasRenderer = canvasName != nullptr;
+    if (canvasName)
+        free(canvasName);
 #endif
 
     // create services
-    _inputService = ServiceManager::getInstance()->registerService< InputService >(NULL);
+    if (hasRenderer)
+    {
+        _inputService = ServiceManager::getInstance()->registerService< InputService >(NULL);
 
-    Service * render_dep[] = { _inputService, NULL };
-    _renderService = ServiceManager::getInstance()->registerService< RenderService >(render_dep);
+        Service * render_dep[] = { _inputService, NULL };
+        _renderService = ServiceManager::getInstance()->registerService< RenderService >(render_dep);
+    }
 
     _userFolder = getAppPrivateFolderPath();
 #ifdef WIN32
