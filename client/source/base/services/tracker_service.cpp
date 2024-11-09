@@ -273,7 +273,7 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
     EM_ASM_({
         if (Module.fa)
             Module.firebaseAnalytics.logEvent(Module.fa, Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1)));
-        else
+        else if (Module.faQueue)
             Module.faQueue.push([Module.UTF8ToString($0), JSON.parse(Module.UTF8ToString($1))]);
     }, eventName, paramsPayload.c_str());
 
