@@ -175,7 +175,9 @@ void DfgGameAdvanced::initialize()
 
 void DfgGameAdvanced::createServices()
 {
+#ifndef _DEBUG
     ServiceManager::getInstance()->registerService< TrackerService >(NULL);
+#endif
 }
 
 void DfgGameAdvanced::settingsLoadCallback(void * arg, void * buffer, int bufferSize)
@@ -337,7 +339,8 @@ void DfgGameAdvanced::updateSettings()
 
     TrackerService * tracker = ServiceManager::getInstance()->findService<TrackerService>();
 
-    tracker->setupTracking(_analyticsAppId.c_str(), Settings::getInstance()->get<std::string>("app.uuid").c_str(), _analyticsApiSecret.c_str());
+    if (tracker)
+        tracker->setupTracking(_analyticsAppId.c_str(), Settings::getInstance()->get<std::string>("app.uuid").c_str(), _analyticsApiSecret.c_str());
 
 #ifdef __EMSCRIPTEN__
     // get the domain name where the app is running
@@ -382,7 +385,8 @@ void DfgGameAdvanced::updateSettings()
     };
 #endif
 
-    tracker->sendEvent("app_init", params, sizeof(params) / sizeof(params[0]));
+    if (tracker)
+        tracker->sendEvent("app_init", params, sizeof(params) / sizeof(params[0]));
 
     Settings::getInstance()->connect<std::string>("app.language", std::bind(&DfgGameAdvanced::onLanguageChanged, this, std::placeholders::_1));
 
