@@ -35,6 +35,24 @@ bool HTTPRequestService::onPreInit()
 {
     _taskQueueService = _manager->findService<TaskQueueService>();
     _taskQueueService->createQueue(HTTP_REQUEST_SERVICE_QUEUE);
+
+    if (gameplay::Game::getInstance())
+    {
+        _userAgentString = gameplay::Game::getInstance()->getUserAgentString();
+
+        const char * userAgent = gameplay::Game::getInstance()->getConfig()->getString("userAgent");
+        if (userAgent)
+        {
+            _userAgentString += " ";
+            _userAgentString += userAgent;
+            _userAgentString += "/";
+            _userAgentString += gameplay::Game::getInstance()->getConfig()->getNamespace("window", true)->getString("version");
+        }
+    }
+    else
+    {
+        _userAgentString = "Mozilla/5.0";
+    }
     
     return true;
 }
@@ -130,7 +148,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std:
         void * curl = NULL;
 
         curl = curl_easy_init();
-        curl_easy_setopt(curl, CURLOPT_USERAGENT, gameplay::Game::getInstance() ? gameplay::Game::getInstance()->getUserAgentString() : "Mozilla/5.0");
+        curl_easy_setopt(curl, CURLOPT_USERAGENT, _userAgentString.c_str());
         //curl_easy_setopt(curl, CURLOPT_DNS_CACHE_TIMEOUT, -1);
         curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1);
         curl_easy_setopt(curl, CURLOPT_TIMEOUT, 120);

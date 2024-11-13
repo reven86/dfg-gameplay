@@ -88,4 +88,5 @@ private:
     static void requestProgressCallback(unsigned, void * arg, int dlnow, int dltotal);
 
     TaskQueueService * _taskQueueService;
+    std::string _userAgentString;
 };
