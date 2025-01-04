@@ -134,6 +134,24 @@ bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
 
 void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std::string customRequest, bool withCredentials)
 {
+    if (request.url.empty()) {
+        // if request url is empty, immediately calll callback with error code
+        if (request.responseCallback)
+        {
+            if (syncCall)
+            {
+                request.responseCallback(-1, nullptr, "", 0);
+            }
+            else
+            {
+                // response is copied by value since callback is invoked on main thread
+                _taskQueueService->runOnMainThread([=]() { request.responseCallback(-1, nullptr, "", 0); });
+            }
+        }
+
+        return;
+    }
+
 #ifdef _DEBUG
     GP_LOG("Sending HTTP request: %s, %s: %s", request.url.c_str(),
         customRequest.empty() ? (request.postPayload.empty() ? "GET" : "POST") : customRequest.c_str(), request.postPayload.c_str());
