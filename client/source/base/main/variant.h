@@ -1,9 +1,6 @@
 #pragma once
 
 
-#ifndef __DFG_VARIANT_H__
-#define __DFG_VARIANT_H__
-
 
 /**
  * Defines Variant data type that can hold arbitrary other types.
@@ -242,6 +239,15 @@ public:
     inline bool operator== (const VariantType& other) const;
     inline bool operator!= (const VariantType& other) const;
 
+
+    /**
+     * Serialize Variant to JSON.
+     * 
+     * @param outStr Output string where result is appended.
+     * @return True on success, False when the value can't be serialized.
+     */
+    bool serializeToJSON(std::string * outStr) const;
+
 private:
     // This constructor is private to prevent creation of VariantType from pointer
     // Without this, creating VariantType from any pointer will be automatically casted to BOOL
@@ -292,6 +298,3 @@ private:
 
 
 #include "variant.inl"
-
-
-#endif // __DFG_VARIANT_H__

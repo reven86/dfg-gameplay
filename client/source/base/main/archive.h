@@ -1,7 +1,5 @@
 #pragma once
 
-#ifndef __DFG_ARCHIVE_H__
-#define __DFG_ARCHIVE_H__
 
 
 
@@ -178,7 +176,6 @@ public:
 protected:
     Archive();
 
-    bool serializeVariantJSON(std::string * outStr, const VariantType& value) const;
     bool serializeVariant(gameplay::Stream * stream, const VariantType& value) const;
     bool deserializeVariant(gameplay::Stream * stream, VariantType * out, const Archive * dictionary = NULL);
 
@@ -190,4 +187,3 @@ protected:
 #include "archive.inl"
 
 
-#endif // __DFG_ARCHIVE_H__

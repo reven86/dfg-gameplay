@@ -662,7 +662,7 @@ bool Archive::serializeToJSON(std::string * outStr) const
         *outStr += it.first;
         *outStr += "\": ";
 
-        if (!serializeVariantJSON(outStr, it.second))
+        if (!it.second.serializeToJSON(outStr))
             return false;
 
         *outStr += ", ";
@@ -675,131 +675,6 @@ bool Archive::serializeToJSON(std::string * outStr) const
     }
 
     *outStr += '}';
-
-    return true;
-}
-
-bool Archive::serializeVariantJSON(std::string * outStr, const VariantType& value) const
-{
-    VariantType::Type type = value.getType();
-
-    switch (type)
-    {
-    case VariantType::TYPE_NONE:
-        *outStr += "null";
-        break;
-    case VariantType::TYPE_BOOLEAN:
-        if (value.get<bool>())
-            *outStr += "true";
-        else
-            *outStr += "false";
-        break;
-    case VariantType::TYPE_INT8:
-        *outStr += Utils::format("%d", value.get<int8_t>());
-        break;
-    case VariantType::TYPE_UINT8:
-        *outStr += Utils::format("%u", value.get<uint8_t>());
-        break;
-    case VariantType::TYPE_INT16:
-        *outStr += Utils::format("%d", value.get<int16_t>());
-        break;
-    case VariantType::TYPE_UINT16:
-        *outStr += Utils::format("%u", value.get<uint16_t>());
-        break;
-    case VariantType::TYPE_INT32:
-        *outStr += Utils::format("%d", value.get<int32_t>());
-        break;
-    case VariantType::TYPE_UINT32:
-        *outStr += Utils::format("%u", value.get<uint32_t>());
-        break;
-    case VariantType::TYPE_INT64:
-        *outStr += Utils::format("%ld", value.get<int64_t>());
-        break;
-    case VariantType::TYPE_UINT64:
-        *outStr += Utils::format("%lu", value.get<uint64_t>());
-        break;
-    case VariantType::TYPE_FLOAT:
-        *outStr += Utils::format("%f", value.get<float>());
-        break;
-    case VariantType::TYPE_FLOAT64:
-        *outStr += Utils::format("%f", value.get<double>());
-        break;
-    case VariantType::TYPE_STRING:
-        *outStr += '\"';
-        *outStr += value.get<std::string>();    // TODO: support escaping of quotes
-        *outStr += '\"';
-        break;
-    case VariantType::TYPE_WIDE_STRING:
-        *outStr += '\"';
-        *outStr += Utils::WCSToUTF8(value.get<std::wstring>());    // TODO: support escaping of quotes
-        *outStr += '\"';
-        break;
-    case VariantType::TYPE_BYTE_ARRAY:
-        {
-            uint32_t size;
-            const uint8_t * buf = value.getBlob(&size);
-            Utils::base64Encode(buf, size, outStr);
-        }
-        break;
-    case VariantType::TYPE_KEYED_ARCHIVE:
-        value.getArchive()->serializeToJSON(outStr);
-        break;
-    case VariantType::TYPE_VECTOR2:
-        *outStr += Utils::format("[%f, %f]", value.get<gameplay::Vector2>().x, value.get<gameplay::Vector2>().y);
-        break;
-    case VariantType::TYPE_VECTOR3:
-        *outStr += Utils::format("[%f, %f, %f]", value.get<gameplay::Vector3>().x, value.get<gameplay::Vector3>().y, value.get<gameplay::Vector3>().z);
-        break;
-    case VariantType::TYPE_VECTOR4:
-        *outStr += Utils::format("[%f, %f, %f, %f]", value.get<gameplay::Vector4>().x, value.get<gameplay::Vector4>().y, value.get<gameplay::Vector4>().z, value.get<gameplay::Vector4>().w);
-        break;
-    case VariantType::TYPE_MATRIX2:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_MATRIX3:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_MATRIX4:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_COLOR:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_FASTNAME:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_AABBOX3:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_FILEPATH:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    case VariantType::TYPE_LIST:
-        {
-            uint32_t size = static_cast<uint32_t>(std::distance(value.begin(), value.end()));
-
-            *outStr += '[';
-            for (const VariantType& v : value)
-            {
-                if (!serializeVariantJSON(outStr, v))
-                    return false;
-
-                *outStr += ", ";
-            }
- 
-            if (size)
-            {
-                outStr->pop_back();
-                outStr->pop_back();
-            }
-
-            *outStr += ']';
-        }
-        break;
-    default:
-        GP_ASSERT(!"Not implemented yet");
-        return false;
-    }
 
     return true;
 }
