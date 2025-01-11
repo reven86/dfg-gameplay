@@ -7,6 +7,7 @@
 #include "services/tracker_service.h"
 
 
+
 #ifdef __APPLE__
 #if TARGET_OS_IPHONE
 #import "iRate/iRate.h"
@@ -87,6 +88,10 @@ extern "C"
         static_cast<DfgGameAdvanced *>(gameplay::Game::getInstance())->onBeforeUnload();
     }
 }
+
+#include <emscripten.h>
+extern int __argc;
+extern char ** __argv;
 #endif
 
 
@@ -319,6 +324,27 @@ void DfgGameAdvanced::saveSettings()
 
 void DfgGameAdvanced::updateSettings()
 {
+#if defined(__EMSCRIPTEN__) || defined(WIN32)
+
+    int i = 1;
+    while (i < __argc)
+    {
+        if (strcmp(__argv[i], "--setting") == 0)
+        {
+            const char * key = __argv[++i];
+            Settings::getInstance()->set(key, std::string(__argv[++i]));
+        }
+        else if (strcmp(__argv[i], "--settingInt") == 0)
+        {
+            const char * key = __argv[++i];
+            Settings::getInstance()->set(key, atoi(__argv[++i]));
+        }
+        i++;
+    }
+
+#endif
+
+
     // try to setup locale based on settings
     // if it fails, fallback to game's one
     const std::string& appLanguage = Settings::getInstance()->get<std::string>("app.language");
