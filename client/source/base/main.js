@@ -21,7 +21,7 @@ mergeInto(LibraryManager.library, {
     http.onload = function http_onload(e) {
         if (_request === "HEAD") {
             let allHeaders = http.getAllResponseHeaders();
-            let buffer = Module.stringToNewUTF8(allHeaders);
+            let buffer = stringToNewUTF8(allHeaders);
             if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, allHeaders.length, http.status, http.statusText);
             _free(buffer)
         }
