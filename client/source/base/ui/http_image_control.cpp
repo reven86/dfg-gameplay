@@ -46,10 +46,7 @@ void HTTPImageControl::initialize(const char * typeName, gameplay::Theme::Style 
     if (properties)
     {
         std::string path = properties->getString("path");
-        if (!gameplay::FileSystem::fileExists(path.c_str()))
-        {
-            setImage(path.c_str());
-        }
+        setImage(path.c_str());
 
         _preserveAspect = properties->getBool("preserveAspect", true);
     }

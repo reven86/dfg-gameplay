@@ -19,13 +19,21 @@ mergeInto(LibraryManager.library, {
 
     // LOAD
     http.onload = function http_onload(e) {
-      var byteArray = new Uint8Array(http.response);
-      var buffer = _malloc(byteArray.length);
-      HEAPU8.set(byteArray, buffer);
+        if (request === "HEAD") {
+            let allHeaders = http.getAllResponseHeaders();
+            let buffer = Module.stringToNewUTF8(allHeaders);
+            if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, allHeaders.length, http.status, http.statusText);
+            _free(buffer)
+        }
+        else {
+          var byteArray = new Uint8Array(http.response);
+          var buffer = _malloc(byteArray.length);
+          HEAPU8.set(byteArray, buffer);
 
-      if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, byteArray.length, http.status, http.statusText);
+          if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, byteArray.length, http.status, http.statusText);
 
-      if (free) _free(buffer);
+          if (free) _free(buffer);
+        }
       delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
     };
