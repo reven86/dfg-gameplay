@@ -554,6 +554,11 @@ inline void VariantType::clear()
     type = TYPE_NONE;
 }
 
+template<typename _Type> inline void VariantType::setBlob(const _Type& value)
+{
+    setBlob(&value, sizeof(value));
+}
+
 template<typename _Type> inline const _Type * VariantType::getBlob() const
 {
     uint32_t size;

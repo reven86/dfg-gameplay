@@ -164,6 +164,13 @@ public:
     const uint8_t * getBlob(uint32_t * size) const;
 
     /**
+     * Helper function to copy/set blob from a given type.
+     *
+     * @return Pointer to a first byte of blob, converted to a given type.
+     */
+    template<typename _Type> inline void setBlob(const _Type& blob);
+
+    /**
      * Helper function to get blob and convert it to a given data type.
      *
      * @return Pointer to a first byte of blob, converted to a given type.

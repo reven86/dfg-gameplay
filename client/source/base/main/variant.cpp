@@ -41,6 +41,7 @@ void VariantType::setBlob(const void * data, uint32_t size)
         {
             // copy the data inplace without reallocating the vector
             src->assign(buf, buf + size);
+            valueChangedSignal(*this);
             return;
         }
     }
