@@ -286,7 +286,7 @@ inline bool Utils::verifySignature(const char * algorithm, const void * data, si
 
     if (!md)
     {
-        EVP_MD_CTX_cleanup(ctx);
+        EVP_MD_CTX_free(ctx);
         return false;
     }
 
@@ -306,6 +306,6 @@ inline bool Utils::verifySignature(const char * algorithm, const void * data, si
     bool res = EVP_VerifyFinal(ctx, signatureBytes.data(), signatureBytes.size(), pubKey) == 1;
 
     EVP_PKEY_free(pubKey);
-    EVP_MD_CTX_cleanup(ctx);
+    EVP_MD_CTX_free(ctx);
     return res;
 }
