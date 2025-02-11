@@ -303,8 +303,7 @@ unsigned int ParticleSystem::draw(bool wireframe) const
 {
     PROFILE("ParticleSystem::draw", "Render");
 
-    static gameplay::Matrix identityTransform;
-    const gameplay::Matrix * transform(getNode() ? &getNode()->getWorldViewMatrix() : &identityTransform);
+    const gameplay::Matrix * transform(getNode() ? &getNode()->getWorldViewMatrix() : &gameplay::Matrix::identity());
 
     _invisibleTimer = 0;
 
