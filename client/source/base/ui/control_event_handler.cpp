@@ -14,7 +14,7 @@ ControlEventHandler::~ControlEventHandler()
 {
 }
 
-void ControlEventHandler::bindControlEvent(gameplay::Control * control, gameplay::Control::Listener::EventType evt, std::function<void(gameplay::Control *)> fn)
+void ControlEventHandler::bindControlEvent(gameplay::Control * control, gameplay::Control::Listener::EventType evt, std::function<void()> fn)
 {
     GP_ASSERT(_controlEventHandlers.find(std::make_pair(control, evt)) == _controlEventHandlers.end());
 
@@ -35,7 +35,7 @@ void ControlEventHandler::controlEvent(gameplay::Control* control, gameplay::Con
 
     auto it = _controlEventHandlers.find(std::make_pair(control, evt));
     if (it != _controlEventHandlers.end())
-        (*it).second(control);
+        (*it).second();
 }
 
 void ControlEventHandler::stopEventListener()

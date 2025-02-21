@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef __DFG_CONTROL_EVENT_HANDLER_H__
-#define __DFG_CONTROL_EVENT_HANDLER_H__
-
 
 
 
@@ -41,7 +38,7 @@ protected:
      * @param evt Event type.
      * @param fn Functor to invoke when event occurs.
      */
-    void bindControlEvent(gameplay::Control* control, gameplay::Control::Listener::EventType evt, std::function<void(gameplay::Control*)> fn);
+    void bindControlEvent(gameplay::Control* control, gameplay::Control::Listener::EventType evt, std::function<void()> fn);
 
     /**
      * Unbind control.
@@ -54,11 +51,6 @@ protected:
 private:
     virtual void controlEvent(gameplay::Control* control, gameplay::Control::Listener::EventType evt);
 
-    std::map<std::pair<gameplay::Control *, gameplay::Control::Listener::EventType>, std::function<void(gameplay::Control*)> > _controlEventHandlers;
+    std::map<std::pair<gameplay::Control *, gameplay::Control::Listener::EventType>, std::function<void()> > _controlEventHandlers;
     bool _handlingEvents;
 };
-
-
-
-
-#endif // __DFG_CONTROL_EVENT_HANDLER_H__

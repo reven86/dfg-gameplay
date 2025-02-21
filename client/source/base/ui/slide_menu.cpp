@@ -268,17 +268,17 @@ void SlideMenu::previewItem(unsigned itemIndex)
 
 void SlideMenu::bindMenuButton(gameplay::Control * control, unsigned int menuIndex)
 {
-    bindControlEvent(control, gameplay::Control::Listener::PRESS, [=](gameplay::Control*){ this->previewItem(menuIndex); });
-    bindControlEvent(control, gameplay::Control::Listener::RELEASE, [=](gameplay::Control*){ this->previewItem(SlideMenu::INVALID_ITEM_INDEX); });
-    bindControlEvent(control, gameplay::Control::Listener::ENTER, [=](gameplay::Control* control){ 
+    bindControlEvent(control, gameplay::Control::Listener::PRESS, [=](){ this->previewItem(menuIndex); });
+    bindControlEvent(control, gameplay::Control::Listener::RELEASE, [=](){ this->previewItem(SlideMenu::INVALID_ITEM_INDEX); });
+    bindControlEvent(control, gameplay::Control::Listener::ENTER, [=](){ 
         if (control->getState() == gameplay::Control::ACTIVE) 
             this->previewItem(menuIndex);
     });
-    bindControlEvent(control, gameplay::Control::Listener::LEAVE, [=](gameplay::Control* control){ 
+    bindControlEvent(control, gameplay::Control::Listener::LEAVE, [=](){ 
         if (control->getState() == gameplay::Control::ACTIVE) 
             this->previewItem(SlideMenu::INVALID_ITEM_INDEX); 
     });
-    bindControlEvent(control, gameplay::Control::Listener::CLICK, [=](gameplay::Control*){ this->scrollToItem(menuIndex); });
+    bindControlEvent(control, gameplay::Control::Listener::CLICK, [=](){ this->scrollToItem(menuIndex); });
 }
 
 void SlideMenu::unbindMenuButton(gameplay::Control * control)
