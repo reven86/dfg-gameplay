@@ -73,6 +73,7 @@ LOCAL_SRC_FILES := \
     base/utils/profiler.cpp \
     base/utils/singleton.cpp \
     base/utils/utils.cpp \
+    base/utils/run_on_change.cpp \
     base/main.cpp \
     base/game_advanced.cpp \
 

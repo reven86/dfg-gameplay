@@ -1,5 +1,4 @@
-#ifndef __DFG_INCLUDE_H__
-#define __DFG_INCLUDE_H__
+#pragma once
 
 /*!	\file dfg_include.h 
  *	\brief Includes all necessary headers for dfg-gameplay project.
@@ -47,12 +46,9 @@
 #include "utils/priority_signal.h"
 #include "utils/profiler.h"
 #include "utils/ref_ptr.h"
+#include "utils/run_on_change.h"
 #include "utils/singleton.h"
 #include "utils/utils.h"
 #include "main.h"
 #include "game_advanced.h"
 
-
-
-
-#endif // __DFG_INCLUDE_H__

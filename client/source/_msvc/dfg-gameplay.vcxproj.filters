@@ -113,6 +113,9 @@
     <ClCompile Include="..\base\main\idb_stream.cpp">
       <Filter>base\main</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\utils\run_on_change.cpp">
+      <Filter>base\utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -260,6 +263,9 @@
     </ClInclude>
     <ClInclude Include="..\base\main\idb_stream.h">
       <Filter>base\main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\utils\run_on_change.h">
+      <Filter>base\utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

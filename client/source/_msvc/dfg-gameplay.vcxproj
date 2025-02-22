@@ -95,6 +95,7 @@
     <ClCompile Include="..\base\ui\http_image_control.cpp" />
     <ClCompile Include="..\base\ui\slide_menu.cpp" />
     <ClCompile Include="..\base\utils\profiler.cpp" />
+    <ClCompile Include="..\base\utils\run_on_change.cpp" />
     <ClCompile Include="..\base\utils\singleton.cpp" />
     <ClCompile Include="..\base\utils\utils.cpp" />
     <ClCompile Include="..\pch.cpp">
@@ -145,6 +146,7 @@
     <ClInclude Include="..\base\utils\priority_signal.h" />
     <ClInclude Include="..\base\utils\profiler.h" />
     <ClInclude Include="..\base\utils\ref_ptr.h" />
+    <ClInclude Include="..\base\utils\run_on_change.h" />
     <ClInclude Include="..\base\utils\singleton.h" />
     <ClInclude Include="..\base\utils\utf8.h" />
     <ClInclude Include="..\base\utils\utf8\checked.h" />
