@@ -76,6 +76,7 @@
 		EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDA1B45A0C0001AA0D6 /* httprequest_service.cpp */; };
 		EBD4BEDF1B45A0C0001AA0D6 /* taskqueue_service.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBD4BEDC1B45A0C0001AA0D6 /* taskqueue_service.cpp */; };
 		EBF71FB81F8385890059FA9F /* idb_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBF71FB61F8385890059FA9F /* idb_stream.cpp */; };
+		EBFD5F732D6DB4C800D28100 /* run_on_change.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EBFD5F712D6DB4C700D28100 /* run_on_change.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -199,6 +200,8 @@
 		EBD4BEDD1B45A0C0001AA0D6 /* taskqueue_service.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = taskqueue_service.h; sourceTree = "<group>"; };
 		EBF71FB61F8385890059FA9F /* idb_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = idb_stream.cpp; sourceTree = "<group>"; };
 		EBF71FB71F8385890059FA9F /* idb_stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idb_stream.h; sourceTree = "<group>"; };
+		EBFD5F712D6DB4C700D28100 /* run_on_change.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = run_on_change.cpp; sourceTree = "<group>"; };
+		EBFD5F722D6DB4C800D28100 /* run_on_change.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = run_on_change.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -390,6 +393,8 @@
 		EB9F813B1AAB25CD00839018 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				EBFD5F712D6DB4C700D28100 /* run_on_change.cpp */,
+				EBFD5F722D6DB4C800D28100 /* run_on_change.h */,
 				EB67C14D1BC98E3800E2C762 /* utf8 */,
 				EB67C1511BC98E3800E2C762 /* utf8.h */,
 				EB9F813C1AAB25CD00839018 /* curve.h */,
@@ -516,6 +521,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EBFD5F732D6DB4C800D28100 /* run_on_change.cpp in Sources */,
 				EB9F814F1AAB25CD00839018 /* debug_service.cpp in Sources */,
 				EBD4BEDE1B45A0C0001AA0D6 /* httprequest_service.cpp in Sources */,
 				EB9F81581AAB25CD00839018 /* singleton.cpp in Sources */,
@@ -595,7 +601,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				//OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "dfg-gameplay-mac";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -629,7 +634,6 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				//OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "dfg-gameplay-mac";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -709,11 +713,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				//OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-                VALID_ARCHS = arm64;
+				VALID_ARCHS = arm64;
 			};
 			name = Debug;
 		};
@@ -740,12 +743,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				//OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
-                VALID_ARCHS = arm64;
+				VALID_ARCHS = arm64;
 			};
 			name = Release;
 		};
