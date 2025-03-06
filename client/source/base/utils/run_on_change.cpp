@@ -16,8 +16,12 @@ RunOnChange::RunOnChange(const std::function<void()>& fn, const std::vector<cons
 RunOnChange::RunOnChange(const std::function<void()>& fn, const std::vector<const char *>& dependencies)
     : _function(fn)
 {
-    for(const auto& dep : dependencies)
-        _dependencies.push_back(&Settings::getInstance()->get<VariantType>(dep));
+    for (const auto& dep : dependencies)
+    {
+        const VariantType * variant = &Settings::getInstance()->get<VariantType>(dep);
+        GP_ASSERT(variant->getType() != VariantType::TYPE_NONE);
+        _dependencies.push_back(variant);
+    }
 
     connectDependencies();
 }
