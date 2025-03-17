@@ -222,6 +222,8 @@ static inline void MD5(const void* data, size_t length, unsigned char outDigest[
  */
 static inline void SHA256(const void* data, size_t length, unsigned char outDigest[32]);
 
+// Function to calculate HMAC-SHA256
+static std::string calculateHMAC_SHA256(const std::string& key, const std::string& data);
 
 
 /**

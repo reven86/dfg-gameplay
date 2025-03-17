@@ -3,6 +3,9 @@
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
 #include "zlib.h"
+#include <openssl/hmac.h>
+#include <openssl/sha.h>
+#include <iomanip>
 
 #if defined (WIN32)
 #include <Rpc.h>
@@ -128,6 +131,9 @@ bool Utils::deserializeString(gameplay::Stream * stream, std::string * str)
 {
     int32_t size = 0;
     if (stream->read(&size, sizeof(size), 1) != 1)
+        return false;
+
+    if (size <= 0)
         return false;
 
     std::unique_ptr<char[]> buf(new char[size]);
@@ -290,5 +296,27 @@ unsigned long Utils::compressToStream(const void * data, size_t dataLength, game
     deflateEnd(&defstream);
 
     return defstream.total_out;
+}
+
+
+// Function to calculate HMAC-SHA256
+std::string Utils::calculateHMAC_SHA256(const std::string& key, const std::string& data) {
+    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned int hash_len;
+
+    // Calculate HMAC
+    HMAC_CTX *ctx = HMAC_CTX_new();
+    HMAC_Init_ex(ctx, key.c_str(), key.length(), EVP_sha256(), nullptr);
+    HMAC_Update(ctx, reinterpret_cast<const unsigned char*>(data.c_str()), data.length());
+    HMAC_Final(ctx, hash, &hash_len);
+    HMAC_CTX_free(ctx);
+
+    // Convert the hash to a hexadecimal string
+    std::stringstream ss;
+    for (unsigned int i = 0; i < hash_len; i++) {
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(hash[i]);
+    }
+
+    return ss.str();
 }
 
