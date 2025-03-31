@@ -399,6 +399,11 @@ void DfgGame::resizeEvent(unsigned int width, unsigned int height)
     ServiceManager::getInstance()->signals.resizeEvent(width, height);
 }
 
+void DfgGame::safeAreaChangedEvent(float top, float left, float bottom, float right)
+{
+    ServiceManager::getInstance()->signals.safeAreaChangedEvent(top, left, bottom, right);
+}
+
 void DfgGame::copyToClipboard(const char * textUTF8) const
 {
 #if defined(WIN32)

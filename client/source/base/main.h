@@ -109,6 +109,7 @@ protected:
     virtual void gesturePinchEvent(int x, int y, float scale, int numberOfTouches) override;
     virtual void gestureRotationEvent(int x, int y, float rotation, int numberOfTouches) override;
     virtual void gesturePanEvent(int x, int y, int numberOfTouches) override;
+    virtual void safeAreaChangedEvent(float top, float left, float bottom, float right) override;
 
     /**
      * @see Game::resizeEvent;
