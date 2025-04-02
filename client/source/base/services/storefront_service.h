@@ -73,16 +73,6 @@ protected:
     virtual void paymentTransactionRestoredEvent(const char * productID, int quantity, double timestamp, const char * transactionID, void * transactionObject);
 
     /**
-     * @see gameplay::StoreListener::isProductConsumable
-     */
-    virtual bool isProductConsumable(const char * productID);
-
-    /**
-     * @see gameplay::StoreListener::isSubscription
-     */
-    virtual bool isSubscription(const char * productID);
-
-    /**
      * @see gameplay::StoreListener::receiptRequested.
      */
     virtual void receiptRequested(void * receiptData, int errorCode, const char * errorUTF8);

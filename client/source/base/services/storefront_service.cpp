@@ -97,16 +97,6 @@ void StorefrontService::paymentTransactionRestoredEvent(const char * productID, 
     _manager->signals.storefrontTransactionRestoredEvent(productID, quantity, timestamp, transactionID, transactionObject);
 }
 
-bool StorefrontService::isProductConsumable(const char * productID)
-{
-    return _manager->signals.storefrontIsProductConsumable(productID);
-}
-
-bool StorefrontService::isSubscription(const char * productID)
-{
-    return _manager->signals.storefrontIsSubscription(productID);
-}
-
 void StorefrontService::receiptRequested(void * receiptData, int errorCode, const char * errorUTF8)
 {
     if (errorCode != 0)
