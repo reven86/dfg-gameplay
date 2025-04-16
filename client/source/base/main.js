@@ -7,8 +7,8 @@ mergeInto(LibraryManager.library, {
     // for example, KIS proxy all requests and carry them out on next frames 
     // which leads the garbage to be put in the original data for POST requests
     var dataPtr = Module._malloc(dataSize);
-    var _param = new Uint8Array(Module.HEAPU8.buffer, dataPtr, dataSize);
-    _param.set(new Uint8Array(Module.HEAPU8.buffer, data, dataSize));
+    var _param = new Uint8Array(HEAPU8.buffer, dataPtr, dataSize);
+    _param.set(new Uint8Array(HEAPU8.buffer, data, dataSize));
 
     var http = new XMLHttpRequest();
     http.open(_request, _url, true);
