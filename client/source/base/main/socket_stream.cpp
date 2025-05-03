@@ -182,7 +182,7 @@ char* SocketStream::readLine(char* str, int num)
     char ch;
     char * strSave = str;
 
-    size_t maxReadBytes = num;
+   size_t maxReadBytes = num;
     while (maxReadBytes > 0)
     {
         if (read(&ch, 1, 1) != 1)
@@ -222,7 +222,7 @@ size_t SocketStream::write(const void* ptr, size_t size, size_t count)
     return result / size;
 }
 
-bool SocketStream::canRead()
+bool SocketStream::canRead() const
 {
     unsigned long bytes = 0;
 #ifdef WIN32

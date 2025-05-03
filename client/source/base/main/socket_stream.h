@@ -48,21 +48,21 @@ public:
      *
      * @return True if the stream can read, false otherwise.
      */
-    virtual bool canRead() override;
+    virtual bool canRead() const override;
 
     /**
      * Returns true if this stream can perform write operations.
      *
      * @return True if the stream can write, false otherwise.
      */
-    virtual bool canWrite() override { return true; };
+    virtual bool canWrite() const override { return true; };
 
     /**
      * Returns true if this stream can seek.
      *
      * @return True if the stream can seek, false otherwise.
      */
-    virtual bool canSeek() override { return false; };
+    virtual bool canSeek() const override { return false; };
 
     /**
      * Closes this stream.
@@ -134,7 +134,7 @@ public:
      *
      * @return True if end of stream reached, false otherwise.
      */
-    virtual bool eof() override { return _connectionIsClosed; };
+    virtual bool eof() const override { return _connectionIsClosed; };
 
     /**
      * Returns the length of the stream in bytes.
@@ -145,7 +145,7 @@ public:
      *
      * @return The length of the stream in bytes.
      */
-    virtual size_t length() override { return 0; };
+    virtual size_t length() const override { return 0; };
 
     /**
      * Returns the position of the file pointer. Zero is the start of the stream.
@@ -153,7 +153,7 @@ public:
      *
      * @return The file indicator offset in bytes.
      */
-     virtual long int position() override { return _totalBytes; };
+     virtual long int position() const override { return _totalBytes; };
 
     /**
      * Sets the position of the file pointer.

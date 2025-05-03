@@ -51,21 +51,21 @@ public:
      *
      * @return True if the stream can read, false otherwise.
      */
-    virtual bool canRead() { return _underlyingStream && _underlyingStream->canRead(); };
+    virtual bool canRead() const { return _underlyingStream && _underlyingStream->canRead(); };
 
     /**
      * Returns true if this stream can perform write operations.
      *
      * @return True if the stream can write, false otherwise.
      */
-    virtual bool canWrite() { return _underlyingStream && _underlyingStream->canWrite(); };
+    virtual bool canWrite() const { return _underlyingStream && _underlyingStream->canWrite(); };
 
     /**
      * Returns true if this stream can seek.
      *
      * @return True if the stream can seek, false otherwise.
      */
-    virtual bool canSeek() { return _underlyingStream && _underlyingStream->canSeek(); };
+    virtual bool canSeek() const { return _underlyingStream && _underlyingStream->canSeek(); };
 
     /**
      * Closes this stream.
@@ -132,7 +132,7 @@ public:
      *
      * @return True if end of stream reached, false otherwise.
      */
-    virtual bool eof() { return !_underlyingStream || _underlyingStream->eof(); };
+    virtual bool eof() const { return !_underlyingStream || _underlyingStream->eof(); };
 
     /**
      * Returns the length of the stream in bytes.
@@ -143,14 +143,14 @@ public:
      *
      * @return The length of the stream in bytes.
      */
-    virtual size_t length() { return _underlyingStream ? _underlyingStream->length() : 0; };
+    virtual size_t length() const { return _underlyingStream ? _underlyingStream->length() : 0; };
 
     /**
      * Returns the position of the file pointer. Zero is the start of the stream.
      *
      * @return The file indicator offset in bytes.
      */
-    virtual long int position() { return _underlyingStream ? _underlyingStream->position() : 0; };
+    virtual long int position() const { return _underlyingStream ? _underlyingStream->position() : 0; };
 
     /**
      * Sets the position of the file pointer.
