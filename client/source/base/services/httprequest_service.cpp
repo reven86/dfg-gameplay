@@ -78,11 +78,11 @@ bool HTTPRequestService::onShutdown()
 
 int HTTPRequestService::makeRequestAsync(const Request& request, const char * customRequest, bool withCredentials)
 {
-    // note: request is copied by value
 #ifdef __EMSCRIPTEN__
-    sendRequest(request, true, customRequest ? customRequest : "", withCredentials);
+    makeRequestSync(request, customRequest, withCredentials);
     return -1;
 #else
+    // note: request is copied by value
     return _taskQueueService->addWorkItem(HTTP_REQUEST_SERVICE_QUEUE, std::bind(&HTTPRequestService::sendRequest, this, request, false, customRequest ? customRequest : "", withCredentials));
 #endif
 }
@@ -190,7 +190,7 @@ void HTTPRequestService::sendRequest(const Request& request, bool syncCall, std:
             curl_easy_setopt(curl, CURLOPT_NOBODY, 1);
         }
         else if (!customRequest.empty())
-                curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, customRequest.c_str());
+            curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, customRequest.c_str());
 
         curl_slist *list = NULL;
         if (!request.headers.empty())

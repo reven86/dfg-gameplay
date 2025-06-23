@@ -62,6 +62,9 @@ DfgGame::DfgGame()
         return typeof window === 'object' && (window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB) ? 1 : 0;
     });
 #endif
+
+    std::locale::global(std::locale(""));
+    GP_LOG("Current locale is %s", (const char *) std::setlocale(LC_ALL, nullptr));
 }
 
 void DfgGame::initialize()

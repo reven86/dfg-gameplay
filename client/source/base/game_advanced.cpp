@@ -337,7 +337,10 @@ void DfgGameAdvanced::updateSettings()
         else if (strcmp(__argv[i], "--settingInt") == 0)
         {
             const char * key = __argv[++i];
-            Settings::getInstance()->set(key, atoi(__argv[++i]));
+            int value;
+            std::from_chars(__argv[i], __argv[i] + strlen(__argv[i]), value);
+            Settings::getInstance()->set(key, value);
+            ++i;
         }
         i++;
     }

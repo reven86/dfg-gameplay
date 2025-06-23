@@ -378,7 +378,9 @@ bool VariantType::unpickle(gameplay::Stream * stream)
             {
                 if (stream->readLine(str, 1024) == NULL)
                     return false;
-                stack.push_back(VariantType((double)std::atof(str)));
+                double value;
+                fast_float::from_chars(str, str + strlen(str), value);
+                stack.push_back(VariantType(value));
             }
             break;
         case BINFLOAT:
@@ -747,34 +749,34 @@ bool VariantType::serializeToJSON(std::string * outStr) const
             *outStr += "false";
         break;
     case VariantType::TYPE_INT8:
-        *outStr += Utils::format("%d", value.get<int8_t>());
+        *outStr += std::format("{}", value.get<int8_t>());
         break;
     case VariantType::TYPE_UINT8:
-        *outStr += Utils::format("%u", value.get<uint8_t>());
+        *outStr += std::format("{}", value.get<uint8_t>());
         break;
     case VariantType::TYPE_INT16:
-        *outStr += Utils::format("%d", value.get<int16_t>());
+        *outStr += std::format("{}", value.get<int16_t>());
         break;
     case VariantType::TYPE_UINT16:
-        *outStr += Utils::format("%u", value.get<uint16_t>());
+        *outStr += std::format("{}", value.get<uint16_t>());
         break;
     case VariantType::TYPE_INT32:
-        *outStr += Utils::format("%d", value.get<int32_t>());
+        *outStr += std::format("{}", value.get<int32_t>());
         break;
     case VariantType::TYPE_UINT32:
-        *outStr += Utils::format("%u", value.get<uint32_t>());
+        *outStr += std::format("{}", value.get<uint32_t>());
         break;
     case VariantType::TYPE_INT64:
-        *outStr += Utils::format("%ld", value.get<int64_t>());
+        *outStr += std::format("{}", value.get<int64_t>());
         break;
     case VariantType::TYPE_UINT64:
-        *outStr += Utils::format("%lu", value.get<uint64_t>());
+        *outStr += std::format("{}", value.get<uint64_t>());
         break;
     case VariantType::TYPE_FLOAT:
-        *outStr += Utils::format("%f", value.get<float>());
+        *outStr += std::format("{}", value.get<float>());
         break;
     case VariantType::TYPE_FLOAT64:
-        *outStr += Utils::format("%f", value.get<double>());
+        *outStr += std::format("{}", value.get<double>());
         break;
     case VariantType::TYPE_STRING:
         *outStr += '\"';
@@ -797,13 +799,13 @@ bool VariantType::serializeToJSON(std::string * outStr) const
         value.getArchive()->serializeToJSON(outStr);
         break;
     case VariantType::TYPE_VECTOR2:
-        *outStr += Utils::format("[%f, %f]", value.get<gameplay::Vector2>().x, value.get<gameplay::Vector2>().y);
+        *outStr += std::format("[{}, {}]", value.get<gameplay::Vector2>().x, value.get<gameplay::Vector2>().y);
         break;
     case VariantType::TYPE_VECTOR3:
-        *outStr += Utils::format("[%f, %f, %f]", value.get<gameplay::Vector3>().x, value.get<gameplay::Vector3>().y, value.get<gameplay::Vector3>().z);
+        *outStr += std::format("[{}, {}, {}]", value.get<gameplay::Vector3>().x, value.get<gameplay::Vector3>().y, value.get<gameplay::Vector3>().z);
         break;
     case VariantType::TYPE_VECTOR4:
-        *outStr += Utils::format("[%f, %f, %f, %f]", value.get<gameplay::Vector4>().x, value.get<gameplay::Vector4>().y, value.get<gameplay::Vector4>().z, value.get<gameplay::Vector4>().w);
+        *outStr += std::format("[{}, {}, {}, {}]", value.get<gameplay::Vector4>().x, value.get<gameplay::Vector4>().y, value.get<gameplay::Vector4>().z, value.get<gameplay::Vector4>().w);
         break;
     case VariantType::TYPE_MATRIX2:
         GP_ASSERT(!"Not implemented yet");

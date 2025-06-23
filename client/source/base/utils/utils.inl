@@ -41,11 +41,7 @@ inline std::string Utils::format(const char * fmt, ...)
     va_list args;
     va_start(args, fmt);
 
-#ifdef WIN32
-    int numWritten = _vsnprintf(result, 2048, fmt, args);
-#else
     int numWritten = vsnprintf(result, 2048, fmt, args);
-#endif
 
     GP_ASSERT(numWritten < 2048);
 
@@ -62,11 +58,7 @@ inline std::wstring Utils::format(const wchar_t * fmt, ...)
     va_list args;
     va_start(args, fmt);
 
-#ifdef WIN32
-    int numWritten = _vsnwprintf(result, 2048, fmt, args);
-#else
     int numWritten = vswprintf(result, 2048, fmt, args);
-#endif
 
     GP_ASSERT(numWritten < 2048);
 
