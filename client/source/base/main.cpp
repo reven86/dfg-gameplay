@@ -64,11 +64,12 @@ DfgGame::DfgGame()
 #endif
 
     std::locale::global(std::locale(""));
-    GP_LOG("Current locale is %s", (const char *) std::setlocale(LC_ALL, nullptr));
 }
 
 void DfgGame::initialize()
 {
+    GP_LOG("Current locale is %s", std::locale().name());
+
 #ifndef __EMSCRIPTEN__
     // initialize curl before any services get created
     curl_global_init(CURL_GLOBAL_ALL);
