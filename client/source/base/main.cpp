@@ -68,7 +68,7 @@ DfgGame::DfgGame()
 
 void DfgGame::initialize()
 {
-    GP_LOG("Current locale is %s", std::locale().name());
+    GP_LOG("Current locale is %s", std::locale().name().c_str());
 
 #ifndef __EMSCRIPTEN__
     // initialize curl before any services get created
