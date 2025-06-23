@@ -153,19 +153,19 @@ std::string formatVariantType(const VariantType& value)
     case VariantType::TYPE_UINT16:
     case VariantType::TYPE_UINT32:
     case VariantType::TYPE_UINT64:
-        return std::format("{}", value.get<int64_t>());
+        return fmt::format("{}", value.get<int64_t>());
 
     case VariantType::TYPE_BOOLEAN:
         return value.get<bool>() ? "true" : "false";
 
     case VariantType::TYPE_FLOAT:
-        return std::format("{}", value.get<float>());
+        return fmt::format("{}", value.get<float>());
 
     case VariantType::TYPE_FLOAT64:
-        return std::format("{}", value.get<double>());
+        return fmt::format("{}", value.get<double>());
 
     case VariantType::TYPE_STRING:
-        return std::string("\"") + value.get<std::string>() + "\""; // TODO: add std::format with escaping
+        return std::string("\"") + value.get<std::string>() + "\""; // TODO: add fmt::format with escaping
         
     default:
         GP_ASSERT(!"Unsupported variant type");
@@ -179,7 +179,7 @@ std::string TrackerService::getJsonParamsPayload(const Parameter * parameters, u
     std::string paramsPayload = "{";
     for (unsigned i = 0; i < parameterCount; i++)
     {
-        paramsPayload += std::format("\"{}\":", parameters[i].name);
+        paramsPayload += fmt::format("\"{}\":", parameters[i].name);
         paramsPayload += formatVariantType(parameters[i].value);
         paramsPayload += ",";
     }
@@ -283,25 +283,25 @@ void TrackerService::sendGAEvent(const char * eventName, const std::string& para
     if (!_httpRequestService)
         return;
 
-    static std::string endpoint = std::format("https://www.google-analytics.com/mp/collect?api_secret={}&firebase_app_id={}", _apiSecret, _appId);
+    static std::string endpoint = fmt::format("https://www.google-analytics.com/mp/collect?api_secret={}&firebase_app_id={}", _apiSecret, _appId);
 
     std::string userIdPayload;
     if (!_userId.empty())
-        userIdPayload = std::format(",\"user_id\": \"{}\"", _userId);
+        userIdPayload = fmt::format(",\"user_id\": \"{}\"", _userId);
 
     std::string userPropertiesPayload;
     if (!_userProperties.empty())
     {
         userPropertiesPayload = ",\"user_properties\":{";
         for (const auto& prop : _userProperties)
-            userPropertiesPayload += std::format(R"("{}":{{"value":"{}"}},)", prop.first, prop.second);
+            userPropertiesPayload += fmt::format(R"("{}":{{"value":"{}"}},)", prop.first, prop.second);
         userPropertiesPayload.pop_back();
         userPropertiesPayload += "}";
     }
 
     const char * clientKey = "app_instance_id";
 
-    std::string payload = std::format(R"({{"{}":"{}"{}{},"events":[{{"name":"{}", "params":{}}}]}})", clientKey,
+    std::string payload = fmt::format(R"({{"{}":"{}"{}{},"events":[{{"name":"{}", "params":{}}}]}})", clientKey,
         _appInstanceId, userIdPayload, userPropertiesPayload, eventName, paramsPayload);
 
     //GP_LOG("making GA request %s %s", endpoint.c_str(), payload.c_str());
@@ -373,7 +373,7 @@ void TrackerService::setUserProperty(const char * name, const char * value)
 #ifdef __EMSCRIPTEN__
     std::string userPropertiesPayload = "{";
     for (const auto& prop : _userProperties)
-        userPropertiesPayload += std::format("\"{}\":\"{}\",", prop.first.c_str(), prop.second.c_str());
+        userPropertiesPayload += fmt::format("\"{}\":\"{}\",", prop.first.c_str(), prop.second.c_str());
     userPropertiesPayload.pop_back();
     userPropertiesPayload += "}";
 

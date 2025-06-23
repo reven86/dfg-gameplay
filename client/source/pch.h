@@ -34,6 +34,8 @@
 #pragma warning( pop )
 
 #include <zip.h>
+#include <fmt/format.h>
+#include <fmt/xchar.h>
 
 
 #include "utils/ref_ptr.h"
