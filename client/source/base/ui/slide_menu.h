@@ -67,6 +67,7 @@ public:
      * This bind PRESS, RELEASE, ENTER, LEAVE events to show preview and CLICK to scroll to submenu.
      */
     void bindMenuButton(gameplay::Control * button, unsigned int itemIndex);
+    void bindMenuButton(gameplay::Control * button, unsigned int itemIndex, const std::function<void()>& clickFn);
 
     /**
      * Unbind all menu events for specific control.

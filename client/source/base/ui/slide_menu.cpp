@@ -268,6 +268,11 @@ void SlideMenu::previewItem(unsigned itemIndex)
 
 void SlideMenu::bindMenuButton(gameplay::Control * control, unsigned int menuIndex)
 {
+    bindMenuButton(control, menuIndex, [this, menuIndex]() { this->scrollToItem(menuIndex); });
+}
+
+void SlideMenu::bindMenuButton(gameplay::Control * control, unsigned int menuIndex, const std::function<void()>& clickFn)
+{
     bindControlEvent(control, gameplay::Control::Listener::PRESS, [=](){ this->previewItem(menuIndex); });
     bindControlEvent(control, gameplay::Control::Listener::RELEASE, [=](){ this->previewItem(SlideMenu::INVALID_ITEM_INDEX); });
     bindControlEvent(control, gameplay::Control::Listener::ENTER, [=](){ 
@@ -278,7 +283,7 @@ void SlideMenu::bindMenuButton(gameplay::Control * control, unsigned int menuInd
         if (control->getState() == gameplay::Control::ACTIVE) 
             this->previewItem(SlideMenu::INVALID_ITEM_INDEX); 
     });
-    bindControlEvent(control, gameplay::Control::Listener::CLICK, [=](){ this->scrollToItem(menuIndex); });
+    bindControlEvent(control, gameplay::Control::Listener::CLICK, [=](){ clickFn(); });
 }
 
 void SlideMenu::unbindMenuButton(gameplay::Control * control)
