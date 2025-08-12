@@ -78,7 +78,7 @@ public:
      *
      * @return <code>true</code> if the file exists; <code>false</code> otherwise.
      */
-    virtual bool fileExists(const char* path)
+    virtual bool fileExists(const char* path) override
     {
         const char * filename = gameplay::FileSystem::resolvePath(path);
         if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
