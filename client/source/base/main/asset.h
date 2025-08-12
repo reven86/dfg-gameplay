@@ -11,7 +11,7 @@
  *	@author Andrew "RevEn" Karpushin
  */
 
-class Asset : public gameplay::Ref, Noncopyable
+class Asset : public virtual gameplay::Ref, Noncopyable
 {
 public:
     /**
