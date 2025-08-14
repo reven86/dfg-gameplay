@@ -48,6 +48,7 @@
 #include "utils/ref_ptr.h"
 #include "utils/run_on_change.h"
 #include "utils/singleton.h"
+#include "utils/throttle.h"
 #include "utils/utils.h"
 #include "main.h"
 #include "game_advanced.h"

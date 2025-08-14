@@ -148,6 +148,7 @@
     <ClInclude Include="..\base\utils\ref_ptr.h" />
     <ClInclude Include="..\base\utils\run_on_change.h" />
     <ClInclude Include="..\base\utils\singleton.h" />
+    <ClInclude Include="..\base\utils\throttle.h" />
     <ClInclude Include="..\base\utils\utf8.h" />
     <ClInclude Include="..\base\utils\utf8\checked.h" />
     <ClInclude Include="..\base\utils\utf8\core.h" />

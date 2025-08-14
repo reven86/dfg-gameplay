@@ -267,6 +267,9 @@
     <ClInclude Include="..\base\utils\run_on_change.h">
       <Filter>base\utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\utils\throttle.h">
+      <Filter>base\utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
