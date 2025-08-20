@@ -37,7 +37,10 @@ IF(NOT WIN32)
     add_compile_options(-Wno-comment)
     add_compile_options(-Wno-logical-op-parentheses)
 ENDIF(NOT WIN32)
-add_compile_options(-fno-rtti)
+
+add_compile_options(
+    "$<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>"
+)
 
 if(EMSCRIPTEN)
 add_definitions(-DHAVE_INTTYPES_H)
