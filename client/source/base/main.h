@@ -1,13 +1,4 @@
-#ifndef __DFG_GAME_H__
-#define __DFG_GAME_H__
-
-
-
-
-#ifdef __ANDROID__
-extern "C" void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject);
-extern "C" void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject);
-#endif
+#pragma once
 
 
 /**
@@ -151,6 +142,3 @@ private:
     bool _hasIndexedDB;
 #endif
 };
-
-
-#endif // __DFG_GAME_H__

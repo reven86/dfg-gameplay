@@ -81,7 +81,7 @@ if(IOS)
         iRate/iRate.m
     )
     set_source_files_properties(iRate/iRate.m PROPERTIES
-        COMPILE_FLAGS "-x objective-c++"
+        COMPILE_FLAGS "-x objective-c++ -fobjc-arc"
     )
     set_source_files_properties(base/game_advanced.cpp PROPERTIES
         COMPILE_FLAGS "-x objective-c++"
