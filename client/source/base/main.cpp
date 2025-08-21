@@ -21,20 +21,30 @@
 extern struct android_app* __state;
 
 
+void callback_onReceiptReceived(const char * receiptJSON)
+{
+    static_cast<DfgGame *>(gameplay::Game::getInstance())->onReceiptReceived(receiptJSON);
+}
+
+void callback_onTextViewTextEntered(const char * textUTF8)
+{
+    static_cast<DfgGame *>(gameplay::Game::getInstance())->onTextViewTextEntered(textUTF8);
+}
+
 extern "C"
 {
 
 JNIEXPORT void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject)
 {
     const char* text = env->GetStringUTFChars(textObject, NULL);
-    static_cast<DfgGame *>(gameplay::Game::getInstance())->onReceiptReceived(text);
+    callback_onReceiptReceived(text);
     env->ReleaseStringUTFChars(textObject, text);
 }
 
 JNIEXPORT void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject)
 {
     const char* text = env->GetStringUTFChars(textObject, NULL);
-    static_cast<DfgGame *>(gameplay::Game::getInstance())->onTextViewTextEntered(text);
+    callback_onTextViewTextEntered(text);
     env->ReleaseStringUTFChars(textObject, text);
 }
 

@@ -124,8 +124,8 @@ protected:
     virtual void reportError(bool isFatal, const char * errorMessage, ...) override;
 
 #ifdef __ANDROID__
-    friend void Java_com_dreamfarmgames_util_DFGActivity_receiptReceived(JNIEnv* env, jobject thiz, jstring textObject);
-    friend void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv* env, jobject thiz, jstring textObject);
+    friend void callback_onReceiptReceived(const char * receiptJSON);
+    friend void callback_onTextViewTextEntered(const char * textUTF8);
     virtual void onReceiptReceived(const char * receiptJSON) {};
     virtual void onTextViewTextEntered(const char * textUTF8) {};
 #endif
