@@ -112,10 +112,6 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: Install NDK and CMake
-      run: |
-        sdkmanager "cmake;3.22.1" "ndk;26.3.11579264"
-
     - name: Configure Android build
       run: |
         cd $REPO_NAME/client
@@ -175,16 +171,16 @@ jobs:
         cd $REPO_NAME/client
         cmake -B build-ios \
               -S . \
-              -DCMAKE_SYSTEM_NAME=iOS \
-              -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
-              -DCMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH=NO \
-              -DCMAKE_IOS_INSTALL_COMBINED=YES \
+              -DGP_NO_LUA_BINDINGS=1 \
+              -DPLATFORM=OS \
+              -DDEPLOYMENT_TARGET=12.0 \
+              -DCMAKE_TOOLCHAIN_FILE=../../GamePlay/cmake/ios.toolchain.cmake \
               -DCMAKE_BUILD_TYPE=Release
 
     - name: Build iOS
       run: |
         cd $REPO_NAME/client
-        cmake --build build-ios --parallel $(nproc) --target dfg-gameplay-ios
+        cmake --build build-ios --parallel $(nproc) --target dfg-gameplay
 
     - name: Package iOS build
       run: |
@@ -238,7 +234,6 @@ jobs:
         cd $REPO_NAME/client
         emcmake cmake -B build-emscripten \
                       -S . \
-                      -DGP_NO_LUA_BINDINGS=1 \
                       -DCMAKE_BUILD_TYPE=MinSizeRel
 
     - name: Build Emscripten
