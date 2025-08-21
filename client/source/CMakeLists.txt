@@ -76,9 +76,29 @@ else(EMSCRIPTEN)
     set(PROJECT_SRC ${DFGGAMEPLAY_SRC})
 endif(EMSCRIPTEN)
 
+if(IOS)
+    list(APPEND PROJECT_SRC
+        iRate/iRate.m
+    )
+    set_source_files_properties(iRate/iRate.m PROPERTIES
+        COMPILE_FLAGS "-x objective-c++"
+    )
+    set_source_files_properties(base/game_advanced.cpp PROPERTIES
+        COMPILE_FLAGS "-x objective-c++"
+    )
+    set_source_files_properties(base/main.cpp PROPERTIES
+        COMPILE_FLAGS "-x objective-c++"
+    )
+endif(IOS)
+
+
 add_library(dfg-gameplay STATIC
     ${PROJECT_SRC}
 )
+
+IF(ANDROID)
+    target_include_directories(dfg-gameplay PRIVATE "${ANDROID_NDK}/sources/android/native_app_glue/")
+ENDIF(ANDROID)
 
 #target_precompile_headers(dfg-gameplay PRIVATE pch.h)
 
@@ -88,6 +108,3 @@ set_target_properties(dfg-gameplay PROPERTIES
 )
 
 source_group(src FILES ${PROJECT_SRC})
-
-
-
