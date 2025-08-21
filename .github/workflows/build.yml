@@ -171,7 +171,6 @@ jobs:
         cd $REPO_NAME/client
         cmake -B build-ios \
               -S . \
-              -DGP_NO_LUA_BINDINGS=1 \
               -DPLATFORM=OS \
               -DDEPLOYMENT_TARGET=12.0 \
               -DCMAKE_TOOLCHAIN_FILE=../../GamePlay/cmake/ios.toolchain.cmake \
@@ -180,7 +179,7 @@ jobs:
     - name: Build iOS
       run: |
         cd $REPO_NAME/client
-        cmake --build build-ios --parallel $(nproc) --target dfg-gameplay
+        cmake --build build-ios --parallel $(sysctl -n hw.ncpu) --target dfg-gameplay
 
     - name: Package iOS build
       run: |
