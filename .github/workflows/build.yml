@@ -75,6 +75,7 @@ jobs:
 
     - name: Upload to S3
       run: |
+        cd $REPO_NAME/client
         aws s3 cp $REPO_NAME-linux.zip \
           s3://$S3_BUCKET/builds/ --endpoint-url=$S3_ENDPOINT
 
@@ -169,16 +170,27 @@ jobs:
           --endpoint-url=$S3_ENDPOINT    
         unzip -o external-deps-include.zip -d GamePlay/external-deps
 
+    - name: Configure iOS build
+      run: |
+        cd $REPO_NAME/client
+        cmake -B build-ios \
+              -S . \
+              -DCMAKE_SYSTEM_NAME=iOS \
+              -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
+              -DCMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH=NO \
+              -DCMAKE_IOS_INSTALL_COMBINED=YES \
+              -DCMAKE_BUILD_TYPE=Release
+
     - name: Build iOS
       run: |
         cd $REPO_NAME/client
-        xcodebuild -workspace gameplay.xcworkspace -scheme gameplay-ios -configuration Release -derivedDataPath _out/iphoneos -sdk iphoneos build | xcpretty
+        cmake --build build-ios --parallel $(nproc) --target dfg-gameplay-ios
 
     - name: Package iOS build
       run: |
         cd $REPO_NAME/client
-        cd _out/iphoneos/Build/Products/Release-iphoneos
-        zip -r ../../../../../$REPO_NAME-ios.zip .
+        cd _out
+        zip -r ../$REPO_NAME-ios.zip .
 
     - name: Upload to S3
       run: |
