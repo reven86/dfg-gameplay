@@ -1,5 +1,5 @@
 
-file(GLOB_RECURSE DFGGAMEPLAY_SRC *.cpp *.cc)
+file(GLOB_RECURSE PROJECT_SRC *.cpp *.cc)
 
 include_directories(
     base
