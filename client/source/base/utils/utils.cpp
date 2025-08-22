@@ -3,12 +3,11 @@
 #include "ui/dial_button.h"
 #include "ui/expanded_tab.h"
 #include "zlib.h"
+#include "uuid.h"
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 #include <iomanip>
 
-#define UUID_SYSTEM_GENERATOR 
-#include "uuid.h"
 
 
 
@@ -16,7 +15,12 @@
 
 std::string Utils::generateUUID( )
 {
-    return uuids::to_string(uuids::uuid_system_generator{}());
+    std::random_device rd;
+    auto seed_data = std::array<int, std::mt19937::state_size>{};
+    std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+    std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+    std::mt19937 generator(seq);
+    return uuids::to_string(uuids::uuid_random_generator{ generator }());
 }
 
 
