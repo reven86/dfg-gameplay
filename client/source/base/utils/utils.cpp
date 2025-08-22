@@ -7,13 +7,8 @@
 #include <openssl/sha.h>
 #include <iomanip>
 
-#if defined (WIN32)
-#include <Rpc.h>
-#elif defined (__ANDROID__) || defined (__EMSCRIPTEN__)
-#include <uuidlib/uuid.h>
-#else
-#include <uuid/uuid.h>
-#endif
+#define UUID_SYSTEM_GENERATOR 
+#include "uuid.h"
 
 
 
@@ -21,28 +16,7 @@
 
 std::string Utils::generateUUID( )
 {
-    std::string s;
-
-#ifdef WIN32
-    UUID uuid;
-    UuidCreate ( &uuid );
-
-    unsigned char * str;
-    UuidToStringA ( &uuid, &str );
-
-    s = ( const char* ) str;
-
-    RpcStringFreeA ( &str );
-#else
-    uuid_t uuid;
-    uuid_generate_random ( uuid );
-    char str[37];
-    uuid_unparse ( uuid, str );
-
-    s = str;
-#endif
-
-    return s;
+    return uuids::to_string(uuids::uuid_system_generator{}());
 }
 
 
