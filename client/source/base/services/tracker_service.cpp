@@ -3,6 +3,7 @@
 #include "service_manager.h"
 #include "httprequest_service.h"
 #include "main.h"
+#include <iomanip>
 
 #if defined(__ANDROID__) || defined(__APPLE__)
 #define FIREBASE_AVAILABLE
@@ -157,16 +158,16 @@ std::string escapeJsonString(const std::string& input)
         case '\r': ss << "\\r";  break;
         case '\t': ss << "\\t";  break;
         default:
-            //if (static_cast<unsigned char>(c) < 0x20 || c == 0x7F)
-            //{
-            //    // Escape control characters
-            //    ss << "\\u" << std::hex << std::setw(4) << std::setfill('0')
-            //        << static_cast<int>(static_cast<unsigned char>(c));
-            //}
-            //else
-        {
-            ss << c;
-        }
+            if (static_cast<unsigned char>(c) < 0x20 || c == 0x7F)
+            {
+                // Escape control characters
+                ss << "\\u" << std::hex << std::setw(4) << std::setfill('0')
+                    << static_cast<int>(static_cast<unsigned char>(c));
+            }
+            else
+            {
+                ss << c;
+            }
         break;
         }
     }
