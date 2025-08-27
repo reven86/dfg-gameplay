@@ -141,6 +141,38 @@ void TrackerService::sendView(const char * screenName, const char * screenClass,
     sendEvent("screen_view", params.get(), parameterCount + 2);
 }
 
+// Function to escape JSON string
+std::string escapeJsonString(const std::string& input)
+{
+    std::ostringstream ss;
+    for (char c : input)
+    {
+        switch (c)
+        {
+        case '"':  ss << "\\\""; break;
+        case '\\': ss << "\\\\"; break;
+        case '\b': ss << "\\b";  break;
+        case '\f': ss << "\\f";  break;
+        case '\n': ss << "\\n";  break;
+        case '\r': ss << "\\r";  break;
+        case '\t': ss << "\\t";  break;
+        default:
+            //if (static_cast<unsigned char>(c) < 0x20 || c == 0x7F)
+            //{
+            //    // Escape control characters
+            //    ss << "\\u" << std::hex << std::setw(4) << std::setfill('0')
+            //        << static_cast<int>(static_cast<unsigned char>(c));
+            //}
+            //else
+        {
+            ss << c;
+        }
+        break;
+        }
+    }
+    return ss.str();
+}
+
 std::string formatVariantType(const VariantType& value)
 {
     switch (value.getType())
@@ -165,7 +197,7 @@ std::string formatVariantType(const VariantType& value)
         return fmt::format("{}", value.get<double>());
 
     case VariantType::TYPE_STRING:
-        return std::string("\"") + value.get<std::string>() + "\""; // TODO: add fmt::format with escaping
+        return std::string("\"") + escapeJsonString(value.get<std::string>()) + "\"";
         
     default:
         GP_ASSERT(!"Unsupported variant type");
@@ -179,7 +211,7 @@ std::string TrackerService::getJsonParamsPayload(const Parameter * parameters, u
     std::string paramsPayload = "{";
     for (unsigned i = 0; i < parameterCount; i++)
     {
-        paramsPayload += fmt::format("\"{}\":", parameters[i].name);
+        paramsPayload += fmt::format("\"{}\":", escapeJsonString(parameters[i].name));
         paramsPayload += formatVariantType(parameters[i].value);
         paramsPayload += ",";
     }
