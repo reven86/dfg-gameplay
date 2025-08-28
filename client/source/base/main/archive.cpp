@@ -480,8 +480,8 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out, c
             if (stream->read(&size, sizeof(size), 1) != 1)
                 return false;
 
-            auto tmpIt = std::vector<VariantType>().end();
-            out->set(tmpIt, tmpIt); // initialize variant as an empty list
+            std::vector<VariantType> list{};
+            out->set(list.begin(), list.end()); // initialize variant as an empty list
             out->getList()->resize(size);
             
             for (VariantType& v : *out->getList())

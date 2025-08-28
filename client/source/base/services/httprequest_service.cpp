@@ -124,7 +124,19 @@ int progressFunction(void * userp, curl_off_t dltotal, curl_off_t dlnow, curl_of
 {
     HTTPRequestService::Request * request = reinterpret_cast<HTTPRequestService::Request *>(userp);
     GP_ASSERT(request->progressCallback);
-    return request->progressCallback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), static_cast<uint64_t>(ultotal), static_cast<uint64_t>(ulnow));
+
+    static TaskQueueService* taskQueueService = ServiceManager::getInstance()->findService<TaskQueueService>();
+
+    if (taskQueueService)
+    {
+        // copy callback by value since it is invoked on main thread
+        auto callback = request->progressCallback;
+        taskQueueService->runOnMainThread([=]() {
+            callback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), static_cast<uint64_t>(ultotal), static_cast<uint64_t>(ulnow));
+            });
+    }
+
+    return 0;
 }
 
 bool HTTPRequestService::hasActiveEmscriptenHTTPRequest() const
