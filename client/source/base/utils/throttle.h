@@ -4,12 +4,14 @@
 class Throttle 
 {
 public:
-    Throttle(float interval) : _interval(interval), _lastTime(0.0f) {}
+    float interval;
+
+    Throttle(float _interval) : interval(_interval), _lastTime(0.0f) {}
 
     bool shouldExecute() 
     {
         float currentTime = gameplay::Game::getInstance()->getGameTime();
-        if (currentTime - _lastTime >= _interval)
+        if (currentTime - _lastTime >= interval)
         {
             _lastTime = currentTime;
             return true;
@@ -17,9 +19,6 @@ public:
         return false;
     }
 
-    void setInterval(float interval) { _interval = interval; }
-
 private:
-    float _interval;
     float _lastTime;
 };
