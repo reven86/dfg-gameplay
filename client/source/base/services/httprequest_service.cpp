@@ -2,7 +2,8 @@
 #include "httprequest_service.h"
 #include "service_manager.h"
 #include "main/memory_stream.h"
-#include "curl/curl.h"
+#include "utils/throttle.h"
+#include <curl/curl.h>
 
 
 
@@ -129,11 +130,17 @@ int progressFunction(void * userp, curl_off_t dltotal, curl_off_t dlnow, curl_of
 
     if (taskQueueService)
     {
-        // copy callback by value since it is invoked on main thread
-        auto callback = request->progressCallback;
-        taskQueueService->runOnMainThread([=]() {
-            callback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), static_cast<uint64_t>(ultotal), static_cast<uint64_t>(ulnow));
-            });
+        static Throttle throttle(0.1f);
+
+        // don't flood main queue too much
+        if (throttle.shouldExecute())
+        {
+            // copy callback by value since it is invoked on main thread
+            auto callback = request->progressCallback;
+            taskQueueService->runOnMainThread([=]() {
+                callback(static_cast<uint64_t>(dltotal), static_cast<uint64_t>(dlnow), static_cast<uint64_t>(ultotal), static_cast<uint64_t>(ulnow));
+                });
+        }
     }
 
     return 0;
