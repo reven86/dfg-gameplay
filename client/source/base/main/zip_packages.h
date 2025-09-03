@@ -1,9 +1,51 @@
 #pragma once
 
-#ifndef __ZIP_PACKAGES__
-#define __ZIP_PACKAGES__
-
 #include <zip.h>
+
+
+
+
+/** An extension to gameplay::FileSystem helping
+ *  to stream resources from zip packages
+ */
+class ZipPackage : public gameplay::Package, Noncopyable
+{
+public:
+    static ZipPackage* create(const char* zipFile);
+
+    virtual gameplay::Stream* open(const char* path, size_t streamMode = gameplay::FileSystem::READ) override;
+
+    /**
+     * Checks if the file at the given path exists.
+     *
+     * @param filePath The path to the file.
+     *
+     * @return <code>true</code> if the file exists; <code>false</code> otherwise.
+     */
+    virtual bool fileExists(const char* path) override;
+
+    /**
+     * Set password to access zip package content.
+     *
+     * @param password Password. Set to NULL to unset password.
+     */
+    void setPassword(const char* password);
+
+protected:
+    ZipPackage(const char* packageName, zip* zipObject);
+
+private:
+    std::string _packageName;
+    std::shared_ptr<struct zip> _zip;
+
+    struct FileInfo 
+    {
+        zip_uint64_t index;
+        zip_uint64_t size;
+    };
+    std::unordered_map<std::string, FileInfo> _files;
+    std::mutex _zipReadMutex;
+};
 
 
 
@@ -13,7 +55,7 @@
 class ZipPackagesCache : Noncopyable
 {
 public:
-    static zip * findOrOpenPackage(const char * packageName, bool ignoreCase = false);
+    static ZipPackage* findOrOpenPackage(const char * packageName);
     static void closePackage(const char * packageName);
 
     /**
@@ -36,6 +78,3 @@ protected:
 private:
     static std::unordered_map<std::string, std::unique_ptr<class ZipPackage>> __packages;
 };
-
-
-#endif

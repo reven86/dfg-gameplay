@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "zip_packages.h"
 #include "zip_stream.h"
+#include <zip.h>
 
 
 
@@ -28,93 +29,121 @@ static void getFullPath(const char* path, std::string& fullPath)
 
 
 
+//
+// ZipPackage
+//
 
-/** An extension to gameplay::FileSystem to be able
- *  to stream resources from zip packages
- */
-class ZipPackage : public gameplay::Package, Noncopyable
+ZipPackage::ZipPackage(const char* packageName, zip* zipObject)
+    : _packageName(packageName)
 {
-public:
-    virtual ~ZipPackage()
-    {
-    }
+    _zip.reset(zipObject, zip_close);
 
-    static ZipPackage * create(const char * zipFile, bool ignoreCase = false)
+    zip_int64_t num_entries = zip_get_num_entries(zipObject, 0);
+    if (num_entries < 0)
+        return;
+
+    for (zip_uint64_t i = 0; i < static_cast<zip_uint64_t>(num_entries); i++)
     {
-        if (!gameplay::FileSystem::fileExists(zipFile))
-            return NULL;
+        const char* name = zip_get_name(zipObject, i, ZIP_FL_ENC_RAW);
+        if (!name)
+            continue;
+
+        // Skip directory entries (they typically end with '/')
+        if (name[strlen(name) - 1] == '/')
+            continue;
+
+        // Get file stats
+        struct zip_stat st;
+        zip_stat_init(&st);
+        if (zip_stat_index(zipObject, i, 0, &st) == 0)
+        {
+            // Convert filename to lowercase
+            std::string lowerName = name;
+            std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+                [](unsigned char c) { return std::tolower(c); });
+
+            // Store in mapping
+            _files[lowerName] = { st.index, st.size };
+        }
+    }
+}
+
+ZipPackage * ZipPackage::create(const char * zipFile)
+{
+    if (!gameplay::FileSystem::fileExists(zipFile))
+        return NULL;
 
 #ifndef __ANDROID__
-        std::string fullPath;
-        getFullPath(zipFile, fullPath);
+    std::string fullPath;
+    getFullPath(zipFile, fullPath);
 #else
-        std::string fullPath(zipFile);
+    std::string fullPath(zipFile);
 #endif
 
-        int err = 0;
-        zip * res = zip_open(fullPath.c_str(), 0, &err);
+    int err = 0;
+    zip * res = zip_open(fullPath.c_str(), 0, &err);
 
-        if (!res)
-        {
-            GP_WARN("Can't open package %s %d", fullPath.c_str(), err);
-            return NULL;
-        }
-
-        return new ZipPackage(zipFile, res, ignoreCase);
-    }
-
-    virtual gameplay::Stream * open(const char * path, size_t streamMode = gameplay::FileSystem::READ) override
+    if (!res)
     {
-        if (streamMode != gameplay::FileSystem::READ)
-            return NULL;
-
-        return ZipStream::create(_packageName.c_str(), gameplay::FileSystem::resolvePath(path), _ignoreCase);
+        GP_WARN("Can't open package %s %d", fullPath.c_str(), err);
+        return NULL;
     }
 
-    /**
-     * Checks if the file at the given path exists.
-     *
-     * @param filePath The path to the file.
-     *
-     * @return <code>true</code> if the file exists; <code>false</code> otherwise.
-     */
-    virtual bool fileExists(const char* path) override
+    return new ZipPackage(zipFile, res);
+}
+
+gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
+{
+    if (streamMode != gameplay::FileSystem::READ)
+        return NULL;
+
+    // make sure we access any zip file only from one thread
+    std::unique_lock<std::mutex> guard(_zipReadMutex);
+
+    std::string lowerName = path;
+    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+        [](unsigned char c) { return std::tolower(c); });
+
+    auto it = _files.find(path);
+    if (it == _files.end())
+        return NULL;
+
+    //Read the compressed file
+    zip_file* f = zip_fopen_index(_zip.get(), (*it).second.index, ZIP_FL_ENC_RAW);
+    if (!f)
+        return NULL;
+
+    //Alloc memory for its uncompressed contents
+    std::unique_ptr<uint8_t[]> fileContent(new uint8_t[(*it).second.size]);
+
+    if (zip_fread(f, fileContent.get(), (*it).second.size) != (int)(*it).second.size)
     {
-        const char * filename = gameplay::FileSystem::resolvePath(path);
-        if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
-            return false;
-
-        return zip_name_locate(_zip.get(), filename, (_ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW) >= 0;
+        zip_fclose(f);
+        return NULL;
     }
 
-    /**
-     * Set password to access zip package content.
-     *
-     * @param password Password. Set to NULL to unset password.
-     */
-    void setPassword(const char * password)
-    {
-        zip_set_default_password(_zip.get(), password);
-    }
+    zip_fclose(f);
+    return MemoryStream::create(fileContent, static_cast<size_t>((*it).second.size));
+}
 
-    zip * getZip()
-    {
-        return _zip.get();
-    }
+bool ZipPackage::fileExists(const char* path)
+{
+    const char * filename = gameplay::FileSystem::resolvePath(path);
+    if (!filename || *filename == 0 || filename[strlen(filename) - 1] == '/')   // ignore empty string, for a directory lookup method always returns false
+        return false;
 
-protected:
-    ZipPackage(const char * packageName, zip * zipObject, bool ignoreCase)
-        : _packageName(packageName)
-        , _ignoreCase(ignoreCase)
-    {
-        _zip.reset(zipObject, zip_close);
-    }
+    std::string lowerName = path;
+    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
+        [](unsigned char c) { return std::tolower(c); });
 
-private:
-    std::string _packageName;
-    bool _ignoreCase;
-    std::shared_ptr<zip> _zip;
-};
+    return _files.find(path) != _files.end();
+}
+
+void ZipPackage::setPassword(const char * password)
+{
+    zip_set_default_password(_zip.get(), password);
+}
+
 
 
 
@@ -136,22 +165,22 @@ void ZipPackagesCache::finalize()
     __finilized = true;
 }
 
-zip * ZipPackagesCache::findOrOpenPackage(const char * packageName, bool ignoreCase)
+ZipPackage * ZipPackagesCache::findOrOpenPackage(const char * packageName)
 {
     if (__finilized || packageName == NULL || *packageName == '\0')
         return NULL;
     
     auto package = __packages.find(packageName);
     if (package != __packages.end())
-        return (*package).second.get()->getZip();
+        return (*package).second.get();
 
-    ZipPackage * res = ZipPackage::create(packageName, ignoreCase);
+    ZipPackage * res = ZipPackage::create(packageName);
     if (!res)
         return NULL;
 
     __packages.emplace(packageName, res);
     gameplay::FileSystem::registerPackage(res);
-    return res->getZip();
+    return res;
 }
 
 void ZipPackagesCache::closePackage(const char * packageName)

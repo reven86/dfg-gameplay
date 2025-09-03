@@ -6,8 +6,6 @@
 
 
 
-std::mutex ZipStream::_zipReadMutex;
-
 ZipStream::ZipStream()
 {
 }
@@ -17,40 +15,18 @@ ZipStream::~ZipStream()
     close();
 }
 
-gameplay::Stream * ZipStream::create(const char * packageName, const char * fileName, bool ignoreCase)
+gameplay::Stream * ZipStream::create(const char * packageName, const char * fileName)
 {
     if (packageName == NULL || *packageName == '\0')
         return gameplay::FileSystem::open(fileName, gameplay::FileSystem::READ);
     
-    zip * package = ZipPackagesCache::findOrOpenPackage(packageName);
+    ZipPackage * package = ZipPackagesCache::findOrOpenPackage(packageName);
     if (!package)
         return NULL;
 
-    //Search for the file of given name
-    struct zip_stat st;
-    zip_stat_init(&st);
-    if (zip_stat(package, fileName, (ignoreCase ? ZIP_FL_NOCASE : 0) | ZIP_FL_ENC_RAW, &st) != 0)
-        return NULL;
-
-    // make sure we access any zip file only from one thread
-    // hint: it would be more convinient to use one mutex per 
-    // zip * structure, not one mutex for all zips
-    std::unique_lock<std::mutex> guard(_zipReadMutex);
-
-    //Read the compressed file
-    zip_file *f = zip_fopen_index(package, st.index, ZIP_FL_ENC_RAW);
-    if (!f)
-        return NULL;
-
-    //Alloc memory for its uncompressed contents
-    ZipStream * res = new ZipStream();
-    std::unique_ptr<uint8_t[]> fileContent(new uint8_t[st.size]);
-
-    if (zip_fread(f, fileContent.get(), st.size) != (int)st.size)
+    gameplay::Stream * res = package->open(fileName);
+    if (!res)
         GP_WARN("Can't read file %s:%s", packageName, fileName);
-    zip_fclose(f);
-
-    res->_underlyingStream.reset(MemoryStream::create(fileContent, static_cast<size_t>(st.size)));
 
     return res;
 }
