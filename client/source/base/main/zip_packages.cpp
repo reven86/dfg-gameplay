@@ -100,11 +100,11 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     // make sure we access any zip file only from one thread
     std::unique_lock<std::mutex> guard(_zipReadMutex);
 
-    std::string lowerName = path;
+    std::string lowerName = gameplay::FileSystem::resolvePath(path);
     std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
         [](unsigned char c) { return std::tolower(c); });
 
-    auto it = _files.find(path);
+    auto it = _files.find(lowerName);
     if (it == _files.end())
         return NULL;
 
@@ -116,7 +116,7 @@ gameplay::Stream * ZipPackage::open(const char * path, size_t streamMode)
     //Alloc memory for its uncompressed contents
     std::unique_ptr<uint8_t[]> fileContent(new uint8_t[(*it).second.size]);
 
-    if (zip_fread(f, fileContent.get(), (*it).second.size) != (int)(*it).second.size)
+    if (zip_fread(f, fileContent.get(), (*it).second.size) != (*it).second.size)
     {
         zip_fclose(f);
         return NULL;
