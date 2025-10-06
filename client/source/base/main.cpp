@@ -435,8 +435,10 @@ void DfgGame::copyToClipboard(const char * textUTF8) const
 
 #elif defined(__APPLE__)
 
+#if !TARGET_OS_MAC || __MAC_OS_X_VERSION_MIN_REQUIRED > 1310
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.string = [NSString stringWithUTF8String:textUTF8];
+#endif
 
 #elif defined(__ANDROID__)
 

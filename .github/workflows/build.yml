@@ -151,7 +151,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew install ninja awscli
+        brew install awscli
 
     - name: Download and extract external dependencies from S3
       run: |
@@ -203,7 +203,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        brew install ninja awscli
+        brew install awscli
 
     - name: Download and extract external dependencies from S3
       run: |
