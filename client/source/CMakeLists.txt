@@ -29,7 +29,7 @@ add_compile_options(
     "$<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>"
 )
 
-if(IOS)
+IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
     list(APPEND PROJECT_SRC
         iRate/iRate.m
     )
@@ -42,7 +42,7 @@ if(IOS)
     set_source_files_properties(base/main.cpp PROPERTIES
         COMPILE_FLAGS "-x objective-c++"
     )
-endif(IOS)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
 
 
 add_library(dfg-gameplay STATIC
