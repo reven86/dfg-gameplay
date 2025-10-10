@@ -5,7 +5,7 @@
 #include "main.h"
 #include <iomanip>
 
-#if defined(__ANDROID__) || defined(__APPLE__)
+#if defined(__ANDROID__) || defined(__APPLE__) && TARGET_OS_IPHONE
 #define FIREBASE_AVAILABLE
 #endif
 
