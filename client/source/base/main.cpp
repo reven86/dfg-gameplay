@@ -148,7 +148,8 @@ void DfgGame::setGameLocale(const char * newLocale)
 #if defined(__APPLE__)
         
         NSString* preferredLang = [[[NSBundle mainBundle] localizedInfoDictionary] objectForKey:@"GameLanguage"];
-        systemLocale = [preferredLang cStringUsingEncoding : NSASCIIStringEncoding];
+        if (preferredLang)
+            systemLocale = [preferredLang cStringUsingEncoding : NSASCIIStringEncoding];
 
 #elif defined(__ANDROID__)
         android_app* app = __state;
