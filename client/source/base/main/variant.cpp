@@ -59,7 +59,11 @@ const uint8_t * VariantType::getBlob(uint32_t * size) const
     std::vector<uint8_t> * buf = reinterpret_cast<std::vector<uint8_t> *>(pointerValue);
 
     if (!buf)
+    {
+        if (size)
+            *size = 0;
         return NULL;
+    }
 
     if (size)
         *size = static_cast<uint32_t>(buf->size());        
