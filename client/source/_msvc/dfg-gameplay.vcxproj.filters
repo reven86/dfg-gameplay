@@ -116,6 +116,9 @@
     <ClCompile Include="..\base\utils\run_on_change.cpp">
       <Filter>base\utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\ui\ui_utils.cpp">
+      <Filter>base\ui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -269,6 +272,9 @@
     </ClInclude>
     <ClInclude Include="..\base\utils\throttle.h">
       <Filter>base\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ui\ui_utils.h">
+      <Filter>base\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

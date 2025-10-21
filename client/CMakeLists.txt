@@ -47,5 +47,9 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH})
 file(MAKE_DIRECTORY ${LIBRARY_OUTPUT_PATH})
 message(STATUS "Directory: ${LIBRARY_OUTPUT_PATH}")
 
+if (GP_NO_UI)
+add_definitions(-DGP_NO_UI=1)
+endif (GP_NO_UI)
+
 # library
 add_subdirectory(source)

@@ -3,6 +3,97 @@
 
 
 
+/**
+ * Clip text to bounds inserting '...' if text is too long.
+ * Works with single line text.
+ *
+ * @param text Input text.
+ * @param width Width to clip text by.
+ * @param font Font.
+ * @param fontSize Size of the font.
+ * @param characterSpacing Additional spacing between character, in pixels.
+ */
+std::wstring clipTextToBounds(const wchar_t* text, float width, const gameplay::Font* font, float fontSize, float characterSpacing)
+{
+    std::wstring result;
+
+    if (width <= 0.0f)
+        return L"";
+
+    float textw = 0, texth = 0;
+    font->measureText(text, fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth, characterSpacing);
+
+    if (textw < width)
+        return text;
+
+    result = text;
+
+    result.erase(result.end() - 1, result.end());
+    result.push_back('.');
+    result.push_back('.');
+    result.push_back('.');
+    do
+    {
+        result.erase(result.end() - 4, result.end());
+        result.push_back('.');
+        result.push_back('.');
+        result.push_back('.');
+        font->measureText(result.c_str(), fontSize, gameplay::Font::LEFT_TO_RIGHT, &textw, &texth, characterSpacing);
+    } while (result.size() > 3 && textw >= width);
+
+    return result;
+}
+
+/**
+ * Clip text to bounds inserting '...' if text is too long.
+ * This is multiline version of previous clipTextToBounds function.
+ *
+ * @param text Input text.
+ * @param width Width to clip text by.
+ * @param height Height to clip text by.
+ * @param font Font.
+ * @param fontSize Size of the font.
+ * @param characterSpacing Additional spacing between character, in pixels.
+ * @param line Additional spacing between lines, in pixels.
+ */
+std::wstring clipTextToBounds(const wchar_t* text, float width, float height, const gameplay::Font* font, float fontSize,
+    float characterSpacing, float lineSpacing)
+{
+    std::wstring result;
+
+    if (width <= 0.0f || height <= 0.0f)
+        return L"";
+
+    if (height < fontSize)
+        height = fontSize;
+
+    gameplay::Rectangle clip(width, height);
+    gameplay::Rectangle out;
+
+    font->measureText(text, clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
+
+    if (out.width <= width && out.height <= height)
+        return text;
+
+    result = text;
+
+    result.erase(result.end() - 1, result.end());
+    result.push_back('.');
+    result.push_back('.');
+    result.push_back('.');
+    do
+    {
+        result.erase(result.end() - 4, result.end());
+        result.push_back('.');
+        result.push_back('.');
+        result.push_back('.');
+        font->measureText(result.c_str(), clip, fontSize, gameplay::Font::LEFT_TO_RIGHT, &out, gameplay::Font::ALIGN_TOP_LEFT, true, true, characterSpacing, lineSpacing);
+    } while (result.size() > 3 && (out.width > width || out.height > height));
+
+    return result;
+}
+
+
 
 ClipLabel::ClipLabel()
     : _clippingActive(true)
@@ -78,7 +169,7 @@ void ClipLabel::clipText()
 
     gameplay::Control::State state = getState();
 
-    _clippedText = Utils::clipTextToBounds(_text.c_str(), _textBounds.width, _textBounds.height, _font, getFontSize(state), getCharacterSpacing(state), getLineSpacing(state));
+    _clippedText = clipTextToBounds(_text.c_str(), _textBounds.width, _textBounds.height, _font, getFontSize(state), getCharacterSpacing(state), getLineSpacing(state));
 }
 
 unsigned int ClipLabel::drawText(gameplay::Form * form) const

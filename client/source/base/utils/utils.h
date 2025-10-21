@@ -18,7 +18,7 @@ struct interruptable_accumulator
 
 
 
-struct Utils
+namespace Utils
 {
 
 
@@ -49,7 +49,7 @@ static _Type hermiteSpline( const _Type& v0, const _Type& t0, const _Type& v1, c
 /**
  * Generates new UUID.
  */
-static std::string generateUUID();
+std::string generateUUID();
 
 
 
@@ -57,49 +57,49 @@ static std::string generateUUID();
 /**
  * Convert UTF8 string to wchar_t one.
  */
-static inline std::wstring UTF8ToWCS(const std::string& str);
+inline std::wstring UTF8ToWCS(const std::string& str);
 
 
 /**
  * Convert wide-char string to UTF8 one.
  */
-static inline std::string WCSToUTF8(const std::wstring& str);
+inline std::string WCSToUTF8(const std::wstring& str);
 
 
 /**
  * Function to map char * string to wchar_t * one. Works ONLY for ANSI characters. Max 2048 chars.
  */
-static inline std::wstring ANSIToWCS(const std::string& str);
+inline std::wstring ANSIToWCS(const std::string& str);
 
 
 /**
  * Wrapper around sprintf. Result string length is limited to 2048 characters.
  */
-static inline std::string format(const char * fmt, ...);
-static inline std::wstring format(const wchar_t * fmt, ...);
+inline std::string format(const char * fmt, ...);
+inline std::wstring format(const wchar_t * fmt, ...);
 
 
 /**
  * UrlEncode string.
  */
-static inline std::string urlEncode(const std::string& src);
+inline std::string urlEncode(const std::string& src);
 
 
 /**
  * UrlDecode string.
  */
-static inline std::string urlDecode(const std::string& src);
+inline std::string urlDecode(const std::string& src);
 
 
 /**
  * Encode binary data to base64 string.
  */
-static inline void base64Encode(const void * in, size_t len, std::string * out, bool urlsafe = false);
+inline void base64Encode(const void * in, size_t len, std::string * out, bool urlsafe = false);
 
 /**
  * Decode base64 string to binary data.
  */
-static inline void base64Decode(const std::string& in, std::vector<uint8_t> * out, bool urlsafe = false);
+inline void base64Decode(const std::string& in, std::vector<uint8_t> * out, bool urlsafe = false);
 
 /**
  * Verify the signature using public key and algorithm.
@@ -111,64 +111,20 @@ static inline void base64Decode(const std::string& in, std::vector<uint8_t> * ou
  * @param base64PublicKey Public key encoded in base64 encoding.
  * @return True if signature is valid.
  */
-static inline bool verifySignature(const char * algorithm, const void * data, size_t dataLength, const std::string& base64Signature, const std::string& base64PublicKey);
+inline bool verifySignature(const char * algorithm, const void * data, size_t dataLength, const std::string& base64Signature, const std::string& base64PublicKey);
 
-
-/**
- * Clip text to bounds inserting '...' if text is too long.
- * Works with single line text.
- *
- * @param text Input text.
- * @param width Width to clip text by.
- * @param font Font.
- * @param fontSize Size of the font.
- * @param characterSpacing Additional spacing between character, in pixels.
- */
-static std::wstring clipTextToBounds(const wchar_t * text, float width, const gameplay::Font * font, float fontSize, 
-    float characterSpacing = 0.0f);
-
-/**
- * Clip text to bounds inserting '...' if text is too long.
- * This is multiline version of previous clipTextToBounds function.
- *
- * @param text Input text.
- * @param width Width to clip text by.
- * @param height Height to clip text by.
- * @param font Font.
- * @param fontSize Size of the font.
- * @param characterSpacing Additional spacing between character, in pixels.
- * @param line Additional spacing between lines, in pixels.
- */
-static std::wstring clipTextToBounds(const wchar_t * text, float width, float height, const gameplay::Font * font, float fontSize, 
-    float characterSpacing = 0.0f, float lineSpacing = 0.0f);
 
 
 
 /**
  * Serialize string to stream.
  */
-static bool serializeString(gameplay::Stream * stream, const std::string& str);
+bool serializeString(gameplay::Stream * stream, const std::string& str);
 
 /**
  * Deserialize string from stream.
  */
-static bool deserializeString(gameplay::Stream * stream, std::string * str);
-
-
-
-/**
- * Recursively scale gameplay::Control and all its children by some factors.
- * The margin, padding and border are scaled as well.
- */
-static void scaleUIControl(gameplay::Control * control, float kx, float ky);
-
-
-
-/**
- * Calculate total width and height of all visible children in the container.
- * This matches scrollable width/height.
- */
-static void measureChildrenBounds(gameplay::Container * container, float * width, float * height);
+bool deserializeString(gameplay::Stream * stream, std::string * str);
 
 
 
@@ -178,7 +134,7 @@ static void measureChildrenBounds(gameplay::Container * container, float * width
  * @param color Incoming color. Alpha component is not used.
  * @return Luminosity level, from 0 to 1;
  */
-static inline float luminosity(const gameplay::Vector4& color);
+inline float luminosity(const gameplay::Vector4& color);
 
 
 /**
@@ -188,7 +144,7 @@ static inline float luminosity(const gameplay::Vector4& color);
  * @return Color in RGB format.
  * @see RGBToHSL
  */
-static inline gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
+inline gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
 
 
 /**
@@ -198,7 +154,7 @@ static inline gameplay::Vector4 HSLToRGB(const gameplay::Vector4& hsl);
  * @return Color in HSL format.  Note: All components are in rage [0, 1].
  * @see HSLToRGB
  */
-static inline gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
+inline gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
 
 
 
@@ -209,7 +165,7 @@ static inline gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
  * @param length Length of the buffer.
  * @param outDigest Buffer to save digest to.
  */
-static inline void MD5(const void* data, size_t length, unsigned char outDigest[16]);
+inline void MD5(const void* data, size_t length, unsigned char outDigest[16]);
 
 
 
@@ -220,10 +176,10 @@ static inline void MD5(const void* data, size_t length, unsigned char outDigest[
  * @param length Length of the buffer.
  * @param outDigest Buffer to save digest to.
  */
-static inline void SHA256(const void* data, size_t length, unsigned char outDigest[32]);
+inline void SHA256(const void* data, size_t length, unsigned char outDigest[32]);
 
 // Function to calculate HMAC-SHA256
-static std::string calculateHMAC_SHA256(const std::string& key, const std::string& data);
+std::string calculateHMAC_SHA256(const std::string& key, const std::string& data);
 
 
 /**
@@ -237,7 +193,7 @@ static std::string calculateHMAC_SHA256(const std::string& key, const std::strin
  * 
  * @return Number of bytes written.
  */
-static unsigned long compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize);
+unsigned long compressToStream(const void * data, size_t dataLength, gameplay::Stream * stream, void * tmpBuf, size_t tmpBufSize);
 
 
 };

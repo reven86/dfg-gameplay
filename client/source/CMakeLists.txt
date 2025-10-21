@@ -1,6 +1,11 @@
 
 file(GLOB_RECURSE PROJECT_SRC *.cpp *.cc)
 
+if (GP_NO_UI)
+file(GLOB_RECURSE REMOVE_UI "base/ui/*")
+list(REMOVE_ITEM PROJECT_SRC ${REMOVE_UI})
+endif(GP_NO_UI)
+
 include_directories(
     base
     base/..

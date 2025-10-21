@@ -94,6 +94,7 @@
     <ClCompile Include="..\base\ui\expanded_tab.cpp" />
     <ClCompile Include="..\base\ui\http_image_control.cpp" />
     <ClCompile Include="..\base\ui\slide_menu.cpp" />
+    <ClCompile Include="..\base\ui\ui_utils.cpp" />
     <ClCompile Include="..\base\utils\profiler.cpp" />
     <ClCompile Include="..\base\utils\run_on_change.cpp" />
     <ClCompile Include="..\base\utils\singleton.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="..\base\ui\expanded_tab.h" />
     <ClInclude Include="..\base\ui\http_image_control.h" />
     <ClInclude Include="..\base\ui\slide_menu.h" />
+    <ClInclude Include="..\base\ui\ui_utils.h" />
     <ClInclude Include="..\base\utils\curve.h" />
     <ClInclude Include="..\base\utils\intrusive_list.h" />
     <ClInclude Include="..\base\utils\noncopyable.h" />
