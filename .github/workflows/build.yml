@@ -245,11 +245,11 @@ jobs:
       matrix:
         include:
         - emscripten: latest
-          gp_no_ui: ON
+          gp_no_ui: 1
         - emscripten: 3.1.50
-          gp_no_ui: ON
+          gp_no_ui: 1
         - emscripten: latest
-          gp_no_ui: OFF
+          gp_no_ui: 0
     
     steps:
     - name: Setup Emscripten
@@ -277,9 +277,14 @@ jobs:
     - name: Configure Emscripten build
       run: |
         cd $REPO_NAME/client
+        if [ "${{ matrix.gp_no_ui }}" -eq 1 ]; then
+          NO_GUI_CMD="-DGP_NO_UI=1"
+        else
+          NO_GUI_CMD=""
+        fi
         emcmake cmake -B build-emscripten \
                       -S . \
-                      -DGP_NO_UI=${{ matrix.gp_no_ui }} \
+                      $NO_GUI_CMD \
                       -DCMAKE_BUILD_TYPE=MinSizeRel
 
     - name: Build Emscripten
@@ -291,7 +296,7 @@ jobs:
       run: |
         cd $REPO_NAME/client
         cd _out
-        if [ ${{ matrix.gp_no_ui }} -eq 'OFF' ]; then
+        if [ ${{ matrix.gp_no_ui }} -eq 0 ]; then
           zip -r ../$REPO_NAME-emscripten-${{ matrix.emscripten }}-ui.zip .
         else
           zip -r ../$REPO_NAME-emscripten-${{ matrix.emscripten }}.zip .
@@ -300,7 +305,7 @@ jobs:
     - name: Upload to S3
       run: |
         cd $REPO_NAME/client
-        if [ ${{ matrix.gp_no_ui }} -eq 'OFF' ]; then
+        if [ ${{ matrix.gp_no_ui }} -eq 0 ]; then
           aws s3 cp $REPO_NAME-emscripten-${{ matrix.emscripten }}-ui.zip \
             s3://$S3_BUCKET/builds/ --endpoint-url=$S3_ENDPOINT
         else
