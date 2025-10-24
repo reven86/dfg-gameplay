@@ -457,10 +457,16 @@ template<> inline const gameplay::BoundingBox& VariantType::get() const
     return *reinterpret_cast<gameplay::BoundingBox *>(pointerValue);
 }
 
-inline class Archive * VariantType::getArchive() const
+inline class Archive * VariantType::getArchive()
 {
     GP_ASSERT(type == TYPE_KEYED_ARCHIVE);
     return reinterpret_cast<class Archive *>(pointerValue);
+}
+
+inline const class Archive * VariantType::getArchive() const
+{
+    GP_ASSERT(type == TYPE_KEYED_ARCHIVE);
+    return reinterpret_cast<const class Archive *>(pointerValue);
 }
 
 inline bool VariantType::operator==(const VariantType& value) const

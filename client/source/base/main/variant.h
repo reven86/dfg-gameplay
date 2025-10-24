@@ -143,9 +143,14 @@ public:
     template<typename _Type> inline const _Type& get() const;
 
     /**
+     * Get contents of a variant as an archive (const).
+     */
+    inline const class Archive * getArchive() const;
+
+    /**
      * Get contents of a variant as an archive.
      */
-    inline class Archive * getArchive() const;
+    inline class Archive * getArchive();
 
     /**
      * Set contents of variant as a blob (byte array).
