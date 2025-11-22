@@ -303,7 +303,7 @@ void DfgGameAdvanced::mergeSettings(Archive& other)
     }
 }
 
-void DfgGameAdvanced::saveSettings()
+bool DfgGameAdvanced::saveSettings()
 {
 #ifdef __EMSCRIPTEN__
     std::unique_ptr<MemoryStream> stream(MemoryStream::create());
@@ -313,12 +313,15 @@ void DfgGameAdvanced::saveSettings()
 #endif
 
     if (!stream)
-        return;
+        return false;
 
     Settings::getInstance()->serialize(stream.get());
 
 #ifdef __EMSCRIPTEN__
     emscripten_idb_async_store(_emscriptenDbName.c_str(), "settings.arch", (void *)stream->getBuffer(), stream->length(), this, NULL, NULL);
+    return hasIndexedDB();
+#else
+    return true;
 #endif
 }
 

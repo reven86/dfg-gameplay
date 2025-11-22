@@ -56,6 +56,13 @@ public:
      */
     const char * getInstallerId() const { return _installerId.c_str(); };
 
+    /**
+     * Save settings either to file or indexed db (for web version).
+     * 
+     * @return True when settings were saved successfully.
+     */
+    virtual bool saveSettings();
+
 protected:
     /**
      * Initialize callback that is called just before the first frame when the game starts.
@@ -109,11 +116,6 @@ protected:
      * \param other Archive that contains settings dictionary, loaded from the storage.
      */
     virtual void mergeSettings(class Archive& other);
-
-    /**
-     * Save settings either to file or indexed db (for web version).
-     */
-    virtual void saveSettings();
 
     /**
      * Here you have last chance to update the settings before the services become active.
