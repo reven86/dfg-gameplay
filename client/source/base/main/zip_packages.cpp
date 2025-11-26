@@ -136,7 +136,7 @@ bool ZipPackage::fileExists(const char* path)
     std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(),
         [](unsigned char c) { return std::tolower(c); });
 
-    return _files.find(path) != _files.end();
+    return _files.find(lowerName) != _files.end();
 }
 
 void ZipPackage::setPassword(const char * password)
