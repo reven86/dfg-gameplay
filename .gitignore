@@ -156,4 +156,4 @@ $RECYCLE.BIN/
 .DS_Store
 /third_party
 /client/source/_android/libs
-/client/build_*
+/client/build*

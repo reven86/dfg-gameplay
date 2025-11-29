@@ -119,6 +119,15 @@
     <ClCompile Include="..\base\ui\ui_utils.cpp">
       <Filter>base\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\base\services\ad_service.cpp">
+      <Filter>base\services</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\ads\android_ad_provider.cpp">
+      <Filter>base\ads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\base\ads\android_ad_callbacks.cpp">
+      <Filter>base\ads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\pch.h" />
@@ -276,6 +285,15 @@
     <ClInclude Include="..\base\ui\ui_utils.h">
       <Filter>base\ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\base\ads\ad_provider.h">
+      <Filter>base\ads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\services\ad_service.h">
+      <Filter>base\services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\base\ads\android_ad_provider.h">
+      <Filter>base\ads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -301,6 +319,9 @@
     </Filter>
     <Filter Include="base\entity">
       <UniqueIdentifier>{9e6754d9-d624-473b-888d-8e96023fe326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base\ads">
+      <UniqueIdentifier>{494901f1-bc0a-414d-9991-b661214fcbcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

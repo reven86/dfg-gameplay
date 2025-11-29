@@ -60,6 +60,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\base\ads\android_ad_callbacks.cpp" />
+    <ClCompile Include="..\base\ads\android_ad_provider.cpp" />
     <ClCompile Include="..\base\entity\entity.cpp" />
     <ClCompile Include="..\base\entity\entity_manager.cpp" />
     <ClCompile Include="..\base\game_advanced.cpp" />
@@ -76,6 +78,7 @@
     <ClCompile Include="..\base\main\zip_packages.cpp" />
     <ClCompile Include="..\base\main\zip_stream.cpp" />
     <ClCompile Include="..\base\render\particle_system.cpp" />
+    <ClCompile Include="..\base\services\ad_service.cpp" />
     <ClCompile Include="..\base\services\debug_service.cpp" />
     <ClCompile Include="..\base\services\httprequest_service.cpp" />
     <ClCompile Include="..\base\services\input_service.cpp" />
@@ -105,6 +108,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\base\ads\ad_provider.h" />
+    <ClInclude Include="..\base\ads\android_ad_provider.h" />
     <ClInclude Include="..\base\entity\entity.h" />
     <ClInclude Include="..\base\entity\entity_manager.h" />
     <ClInclude Include="..\base\game_advanced.h" />
@@ -122,6 +127,7 @@
     <ClInclude Include="..\base\main\zip_packages.h" />
     <ClInclude Include="..\base\main\zip_stream.h" />
     <ClInclude Include="..\base\render\particle_system.h" />
+    <ClInclude Include="..\base\services\ad_service.h" />
     <ClInclude Include="..\base\services\debug_service.h" />
     <ClInclude Include="..\base\services\httprequest_service.h" />
     <ClInclude Include="..\base\services\input_service.h" />
