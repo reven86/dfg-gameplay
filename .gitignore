@@ -157,3 +157,4 @@ $RECYCLE.BIN/
 /third_party
 /client/source/_android/libs
 /client/build*
+/client/_out

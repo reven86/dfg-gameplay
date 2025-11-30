@@ -26,26 +26,25 @@ bool AdService::onInit()
     else
         _currentProvider.reset(createProvider("AdMob"));
 
+    if (_currentProvider)
+        _currentProvider->initialize();
+
     return true;
 }
 
 void AdService::onRewardEarned(int amount, const std::string& type)
 {
-    if (_rewardCallback)
-    {
-        RewardResult reward;
-        reward.amount = amount;
-        reward.type = type;
-        reward.success = true;
-        _rewardCallback(reward);
-    }
+    RewardResult reward;
+    reward.amount = amount;
+    reward.type = type;
+    reward.success = true;
+
+    rewardEarnedSignal(reward);
 }
 
 void AdService::onAdEvent(const std::string& eventType, bool success, const std::string& message) 
 {
-    if (_eventCallback) {
-        _eventCallback(eventType, success, message);
-    }
+    adEventReceivedSignal(eventType, success, message);
 }
 
 AdProvider * AdService::createProvider(const std::string& type)

@@ -13,24 +13,20 @@ class AdService : public Service
     friend class ServiceManager;
 
 public:
-    struct RewardResult {
-        int amount;
+    struct RewardResult
+    {
+        int amount = 0;
         std::string type;
-        bool success;
+        bool success = false;
     };
 
-    using RewardCallback = std::function<void(const RewardResult& reward)>;
-    using AdEventCallback = std::function<void(const std::string& eventType, bool success, const std::string& message)>;
-
+    sigc::signal<void, const RewardResult&> rewardEarnedSignal;
+    sigc::signal<void, const std::string&, bool, const std::string&> adEventReceivedSignal;
 
     static const char* getTypeName() { return "AdService"; }
 
     class AdProvider* getProvider() const { return _currentProvider.get(); }
 
-
-    // Callback setters
-    void setRewardCallback(RewardCallback callback) { _rewardCallback = callback; }
-    void setEventCallback(AdEventCallback callback) { _eventCallback = callback; }
 
     // Callback handlers
     void onRewardEarned(int amount, const std::string& type);
@@ -52,7 +48,5 @@ private:
 
 
     std::unique_ptr<class AdProvider> _currentProvider;
-    RewardCallback _rewardCallback;
-    AdEventCallback _eventCallback;
 };
 

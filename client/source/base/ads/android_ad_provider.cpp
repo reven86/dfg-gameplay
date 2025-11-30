@@ -9,28 +9,45 @@ extern struct android_app* __state;
 
 AndroidAdProvider* AndroidAdProvider::create(const std::string& name)
 {
-
     android_app* app = __state;
     JNIEnv* env = app->activity->env;
     JavaVM* vm = app->activity->vm;
 
+    vm->AttachCurrentThread(&env, NULL);
+
     // Find the AdMobProvider class
-    jclass adMobClass = env->FindClass((std::string("com/dreamfarmgames/util/") + name + "Provider").c_str());
+    std::string className = std::string("com.dreamfarmgames.util.") + name + "Provider";
+    
+    // doesn't work, see https://stackoverflow.com/questions/14586821/android-flurry-integration-with-ndk-app
+    //jclass adMobClass = env->FindClass(className.c_str());
+    jobject nativeActivity = app->activity->clazz;
+    jclass acl = env->GetObjectClass(nativeActivity);
+    jmethodID getClassLoader = env->GetMethodID(acl, "getClassLoader", "()Ljava/lang/ClassLoader;");
+    jobject cls = env->CallObjectMethod(nativeActivity, getClassLoader);
+    jclass classLoader = env->FindClass("java/lang/ClassLoader");
+    jmethodID findClass = env->GetMethodID(classLoader, "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;");
+    jstring strClassName = env->NewStringUTF(className.c_str());
+    jclass adMobClass = (jclass)(env->CallObjectMethod(cls, findClass, strClassName));
+    env->DeleteLocalRef(strClassName);
+
     if (!adMobClass) {
+        env->ExceptionClear();
+        GP_WARN("Can't find class %s", className.c_str());
+        vm->DetachCurrentThread();
         return nullptr;
     }
 
     // Get the constructor method ID
     jmethodID constructor = env->GetMethodID(adMobClass, "<init>", "(Landroid/app/Activity;)V");
     if (!constructor) {
-        env->DeleteLocalRef(adMobClass);
+        vm->DetachCurrentThread();
         return nullptr;
     }
 
     // Create the Java AdMobProvider instance
-    jobject provider = env->NewObject(adMobClass, constructor, app->activity);
+    jobject provider = env->NewObject(adMobClass, constructor, nativeActivity);
     if (!provider) {
-        env->DeleteLocalRef(adMobClass);
+        vm->DetachCurrentThread();
         return nullptr;
     }
 
@@ -45,7 +62,6 @@ AndroidAdProvider* AndroidAdProvider::create(const std::string& name)
 
     // Clean up local references
     env->DeleteLocalRef(provider);
-    env->DeleteLocalRef(adMobClass);
 
     // Cache method IDs
     res->initializeMethod = env->GetMethodID(res->javaClass, "initialize", "()V");
@@ -57,6 +73,8 @@ AndroidAdProvider* AndroidAdProvider::create(const std::string& name)
     res->hideBannerAdMethod = env->GetMethodID(res->javaClass, "hideBannerAd", "()V");
     res->isRewardedAdLoadedMethod = env->GetMethodID(res->javaClass, "isRewardedAdLoaded", "()Z");
     res->isInterstitialAdLoadedMethod = env->GetMethodID(res->javaClass, "isInterstitialAdLoaded", "()Z");
+
+    vm->DetachCurrentThread();
 
     return res;
 }

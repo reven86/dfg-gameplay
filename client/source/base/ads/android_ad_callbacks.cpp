@@ -3,7 +3,6 @@
 #ifdef __ANDROID__
 
 #include <jni.h>
-#include <string>
 #include "services/ad_service.h"
 #include "services/service_manager.h"
 
@@ -18,11 +17,14 @@ AdService* getAdManager() {
     return g_adManager;
 }
 
-static void onProviderInitializedNative(JNIEnv* env, jobject thiz,
-    jstring provider_name,
-    jboolean success,
-    jstring message)
-{
+extern "C" {
+
+// Provider Initialization Callback
+JNIEXPORT void JNICALL
+Java_com_dreamfarmgames_util_BaseAdProvider_onProviderInitializedNative(JNIEnv *env, jobject thiz, 
+                                                                        jstring provider_name, 
+                                                                        jboolean success, 
+                                                                        jstring message) {
     const char* providerName = env->GetStringUTFChars(provider_name, nullptr);
     const char* msg = env->GetStringUTFChars(message, nullptr);
 
@@ -37,12 +39,13 @@ static void onProviderInitializedNative(JNIEnv* env, jobject thiz,
     env->ReleaseStringUTFChars(message, msg);
 }
 
-static void onAdLoadedNative(JNIEnv* env, jobject thiz,
-    jstring provider_name,
-    jstring ad_type,
-    jboolean success,
-    jstring message)
-{
+// Ad Loaded Callback
+JNIEXPORT void JNICALL
+Java_com_dreamfarmgames_util_BaseAdProvider_onAdLoadedNative(JNIEnv *env, jobject thiz,
+                                                            jstring provider_name, 
+                                                            jstring ad_type, 
+                                                            jboolean success, 
+                                                            jstring message) {
     const char* providerName = env->GetStringUTFChars(provider_name, nullptr);
     const char* adType = env->GetStringUTFChars(ad_type, nullptr);
     const char* msg = env->GetStringUTFChars(message, nullptr);
@@ -60,12 +63,13 @@ static void onAdLoadedNative(JNIEnv* env, jobject thiz,
     env->ReleaseStringUTFChars(message, msg);
 }
 
-static void onAdShownNative(JNIEnv* env, jobject thiz,
-    jstring provider_name,
-    jstring ad_type,
-    jboolean success,
-    jstring message)
-{
+// Ad Shown Callback
+JNIEXPORT void JNICALL
+Java_com_dreamfarmgames_util_BaseAdProvider_onAdShownNative(JNIEnv *env, jobject thiz,
+                                                           jstring provider_name, 
+                                                           jstring ad_type, 
+                                                           jboolean success, 
+                                                           jstring message) {
     const char* providerName = env->GetStringUTFChars(provider_name, nullptr);
     const char* adType = env->GetStringUTFChars(ad_type, nullptr);
     const char* msg = env->GetStringUTFChars(message, nullptr);
@@ -83,10 +87,11 @@ static void onAdShownNative(JNIEnv* env, jobject thiz,
     env->ReleaseStringUTFChars(message, msg);
 }
 
-static void onRewardEarnedNative(JNIEnv* env, jobject thiz,
-    jint amount,
-    jstring type)
-{
+// Reward Earned Callback
+JNIEXPORT void JNICALL
+Java_com_dreamfarmgames_util_BaseAdProvider_onRewardEarnedNative(JNIEnv *env, jobject thiz,
+                                                                jint amount, 
+                                                                jstring type) {
     const char* rewardType = env->GetStringUTFChars(type, nullptr);
 
     GP_LOG("reward earned - Amount: %d Type:%s", amount, rewardType);
@@ -99,115 +104,6 @@ static void onRewardEarnedNative(JNIEnv* env, jobject thiz,
     env->ReleaseStringUTFChars(type, rewardType);
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Provider Initialization Callback
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_AdMobProvider_onProviderInitializedNative(JNIEnv *env, jobject thiz, 
-                                                                        jstring provider_name, 
-                                                                        jboolean success, 
-                                                                        jstring message) {
-    onProviderInitializedNative(env, thiz, provider_name, success, message);
 }
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_UnityAdsProvider_onProviderInitializedNative(JNIEnv *env, jobject thiz, 
-                                                                          jstring provider_name, 
-                                                                          jboolean success, 
-                                                                          jstring message) {
-    onProviderInitializedNative(env, thiz, provider_name, success, message);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_YandexAdsProvider_onProviderInitializedNative(JNIEnv *env, jobject thiz, 
-                                                                          jstring provider_name, 
-                                                                          jboolean success, 
-                                                                          jstring message) {
-    onProviderInitializedNative(env, thiz, provider_name, success, message);
-}
-
-// Ad Loaded Callback
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_AdMobProvider_onAdLoadedNative(JNIEnv *env, jobject thiz, 
-                                                            jstring provider_name, 
-                                                            jstring ad_type, 
-                                                            jboolean success, 
-                                                            jstring message) {
-    onAdLoadedNative(env, thiz, provider_name, ad_type, success, message);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_UnityAdsProvider_onAdLoadedNative(JNIEnv *env, jobject thiz, 
-                                                               jstring provider_name, 
-                                                               jstring ad_type, 
-                                                               jboolean success, 
-                                                               jstring message) {
-    onAdLoadedNative(env, thiz, provider_name, ad_type, success, message);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_YandexAdsProvider_onAdLoadedNative(JNIEnv *env, jobject thiz, 
-                                                               jstring provider_name, 
-                                                               jstring ad_type, 
-                                                               jboolean success, 
-                                                               jstring message) {
-    onAdLoadedNative(env, thiz, provider_name, ad_type, success, message);
-}
-
-// Ad Shown Callback
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_AdMobProvider_onAdShownNative(JNIEnv *env, jobject thiz, 
-                                                           jstring provider_name, 
-                                                           jstring ad_type, 
-                                                           jboolean success, 
-                                                           jstring message) {
-    onAdShownNative(env, thiz, provider_name, ad_type, success, message);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_UnityAdsProvider_onAdShownNative(JNIEnv *env, jobject thiz, 
-                                                              jstring provider_name, 
-                                                              jstring ad_type, 
-                                                              jboolean success, 
-                                                              jstring message) {
-    onAdShownNative(env, thiz, provider_name, ad_type, success, message);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_YandexAdsProvider_onAdShownNative(JNIEnv *env, jobject thiz, 
-                                                              jstring provider_name, 
-                                                              jstring ad_type, 
-                                                              jboolean success, 
-                                                              jstring message) {
-    onAdShownNative(env, thiz, provider_name, ad_type, success, message);
-}
-
-// Reward Earned Callback
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_AdMobProvider_onRewardEarnedNative(JNIEnv *env, jobject thiz, 
-                                                                jint amount, 
-                                                                jstring type) {
-    onRewardEarnedNative(env, thiz, amount, type);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_UnityAdsProvider_onRewardEarnedNative(JNIEnv *env, jobject thiz, 
-                                                                   jint amount, 
-                                                                   jstring type) {
-    onRewardEarnedNative(env, thiz, amount, type);
-}
-
-JNIEXPORT void JNICALL
-Java_com_dreamfarmgames_util_YandexAdsProvider_onRewardEarnedNative(JNIEnv *env, jobject thiz, 
-                                                                   jint amount, 
-                                                                   jstring type) {
-    onRewardEarnedNative(env, thiz, amount, type);
-}
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // __ANDROID__

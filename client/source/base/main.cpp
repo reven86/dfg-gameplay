@@ -48,6 +48,21 @@ JNIEXPORT void Java_com_dreamfarmgames_util_TextViewActivity_textEntered(JNIEnv*
     env->ReleaseStringUTFChars(textObject, text);
 }
 
+// force declaration of ad callbacks to make sure they are included into shared library
+JNIEXPORT void Java_com_dreamfarmgames_util_BaseAdProvider_onAdShownNative(JNIEnv*, jobject, jstring, jstring, jboolean, jstring);
+JNIEXPORT void Java_com_dreamfarmgames_util_BaseAdProvider_onAdLoadedNative(JNIEnv*, jobject, jstring, jstring, jboolean, jstring);
+JNIEXPORT void Java_com_dreamfarmgames_util_BaseAdProvider_onProviderInitializedNative(JNIEnv*, jobject, jstring, jboolean, jstring);
+JNIEXPORT void Java_com_dreamfarmgames_util_BaseAdProvider_onRewardEarnedNative(JNIEnv*, jobject, jint, jstring);
+
+// Create forced references
+__attribute__((used))
+void* force_yandex_symbols[] = {
+    (void*)Java_com_dreamfarmgames_util_BaseAdProvider_onAdShownNative,
+    (void*)Java_com_dreamfarmgames_util_BaseAdProvider_onAdLoadedNative,
+    (void*)Java_com_dreamfarmgames_util_BaseAdProvider_onProviderInitializedNative,
+    (void*)Java_com_dreamfarmgames_util_BaseAdProvider_onRewardEarnedNative,
+}; 
+
 }
 
 #endif
