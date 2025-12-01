@@ -11,6 +11,7 @@ include_directories(
     base/..
     ../../../GamePlay/gameplay/src
     ../../../GamePlay/external-deps/include
+    vendor
 )
 
 IF(LINUX)

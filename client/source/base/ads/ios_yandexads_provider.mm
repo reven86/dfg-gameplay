@@ -1,20 +1,4 @@
-// Use forward declarations instead of #import
-@class YMARewardedAdLoader;
-@class YMAInterstitialAdLoader;
-@class YMARewardedAd;
-@class YMAInterstitialAd;
-@class YMAAdRequestConfiguration;
-@class UIViewController;
-@class NSError;
-@protocol YMAReward;
-@protocol YMAImpressionData;
-
-// Forward declare protocols we'll implement
-@protocol YMARewardedAdLoaderDelegate;
-@protocol YMAInterstitialAdLoaderDelegate;
-@protocol YMARewardedAdDelegate;
-@protocol YMAInterstitialAdDelegate;
-
+#import <YandexMobileAds/YandexMobileAds.h>
 #include "ios_yandexads_provider.h"
 
 // Objective-C wrapper for Yandex Ads
