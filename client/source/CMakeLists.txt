@@ -37,7 +37,6 @@ add_compile_options(
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
     list(APPEND PROJECT_SRC
         iRate/iRate.m
-        base/ads/ios_yandexads_provider.mm
     )
     set_source_files_properties(iRate/iRate.m PROPERTIES
         COMPILE_FLAGS "-x objective-c++ -fobjc-arc"
@@ -46,9 +45,6 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
         COMPILE_FLAGS "-x objective-c++"
     )
     set_source_files_properties(base/main.cpp PROPERTIES
-        COMPILE_FLAGS "-x objective-c++"
-    )
-    set_source_files_properties(base/ads/ios_yandexads_provider.mm PROPERTIES
         COMPILE_FLAGS "-x objective-c++"
     )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
