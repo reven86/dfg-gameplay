@@ -19,6 +19,7 @@ public:
     virtual std::string getProviderName() const override { return "YandexAds"; };
     
 private:
+    void* platformProvider;
     void* rewardedAdLoader;      // YMARewardedAdLoader*
     void* interstitialAdLoader;  // YMAInterstitialAdLoader*
     void* rewardedAd;      // YMARewardedAd*
