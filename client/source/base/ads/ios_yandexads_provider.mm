@@ -108,9 +108,9 @@
 #pragma mark - YMARewardedAdDelegate
 
 - (void)rewardedAd:(YMARewardedAd *)rewardedAd didReward:(id<YMAReward>)reward {
-    NSLog(@"Yandex Ads reward earned: %@", static_cast<long>(reward.amount));
+    NSLog(@"Yandex Ads reward earned: %ld", static_cast<long>(reward.amount));
     if (self.adService) {
-        self.adService->onRewardEarned([reward.amount intValue], "yandex_reward");
+        self.adService->onRewardEarned(static_cast<int>(reward.amount), "yandex_reward");
     }
 }
 
