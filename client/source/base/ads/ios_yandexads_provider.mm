@@ -1,4 +1,4 @@
-#import <YandexMobileAds/YandexMobileAds.h>
+#import <YandexMobileAds/YandexMobileAds-Swift.h>
 #include "ios_yandexads_provider.h"
 
 // Objective-C wrapper for Yandex Ads
