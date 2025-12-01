@@ -9,7 +9,7 @@ public:
     virtual ~AdProvider() = default;
 
     // Initialization
-    virtual void initialize() = 0;
+    virtual void initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) = 0;
 
     // Ad loading
     virtual void loadRewardedAd() = 0;
@@ -18,8 +18,6 @@ public:
     // Ad showing
     virtual void showRewardedAd() = 0;
     virtual void showInterstitialAd() = 0;
-    virtual void showBannerAd() = 0;
-    virtual void hideBannerAd() = 0;
 
     // Status checking
     virtual bool isRewardedAdLoaded() const = 0;

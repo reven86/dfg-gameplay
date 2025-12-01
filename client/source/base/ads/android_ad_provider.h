@@ -19,8 +19,6 @@ protected:
     jmethodID loadInterstitialAdMethod;
     jmethodID showRewardedAdMethod;
     jmethodID showInterstitialAdMethod;
-    jmethodID showBannerAdMethod;
-    jmethodID hideBannerAdMethod;
     jmethodID isRewardedAdLoadedMethod;
     jmethodID isInterstitialAdLoadedMethod;
     jmethodID getProviderNameMethod;
@@ -31,13 +29,11 @@ public:
     static AndroidAdProvider* create(const std::string& name);
 
     // AdProvider implementation
-    void initialize() override;
+    void initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) override;
     void loadRewardedAd() override;
     void loadInterstitialAd() override;
     void showRewardedAd() override;
     void showInterstitialAd() override;
-    void showBannerAd() override;
-    void hideBannerAd() override;
     bool isRewardedAdLoaded() const override;
     bool isInterstitialAdLoaded() const override;
     std::string getProviderName() const override;

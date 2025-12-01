@@ -64,13 +64,11 @@ AndroidAdProvider* AndroidAdProvider::create(const std::string& name)
     env->DeleteLocalRef(provider);
 
     // Cache method IDs
-    res->initializeMethod = env->GetMethodID(res->javaClass, "initialize", "()V");
+    res->initializeMethod = env->GetMethodID(res->javaClass, "initialize", "(Ljava/lang/String;Ljava/lang/String;)V");
     res->loadRewardedAdMethod = env->GetMethodID(res->javaClass, "loadRewardedAd", "()V");
     res->loadInterstitialAdMethod = env->GetMethodID(res->javaClass, "loadInterstitialAd", "()V");
     res->showRewardedAdMethod = env->GetMethodID(res->javaClass, "showRewardedAd", "()V");
     res->showInterstitialAdMethod = env->GetMethodID(res->javaClass, "showInterstitialAd", "()V");
-    res->showBannerAdMethod = env->GetMethodID(res->javaClass, "showBannerAd", "()V");
-    res->hideBannerAdMethod = env->GetMethodID(res->javaClass, "hideBannerAd", "()V");
     res->isRewardedAdLoadedMethod = env->GetMethodID(res->javaClass, "isRewardedAdLoaded", "()Z");
     res->isInterstitialAdLoadedMethod = env->GetMethodID(res->javaClass, "isInterstitialAdLoaded", "()Z");
 
@@ -119,8 +117,13 @@ std::string AndroidAdProvider::callStringMethod(jmethodID method) const {
     return result;
 }
 
-void AndroidAdProvider::initialize() {
-    callVoidMethod(initializeMethod);
+void AndroidAdProvider::initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) {
+    JNIEnv* env = getJNIEnv();
+    jstring strIntersitialAdId = env->NewStringUTF(interstitialAdId.c_str());
+    jstring strRewardedAdId = env->NewStringUTF(rewardedAdId.c_str());
+    env->CallVoidMethod(javaProvider, initializeMethod, strIntersitialAdId, strRewardedAdId);
+    env->DeleteLocalRef(strIntersitialAdId);
+    env->DeleteLocalRef(strRewardedAdId);
 }
 
 void AndroidAdProvider::loadRewardedAd() {
@@ -137,14 +140,6 @@ void AndroidAdProvider::showRewardedAd() {
 
 void AndroidAdProvider::showInterstitialAd() {
     callVoidMethod(showInterstitialAdMethod);
-}
-
-void AndroidAdProvider::showBannerAd() {
-    callVoidMethod(showBannerAdMethod);
-}
-
-void AndroidAdProvider::hideBannerAd() {
-    callVoidMethod(hideBannerAdMethod);
 }
 
 bool AndroidAdProvider::isRewardedAdLoaded() const {
