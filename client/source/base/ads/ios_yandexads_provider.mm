@@ -1,3 +1,4 @@
+#include "pch.h"
 #import <YandexMobileAds/YandexMobileAds-Swift.h>
 #include "ios_yandexads_provider.h"
 #include "services/ad_service.h"
