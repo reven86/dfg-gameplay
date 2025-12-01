@@ -2,6 +2,7 @@
 #import <YandexMobileAds/YandexMobileAds-Swift.h>
 #include "ios_yandexads_provider.h"
 #include "services/ad_service.h"
+#include "services/service_manager.h"
 
 // Objective-C wrapper for Yandex Ads
 @interface IOSYandexAdsWrapper : NSObject <YMARewardedAdLoaderDelegate, YMAInterstitialAdLoaderDelegate, YMARewardedAdDelegate, YMAInterstitialAdDelegate>
@@ -107,7 +108,7 @@
 #pragma mark - YMARewardedAdDelegate
 
 - (void)rewardedAd:(YMARewardedAd *)rewardedAd didReward:(id<YMAReward>)reward {
-    NSLog(@"Yandex Ads reward earned: %@", reward.amount);
+    NSLog(@"Yandex Ads reward earned: %@", static_cast<long>(reward.amount));
     if (self.adService) {
         self.adService->onRewardEarned([reward.amount intValue], "yandex_reward");
     }

@@ -58,7 +58,7 @@ IF(IOS)
     foreach(SRC_FILE ${PROJECT_SRC})
         if(SRC_FILE MATCHES "\\.mm$")
             set_source_files_properties(${SRC_FILE} PROPERTIES
-                COMPILE_FLAGS "-x objective-c++"
+                COMPILE_FLAGS "-x objective-c++ -fobjc-arc"
             )
         endif()
     endforeach()
