@@ -101,7 +101,7 @@
 - (void)rewardedAdDidDisappear:(YMARewardedAd *)rewardedAd {
     NSLog(@"Yandex rewarded ad dismissed");
     // Reload for next time
-    [self load];
+    [self.rewardedAd load];
 }
 
 #pragma mark - YMAInterstitialAdDelegate
@@ -139,7 +139,7 @@
 - (void)interstitialAdDidDisappear:(YMAInterstitialAd *)interstitialAd {
     NSLog(@"Yandex interstitial ad dismissed");
     // Reload for next time
-    [self load];
+    [self.intersititalAd load];
 }
 
 @end
