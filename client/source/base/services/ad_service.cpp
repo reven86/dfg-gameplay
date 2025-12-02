@@ -47,7 +47,7 @@ bool AdService::onInit()
             const char* system = nullptr;
 #if defined(__ANDROID__)
             system = "Android";
-#elif defined(APPLE) && TARGET_OS_IPHONE
+#elif defined(__APPLE__) && TARGET_OS_IPHONE
             system = "iOS";
 #endif
 
