@@ -1,5 +1,5 @@
 #include "pch.h"
-#import <UnityAds/UnityAds.h>
+#import <UnityAds/UnityAds-Swift.h>
 #include "ios_unityads_provider.h"
 #include "services/ad_service.h"
 #include "services/service_manager.h"
@@ -33,33 +33,35 @@
 
 - (instancetype)init {
     self = [super init];
+    if (self) {
+        self.testMode = NO;
+        self.isInitialized = NO;
+    }
     return self;
 }
 
 - (void)initializeUnityAds {
-    GP_LOG("initializeUnityAds %X", UnityServices);
-    [UnityServices initialize:self.gameId 
+    [UnityAds initialize:self.gameId 
                 testMode:self.testMode 
       initializationDelegate:self];
 }
 
 - (void)loadRewardedAd {
     if (self.isInitialized && self.rewardedAdId) {
-        [UnityServices load:self.rewardedAdId options:[UADSLoadOptions init] loadDelegate:self];
+        [UnityAds load:self.rewardedAdId loadDelegate:self];
     }
 }
 
 - (void)loadInterstitialAd {
     if (self.isInitialized && self.interstitialAdId) {
-        [UnityServices load:self.interstitialAdId options:[UADSLoadOptions init] loadDelegate:self];
+        [UnityAds load:self.interstitialAdId loadDelegate:self];
     }
 }
 
 - (void)showRewardedAdFromViewController:(UIViewController *)viewController {
     if ([self isRewardedAdReady]) {
-        [UnityServices show:viewController 
+        [UnityAds show:viewController 
            placementId:self.rewardedAdId 
-           options:[UADSShowOptions init]
            showDelegate:self];
     } else {
         NSLog(@"Unity rewarded ad is not ready");
@@ -71,9 +73,8 @@
 
 - (void)showInterstitialAdFromViewController:(UIViewController *)viewController {
     if ([self isInterstitialAdReady]) {
-        [UnityServices show:viewController 
+        [UnityAds show:viewController 
            placementId:self.interstitialAdId 
-           options:[UADSShowOptions init]
            showDelegate:self];
     } else {
         NSLog(@"Unity interstitial ad is not ready");
