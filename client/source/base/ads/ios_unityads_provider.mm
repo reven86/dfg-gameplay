@@ -218,7 +218,7 @@ void IOSUnityAdsProvider::initialize(const std::unordered_map<std::string, std::
         
     IOSUnityAdsWrapper* wrapper = (__bridge IOSUnityAdsWrapper*)platformProvider;
     wrapper.gameId = [NSString stringWithUTF8String:gameId.c_str()];
-    wrapper.testMode = testMode;
+    wrapper.testMode = false;
     wrapper.rewardedAdId = [NSString stringWithUTF8String:rewardedAdId.c_str()];
     wrapper.interstitialAdId = [NSString stringWithUTF8String:interstitialAdId.c_str()];
     
