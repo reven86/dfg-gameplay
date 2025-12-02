@@ -1,5 +1,5 @@
 #include "pch.h"
-#import <YandexMobileAds_ios12/YandexMobileAds.h>
+#import <YandexMobileAds/YandexMobileAds.h>
 #include "ios_yandexads_provider.h"
 #include "services/ad_service.h"
 #include "services/service_manager.h"
