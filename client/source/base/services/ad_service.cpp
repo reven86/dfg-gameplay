@@ -3,6 +3,7 @@
 #include "ads/ad_provider.h"
 #include "ads/android_ad_provider.h"
 #include "ads/ios_yandexads_provider.h"
+#include "ads/ios_unityads_provider.h"
 #include "main.h"
 
 
@@ -86,7 +87,7 @@ AdProvider * AdService::createProvider(const std::string& type)
 #ifdef __ANDROID__
     return AndroidAdProvider::create(type);
 #elif defined(APPLE) && TARGET_OS_IPHONE
-    //return new IOSYandexAdsProvider();
+    return new IOSUnityAdsProvider();
 #endif
 
     return nullptr;

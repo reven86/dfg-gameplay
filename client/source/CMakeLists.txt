@@ -50,9 +50,9 @@ IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
     )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
 
-IF(FALSE) #IOS)
+IF(IOS)
     list(APPEND PROJECT_SRC
-        base/ads/ios_yandexads_provider_ios12.mm
+        base/ads/ios_unityads_provider.mm
     )
 
     foreach(SRC_FILE ${PROJECT_SRC})
