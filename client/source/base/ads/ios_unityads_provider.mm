@@ -49,13 +49,13 @@
 
 - (void)loadRewardedAd {
     if (self.isInitialized && self.rewardedAdId) {
-        [UnityServices load:self.rewardedAdId loadDelegate:self];
+        [UnityServices load:self.rewardedAdId options:nil loadDelegate:self];
     }
 }
 
 - (void)loadInterstitialAd {
     if (self.isInitialized && self.interstitialAdId) {
-        [UnityServices load:self.interstitialAdId loadDelegate:self];
+        [UnityServices load:self.interstitialAdId options:nil loadDelegate:self];
     }
 }
 
@@ -63,6 +63,7 @@
     if ([self isRewardedAdReady]) {
         [UnityServices show:viewController 
            placementId:self.rewardedAdId 
+           options:nil
            showDelegate:self];
     } else {
         NSLog(@"Unity rewarded ad is not ready");
@@ -76,6 +77,7 @@
     if ([self isInterstitialAdReady]) {
         [UnityServices show:viewController 
            placementId:self.interstitialAdId 
+           options:nil
            showDelegate:self];
     } else {
         NSLog(@"Unity interstitial ad is not ready");
