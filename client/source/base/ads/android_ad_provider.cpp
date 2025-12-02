@@ -117,8 +117,15 @@ std::string AndroidAdProvider::callStringMethod(jmethodID method) const {
     return result;
 }
 
-void AndroidAdProvider::initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) {
+void AndroidAdProvider::initialize(const std::unordered_map<std::string, std::string>& properties) {
     JNIEnv* env = getJNIEnv();
+
+    auto it_interstitialAdId = properties.find("interstitialAdId");
+    std::string interstitialAdId = it_interstitialAdId == properties.end() ? "" : it_interstitialAdId->second;
+
+    auto it_rewardedAdId = properties.find("rewardedAdId");
+    std::string rewardedAdId = it_rewardedAdId == properties.end() ? "" : it_rewardedAdId->second;
+
     jstring strIntersitialAdId = env->NewStringUTF(interstitialAdId.c_str());
     jstring strRewardedAdId = env->NewStringUTF(rewardedAdId.c_str());
     env->CallVoidMethod(javaProvider, initializeMethod, strIntersitialAdId, strRewardedAdId);

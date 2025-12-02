@@ -9,7 +9,7 @@ public:
     virtual ~AdProvider() = default;
 
     // Initialization
-    virtual void initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) = 0;
+    virtual void initialize(const std::unordered_map<std::string, std::string>& properties) = 0;
 
     // Ad loading
     virtual void loadRewardedAd() = 0;

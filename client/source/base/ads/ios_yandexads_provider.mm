@@ -190,10 +190,15 @@ IOSYandexAdsProvider::~IOSYandexAdsProvider() {
     }
 }
 
-void IOSYandexAdsProvider::initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) {
+void IOSYandexAdsProvider::initialize(const std::unordered_map<std::string, std::string>& properties) {
     isInitialized = true;
-    _interstitialAdId = interstitialAdId;
-    _rewardedAdId = rewardedAdId;
+
+    auto it_interstitialAdId = properties.find("interstitialAdId");
+    std::string interstitialAdId = it_interstitialAdId == properties.end() ? "" : it_interstitialAdId->second;
+
+    auto it_rewardedAdId = properties.find("rewardedAdId");
+    std::string rewardedAdId = it_rewardedAdId == properties.end() ? "" : it_rewardedAdId->second;
+
     loadRewardedAd();
     loadInterstitialAd();
 }

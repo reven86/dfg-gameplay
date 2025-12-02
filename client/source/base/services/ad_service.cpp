@@ -32,7 +32,7 @@ bool AdService::onInit()
 
     if (_currentProvider)
     {
-        std::string interstitialAdId, rewardedAdId;
+        std::unordered_map<std::string, std::string> properties;
 
         gameplay::Properties* configNamespace = gameplay::Game::getInstance()->getConfig();
         const gameplay::Properties* adProvider = nullptr;
@@ -54,14 +54,15 @@ bool AdService::onInit()
             const gameplay::Properties* sys = adProvider->getNamespace(system, true);
             if (sys)
             {
-                interstitialAdId = sys->getString("interstitialAdId", "");
-                rewardedAdId = sys->getString("rewardedAdId", "");
+                properties["interstitialAdId"] = sys->getString("interstitialAdId", "");
+                properties["rewardedAdId"] = sys->getString("rewardedAdId", "");
+                properties["gameId"] = sys->getString("gameId", "");
             }
 
             break;
         }
 
-        _currentProvider->initialize(interstitialAdId, rewardedAdId);
+        _currentProvider->initialize(properties);
     }
 
     return true;

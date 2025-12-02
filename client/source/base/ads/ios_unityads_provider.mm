@@ -49,13 +49,13 @@
 
 - (void)loadRewardedAd {
     if (self.isInitialized && self.rewardedAdId) {
-        [UnityServices load:self.rewardedAdId options:nil loadDelegate:self];
+        [UnityServices load:self.rewardedAdId options:[UADSLoadOptions init] loadDelegate:self];
     }
 }
 
 - (void)loadInterstitialAd {
     if (self.isInitialized && self.interstitialAdId) {
-        [UnityServices load:self.interstitialAdId options:nil loadDelegate:self];
+        [UnityServices load:self.interstitialAdId options:[UADSLoadOptions init] loadDelegate:self];
     }
 }
 
@@ -63,7 +63,7 @@
     if ([self isRewardedAdReady]) {
         [UnityServices show:viewController 
            placementId:self.rewardedAdId 
-           options:nil
+           options:[UADSShowOptions init]
            showDelegate:self];
     } else {
         NSLog(@"Unity rewarded ad is not ready");
@@ -77,7 +77,7 @@
     if ([self isInterstitialAdReady]) {
         [UnityServices show:viewController 
            placementId:self.interstitialAdId 
-           options:nil
+           options:[UADSShowOptions init]
            showDelegate:self];
     } else {
         NSLog(@"Unity interstitial ad is not ready");
@@ -193,8 +193,6 @@
 IOSUnityAdsProvider::IOSUnityAdsProvider() 
     : isInitialized(false) {
     
-    // Note: Unity Ads requires a game ID, which should be passed in initialize()
-    // We'll create the wrapper with default values for now
     IOSUnityAdsWrapper* wrapper = [[IOSUnityAdsWrapper alloc] initWithGameId:@"" testMode:NO];
     wrapper.adService = ServiceManager::getInstance()->findService<AdService>();
     platformProvider = (__bridge_retained void*)wrapper;
@@ -207,43 +205,22 @@ IOSUnityAdsProvider::~IOSUnityAdsProvider() {
     }
 }
 
-void IOSUnityAdsProvider::initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) {
-    _interstitialAdId = interstitialAdId;
-    _rewardedAdId = rewardedAdId;
-    
-    // Unity Ads requires a game ID - you need to configure this somehow
-    // Options:
-    // 1. Pass game ID as part of ad ID string (e.g., "gameId:adUnitId")
-    // 2. Store game ID in configuration
-    // 3. Use a default or parse from somewhere
-    
-    // For now, we'll assume the game ID is passed as the first part before ':'
-    std::string gameIdStr = "0"; // Default/test game ID
-    bool testMode = false;
-    
-    // Parse game ID and test mode if provided in a special format
-    // Example format: "1234567:true" or just "1234567"
-    if (!_rewardedAdId.empty()) {
-        size_t colonPos = _rewardedAdId.find(':');
-        if (colonPos != std::string::npos) {
-            gameIdStr = _rewardedAdId.substr(0, colonPos);
-            std::string testModeStr = _rewardedAdId.substr(colonPos + 1);
-            testMode = (testModeStr == "true" || testModeStr == "1");
-            
-            // Remove game ID prefix from actual ad IDs
-            _rewardedAdId = _rewardedAdId.substr(colonPos + 1);
-            size_t secondColon = _rewardedAdId.find(':');
-            if (secondColon != std::string::npos) {
-                _rewardedAdId = _rewardedAdId.substr(secondColon + 1);
-            }
-        }
-    }
-    
+void IOSUnityAdsProvider::initialize(const std::unordered_map<std::string, std::string>& properties) {
+
+    auto it_interstitialAdId = properties.find("interstitialAdId");
+    std::string interstitialAdId = it_interstitialAdId == properties.end() ? "" : it_interstitialAdId->second;
+
+    auto it_rewardedAdId = properties.find("rewardedAdId");
+    std::string rewardedAdId = it_rewardedAdId == properties.end() ? "" : it_rewardedAdId->second;
+        
+    auto it_gameId = properties.find("gameId");
+    std::string gameId = it_gameId == properties.end() ? "" : it_gameId->second;
+        
     IOSUnityAdsWrapper* wrapper = (__bridge IOSUnityAdsWrapper*)platformProvider;
-    wrapper.gameId = [NSString stringWithUTF8String:gameIdStr.c_str()];
+    wrapper.gameId = [NSString stringWithUTF8String:gameId.c_str()];
     wrapper.testMode = testMode;
-    wrapper.rewardedAdId = [NSString stringWithUTF8String:_rewardedAdId.c_str()];
-    wrapper.interstitialAdId = [NSString stringWithUTF8String:_interstitialAdId.c_str()];
+    wrapper.rewardedAdId = [NSString stringWithUTF8String:rewardedAdId.c_str()];
+    wrapper.interstitialAdId = [NSString stringWithUTF8String:interstitialAdId.c_str()];
     
     [wrapper initializeUnityAds];
     isInitialized = true;

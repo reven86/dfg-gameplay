@@ -29,7 +29,7 @@ public:
     static AndroidAdProvider* create(const std::string& name);
 
     // AdProvider implementation
-    void initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) override;
+    void initialize(const std::unordered_map<std::string, std::string>& properties) override;
     void loadRewardedAd() override;
     void loadInterstitialAd() override;
     void showRewardedAd() override;

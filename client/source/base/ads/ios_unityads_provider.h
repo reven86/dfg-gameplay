@@ -8,7 +8,7 @@ public:
     ~IOSUnityAdsProvider();
     
     // AdProvider implementation
-    void initialize(const std::string& interstitialAdId, const std::string& rewardedAdId) override;
+    void initialize(const std::unordered_map<std::string, std::string>& properties) override;
     void loadRewardedAd() override;
     void loadInterstitialAd() override;
     void showRewardedAd() override;
@@ -21,8 +21,4 @@ public:
 private:
     void* platformProvider;
     bool isInitialized;
-    std::string gameId;  // Unity Ads requires a game ID
-
-    std::string _interstitialAdId;
-    std::string _rewardedAdId;
 };
