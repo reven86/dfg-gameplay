@@ -139,7 +139,7 @@
 - (void)interstitialAdDidDisappear:(YMAInterstitialAd *)interstitialAd {
     NSLog(@"Yandex interstitial ad dismissed");
     // Reload for next time
-    [self.intersititalAd load];
+    [self.interstitialAd load];
 }
 
 @end
