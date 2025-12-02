@@ -1,13 +1,11 @@
 #include "pch.h"
-#import <YandexMobileAds/YandexMobileAds-Swift.h>
+#import <YandexMobileAds_ios12/YandexMobileAds.h>
 #include "ios_yandexads_provider.h"
 #include "services/ad_service.h"
 #include "services/service_manager.h"
 
 // Objective-C wrapper for Yandex Ads
-@interface IOSYandexAdsWrapper : NSObject <YMARewardedAdLoaderDelegate, YMAInterstitialAdLoaderDelegate, YMARewardedAdDelegate, YMAInterstitialAdDelegate>
-@property(nonatomic, strong) YMARewardedAdLoader *rewardedAdLoader;
-@property(nonatomic, strong) YMAInterstitialAdLoader *interstitialAdLoader;
+@interface IOSYandexAdsWrapper : NSObject <YMARewardedAdDelegate, YMAInterstitialAdDelegate>
 @property(nonatomic, strong) YMARewardedAd *rewardedAd;
 @property(nonatomic, strong) YMAInterstitialAd *interstitialAd;
 @property(nonatomic, assign) AdService* adService;
@@ -24,25 +22,33 @@
 
 - (instancetype)init {
     self = [super init];
-    if (self) {
-        // Yandex Mobile Ads SDK auto-initializes
-        self.rewardedAdLoader = [[YMARewardedAdLoader alloc] init];
-        self.rewardedAdLoader.delegate = self;
-        
-        self.interstitialAdLoader = [[YMAInterstitialAdLoader alloc] init];
-        self.interstitialAdLoader.delegate = self;
-    }
     return self;
 }
 
 - (void)loadRewardedAdWithAdUnitId:(NSString *)adUnitId {
     YMAAdRequestConfiguration *configuration = [[YMAAdRequestConfiguration alloc] initWithAdUnitID:adUnitId];
-    [self.rewardedAdLoader loadAdWithRequestConfiguration:configuration];
+    
+    self.rewardedAd = [[YMARewardedAd alloc] initWithAdUnitID:adUnitId];
+    self.rewardedAd.delegate = self;
+    
+    [self.rewardedAd loadWithRequestConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Failed to load Yandex rewarded ad: %@", error.localizedDescription);
+            if (self.adService) {
+                self.adService->onAdEvent("rewarded", false, error.localizedDescription.UTF8String);
+            }
+        } else {
+            NSLog(@"Yandex rewarded ad loaded successfully");
+            if (self.adService) {
+                self.adService->onAdEvent("rewarded", true, "Yandex rewarded ad loaded");
+            }
+        }
+    }];
 }
 
 - (void)showRewardedAdFromViewController:(UIViewController *)viewController {
     if (self.rewardedAd) {
-        [self.rewardedAd showFromViewController:viewController];
+        [self.rewardedAd presentFromViewController:viewController];
     } else {
         NSLog(@"Yandex rewarded ad is not ready");
         if (self.adService) {
@@ -53,12 +59,28 @@
 
 - (void)loadInterstitialAdWithAdUnitId:(NSString *)adUnitId {
     YMAAdRequestConfiguration *configuration = [[YMAAdRequestConfiguration alloc] initWithAdUnitID:adUnitId];
-    [self.interstitialAdLoader loadAdWithRequestConfiguration:configuration];
+    
+    self.interstitialAd = [[YMAInterstitialAd alloc] initWithAdUnitID:adUnitId];
+    self.interstitialAd.delegate = self;
+    
+    [self.interstitialAd loadWithRequestConfiguration:configuration completionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Failed to load Yandex interstitial ad: %@", error.localizedDescription);
+            if (self.adService) {
+                self.adService->onAdEvent("interstitial", false, error.localizedDescription.UTF8String);
+            }
+        } else {
+            NSLog(@"Yandex interstitial ad loaded successfully");
+            if (self.adService) {
+                self.adService->onAdEvent("interstitial", true, "Yandex interstitial ad loaded");
+            }
+        }
+    }];
 }
 
 - (void)showInterstitialAdFromViewController:(UIViewController *)viewController {
     if (self.interstitialAd) {
-        [self.interstitialAd showFromViewController:viewController];
+        [self.interstitialAd presentFromViewController:viewController];
     } else {
         NSLog(@"Yandex interstitial ad is not ready");
         if (self.adService) {
@@ -67,50 +89,12 @@
     }
 }
 
-#pragma mark - YMARewardedAdLoaderDelegate
-
-- (void)rewardedAdLoader:(YMARewardedAdLoader *)adLoader didLoad:(YMARewardedAd *)rewardedAd {
-    NSLog(@"Yandex rewarded ad loaded successfully");
-    self.rewardedAd = rewardedAd;
-    self.rewardedAd.delegate = self;
-    
-    if (self.adService) {
-        self.adService->onAdEvent("rewarded", true, "Yandex rewarded ad loaded");
-    }
-}
-
-- (void)rewardedAdLoader:(YMARewardedAdLoader *)adLoader didFailToLoadWithError:(NSError *)error {
-    NSLog(@"Yandex rewarded ad failed to load: %@", error.localizedDescription);
-    if (self.adService) {
-        self.adService->onAdEvent("rewarded", false, error.localizedDescription.UTF8String);
-    }
-}
-
-#pragma mark - YMAInterstitialAdLoaderDelegate
-
-- (void)interstitialAdLoader:(YMAInterstitialAdLoader *)adLoader didLoad:(YMAInterstitialAd *)interstitialAd {
-    NSLog(@"Yandex interstitial ad loaded successfully");
-    self.interstitialAd = interstitialAd;
-    self.interstitialAd.delegate = self;
-    
-    if (self.adService) {
-        self.adService->onAdEvent("interstitial", true, "Yandex interstitial ad loaded");
-    }
-}
-
-- (void)interstitialAdLoader:(YMAInterstitialAdLoader *)adLoader didFailToLoadWithError:(NSError *)error {
-    NSLog(@"Yandex interstitial ad failed to load: %@", error.localizedDescription);
-    if (self.adService) {
-        self.adService->onAdEvent("interstitial", false, error.localizedDescription.UTF8String);
-    }
-}
-
 #pragma mark - YMARewardedAdDelegate
 
 - (void)rewardedAd:(YMARewardedAd *)rewardedAd didReward:(id<YMAReward>)reward {
-    NSLog(@"Yandex Ads reward earned: %ld", static_cast<long>(reward.amount));
+    NSLog(@"Yandex Ads reward earned: %@", reward.amount);
     if (self.adService) {
-        self.adService->onRewardEarned(static_cast<int>(reward.amount), "yandex_reward");
+        self.adService->onRewardEarned([reward.amount intValue], "yandex_reward");
     }
 }
 
@@ -134,14 +118,6 @@
     [self loadRewardedAdWithAdUnitId:rewardedAd.adInfo.adUnitId];
 }
 
-- (void)rewardedAdDidClick:(YMARewardedAd *)rewardedAd {
-    NSLog(@"Yandex rewarded ad clicked");
-}
-
-- (void)rewardedAd:(YMARewardedAd *)rewardedAd didTrackImpressionWithData:(nullable id<YMAImpressionData>)impressionData {
-    NSLog(@"Yandex rewarded ad impression tracked");
-}
-
 #pragma mark - YMAInterstitialAdDelegate
 
 - (void)interstitialAd:(YMAInterstitialAd *)interstitialAd didFailToShowWithError:(NSError *)error {
@@ -162,14 +138,6 @@
     NSLog(@"Yandex interstitial ad dismissed");
     // Reload for next time
     [self loadInterstitialAdWithAdUnitId:interstitialAd.adInfo.adUnitId];
-}
-
-- (void)interstitialAdDidClick:(YMAInterstitialAd *)interstitialAd {
-    NSLog(@"Yandex interstitial ad clicked");
-}
-
-- (void)interstitialAd:(YMAInterstitialAd *)interstitialAd didTrackImpressionWithData:(nullable id<YMAImpressionData>)impressionData {
-    NSLog(@"Yandex interstitial ad impression tracked");
 }
 
 @end

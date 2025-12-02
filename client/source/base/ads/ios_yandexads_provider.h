@@ -20,10 +20,6 @@ public:
     
 private:
     void* platformProvider;
-    void* rewardedAdLoader;      // YMARewardedAdLoader*
-    void* interstitialAdLoader;  // YMAInterstitialAdLoader*
-    void* rewardedAd;      // YMARewardedAd*
-    void* interstitialAd;  // YMAInterstitialAd*
     bool isInitialized;
 
     std::string _interstitialAdId;
