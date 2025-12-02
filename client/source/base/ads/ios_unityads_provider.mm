@@ -1,4 +1,5 @@
 #include "pch.h"
+#import <UnityAds/UnityAds.h>
 #import <UnityAds/UnityAds-Swift.h>
 #include "ios_unityads_provider.h"
 #include "services/ad_service.h"
