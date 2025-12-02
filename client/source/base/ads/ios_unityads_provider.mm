@@ -18,7 +18,7 @@
 @property(nonatomic, strong) NSString* interstitialAdId;
 @property(nonatomic, assign) AdService* adService;
 
-- (instancetype)initWithGameId:(NSString*)gameId testMode:(BOOL)testMode;
+- (instancetype)init;
 - (void)initializeUnityAds;
 - (void)loadRewardedAd;
 - (void)loadInterstitialAd;
@@ -31,17 +31,13 @@
 
 @implementation IOSUnityAdsWrapper
 
-- (instancetype)initWithGameId:(NSString*)gameId testMode:(BOOL)testMode {
+- (instancetype)init {
     self = [super init];
-    if (self) {
-        self.gameId = gameId;
-        self.testMode = testMode;
-        self.isInitialized = NO;
-    }
     return self;
 }
 
 - (void)initializeUnityAds {
+    GP_LOG("initializeUnityAds %X", UnityServices);
     [UnityServices initialize:self.gameId 
                 testMode:self.testMode 
       initializationDelegate:self];
@@ -193,7 +189,7 @@
 IOSUnityAdsProvider::IOSUnityAdsProvider() 
     : isInitialized(false) {
     
-    IOSUnityAdsWrapper* wrapper = [[IOSUnityAdsWrapper alloc] initWithGameId:@"" testMode:NO];
+    IOSUnityAdsWrapper* wrapper = [[IOSUnityAdsWrapper alloc] init];
     wrapper.adService = ServiceManager::getInstance()->findService<AdService>();
     platformProvider = (__bridge_retained void*)wrapper;
 }
@@ -215,7 +211,8 @@ void IOSUnityAdsProvider::initialize(const std::unordered_map<std::string, std::
         
     auto it_gameId = properties.find("gameId");
     std::string gameId = it_gameId == properties.end() ? "" : it_gameId->second;
-        
+ 
+    GP_LOG("IOSUnityAdsProvider::initialize %s %s %s %X", gameId.c_str(), interstitialAdId.c_str(), rewardedAdId.c_str(), platformProvider);
     IOSUnityAdsWrapper* wrapper = (__bridge IOSUnityAdsWrapper*)platformProvider;
     wrapper.gameId = [NSString stringWithUTF8String:gameId.c_str()];
     wrapper.testMode = false;
