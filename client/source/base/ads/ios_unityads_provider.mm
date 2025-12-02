@@ -42,26 +42,26 @@
 }
 
 - (void)initializeUnityAds {
-    [UnityAds initialize:self.gameId 
+    [UnityServices initialize:self.gameId 
                 testMode:self.testMode 
       initializationDelegate:self];
 }
 
 - (void)loadRewardedAd {
     if (self.isInitialized && self.rewardedAdId) {
-        [UnityAds load:self.rewardedAdId loadDelegate:self];
+        [UnityServices load:self.rewardedAdId loadDelegate:self];
     }
 }
 
 - (void)loadInterstitialAd {
     if (self.isInitialized && self.interstitialAdId) {
-        [UnityAds load:self.interstitialAdId loadDelegate:self];
+        [UnityServices load:self.interstitialAdId loadDelegate:self];
     }
 }
 
 - (void)showRewardedAdFromViewController:(UIViewController *)viewController {
     if ([self isRewardedAdReady]) {
-        [UnityAds show:viewController 
+        [UnityServices show:viewController 
            placementId:self.rewardedAdId 
            showDelegate:self];
     } else {
@@ -74,7 +74,7 @@
 
 - (void)showInterstitialAdFromViewController:(UIViewController *)viewController {
     if ([self isInterstitialAdReady]) {
-        [UnityAds show:viewController 
+        [UnityServices show:viewController 
            placementId:self.interstitialAdId 
            showDelegate:self];
     } else {
@@ -86,11 +86,11 @@
 }
 
 - (BOOL)isRewardedAdReady {
-    return self.isInitialized && self.rewardedAdId && [UnityAds isReady:self.rewardedAdId];
+    return self.isInitialized && self.rewardedAdId;
 }
 
 - (BOOL)isInterstitialAdReady {
-    return self.isInitialized && self.interstitialAdId && [UnityAds isReady:self.interstitialAdId];
+    return self.isInitialized && self.interstitialAdId;
 }
 
 #pragma mark - UnityAdsInitializationDelegate
