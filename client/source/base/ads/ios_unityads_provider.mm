@@ -64,10 +64,13 @@
         [UnityAds show:viewController 
            placementId:self.rewardedAdId 
            showDelegate:self];
+        if (self.adService) {
+            self.adService->onAdEvent("rewarded_shown", true, "Unity rewarded ad shown");
+        }
     } else {
         NSLog(@"Unity rewarded ad is not ready");
         if (self.adService) {
-            self.adService->onAdEvent("rewarded", false, "Unity rewarded ad not ready");
+            self.adService->onAdEvent("rewarded_shown", false, "Unity rewarded ad not ready");
         }
     }
 }
@@ -77,10 +80,13 @@
         [UnityAds show:viewController 
            placementId:self.interstitialAdId 
            showDelegate:self];
+        if (self.adService) {
+            self.adService->onAdEvent("interstitial_shown", true, "Unity interstitial ad shown");
+        }
     } else {
         NSLog(@"Unity interstitial ad is not ready");
         if (self.adService) {
-            self.adService->onAdEvent("interstitial", false, "Unity interstitial ad not ready");
+            self.adService->onAdEvent("interstitial_shown", false, "Unity interstitial ad not ready");
         }
     }
 }
@@ -121,7 +127,7 @@
     NSLog(@"Unity Ads ad loaded: %@", placementId);
     
     if (self.adService) {
-        std::string adType = [placementId isEqualToString:self.rewardedAdId] ? "rewarded" : "interstitial";
+        std::string adType = [placementId isEqualToString:self.rewardedAdId] ? "rewarded_loaded" : "interstitial_loaded";
         self.adService->onAdEvent(adType, true, "Unity Ads loaded");
     }
 }
@@ -132,7 +138,7 @@
     NSLog(@"Unity Ads failed to load ad %@: %@", placementId, message);
     
     if (self.adService) {
-        std::string adType = [placementId isEqualToString:self.rewardedAdId] ? "rewarded" : "interstitial";
+        std::string adType = [placementId isEqualToString:self.rewardedAdId] ? "rewarded_loaded" : "interstitial_loaded";
         self.adService->onAdEvent(adType, false, message.UTF8String);
     }
 }
@@ -214,7 +220,6 @@ void IOSUnityAdsProvider::initialize(const std::unordered_map<std::string, std::
     auto it_gameId = properties.find("gameId");
     std::string gameId = it_gameId == properties.end() ? "" : it_gameId->second;
  
-    GP_LOG("IOSUnityAdsProvider::initialize %s %s %s %X", gameId.c_str(), interstitialAdId.c_str(), rewardedAdId.c_str(), platformProvider);
     IOSUnityAdsWrapper* wrapper = (__bridge IOSUnityAdsWrapper*)platformProvider;
     wrapper.gameId = [NSString stringWithUTF8String:gameId.c_str()];
     wrapper.testMode = false;

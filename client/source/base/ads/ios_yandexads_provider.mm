@@ -46,7 +46,7 @@
     } else {
         NSLog(@"Yandex rewarded ad is not ready");
         if (self.adService) {
-            self.adService->onAdEvent("rewarded", false, "Yandex rewarded ad not ready");
+            self.adService->onAdEvent("rewarded_shown", false, "Yandex rewarded ad not ready");
         }
     }
 }
@@ -62,7 +62,7 @@
     } else {
         NSLog(@"Yandex interstitial ad is not ready");
         if (self.adService) {
-            self.adService->onAdEvent("interstitial", false, "Yandex interstitial ad not ready");
+            self.adService->onAdEvent("interstitial_shown", false, "Yandex interstitial ad not ready");
         }
     }
 }
@@ -75,14 +75,14 @@
     self.rewardedAd.delegate = self;
     
     if (self.adService) {
-        self.adService->onAdEvent("rewarded", true, "Yandex rewarded ad loaded");
+        self.adService->onAdEvent("rewarded_loaded", true, "Yandex rewarded ad loaded");
     }
 }
 
 - (void)rewardedAdLoader:(YMARewardedAdLoader *)adLoader didFailToLoadWithError:(NSError *)error {
     NSLog(@"Yandex rewarded ad failed to load: %@", error.localizedDescription);
     if (self.adService) {
-        self.adService->onAdEvent("rewarded", false, error.localizedDescription.UTF8String);
+        self.adService->onAdEvent("rewarded_loaded", false, error.localizedDescription.UTF8String);
     }
 }
 
@@ -94,14 +94,14 @@
     self.interstitialAd.delegate = self;
     
     if (self.adService) {
-        self.adService->onAdEvent("interstitial", true, "Yandex interstitial ad loaded");
+        self.adService->onAdEvent("interstitial_loaded", true, "Yandex interstitial ad loaded");
     }
 }
 
 - (void)interstitialAdLoader:(YMAInterstitialAdLoader *)adLoader didFailToLoadWithError:(NSError *)error {
     NSLog(@"Yandex interstitial ad failed to load: %@", error.localizedDescription);
     if (self.adService) {
-        self.adService->onAdEvent("interstitial", false, error.localizedDescription.UTF8String);
+        self.adService->onAdEvent("interstitial_loaded", false, error.localizedDescription.UTF8String);
     }
 }
 
@@ -117,14 +117,14 @@
 - (void)rewardedAd:(YMARewardedAd *)rewardedAd didFailToShowWithError:(NSError *)error {
     NSLog(@"Yandex rewarded ad failed to show: %@", error.localizedDescription);
     if (self.adService) {
-        self.adService->onAdEvent("rewarded", false, error.localizedDescription.UTF8String);
+        self.adService->onAdEvent("rewarded_shown", false, error.localizedDescription.UTF8String);
     }
 }
 
 - (void)rewardedAdDidShow:(YMARewardedAd *)rewardedAd {
     NSLog(@"Yandex rewarded ad shown");
     if (self.adService) {
-        self.adService->onAdEvent("rewarded", true, "Yandex rewarded ad shown");
+        self.adService->onAdEvent("rewarded_shown", true, "Yandex rewarded ad shown");
     }
 }
 
@@ -147,14 +147,14 @@
 - (void)interstitialAd:(YMAInterstitialAd *)interstitialAd didFailToShowWithError:(NSError *)error {
     NSLog(@"Yandex interstitial ad failed to show: %@", error.localizedDescription);
     if (self.adService) {
-        self.adService->onAdEvent("interstitial", false, error.localizedDescription.UTF8String);
+        self.adService->onAdEvent("interstitial_shown", false, error.localizedDescription.UTF8String);
     }
 }
 
 - (void)interstitialAdDidShow:(YMAInterstitialAd *)interstitialAd {
     NSLog(@"Yandex interstitial ad shown");
     if (self.adService) {
-        self.adService->onAdEvent("interstitial", true, "Yandex interstitial ad shown");
+        self.adService->onAdEvent("interstitial_shown", true, "Yandex interstitial ad shown");
     }
 }
 
