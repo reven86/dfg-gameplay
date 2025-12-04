@@ -90,7 +90,9 @@ AdProvider * AdService::createProvider(const std::string& type)
 #ifdef __ANDROID__
     return AndroidAdProvider::create(type);
 #elif defined(__APPLE__) && TARGET_OS_IPHONE
-    return (type == "YandexAds" || type == "UnityAds") ? new IOSUnityAdsProvider() : new IOSAdMobProvider();
+    if (type == "YandexAds" || type == "UnityAds")
+        return new IOSUnityAdsProvider();
+    return new IOSAdMobProvider();
 #endif
 
     return nullptr;
