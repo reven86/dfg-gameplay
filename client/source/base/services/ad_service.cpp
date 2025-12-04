@@ -4,6 +4,7 @@
 #include "ads/android_ad_provider.h"
 #include "ads/ios_yandexads_provider.h"
 #include "ads/ios_unityads_provider.h"
+#include "ads/ios_admob_provider.h"
 #include "main.h"
 
 
@@ -51,12 +52,13 @@ bool AdService::onInit()
             system = "iOS";
 #endif
 
-            const gameplay::Properties* sys = adProvider->getNamespace(system, true);
+            gameplay::Properties* sys = adProvider->getNamespace(system, true);
             if (sys)
             {
-                properties["interstitialAdId"] = sys->getString("interstitialAdId", "");
-                properties["rewardedAdId"] = sys->getString("rewardedAdId", "");
-                properties["gameId"] = sys->getString("gameId", "");
+                const char* prop = nullptr;
+
+                while ((prop = sys->getNextProperty()) != nullptr)
+                    properties[prop] = sys->getString();
             }
 
             break;
@@ -88,7 +90,7 @@ AdProvider * AdService::createProvider(const std::string& type)
 #ifdef __ANDROID__
     return AndroidAdProvider::create(type);
 #elif defined(__APPLE__) && TARGET_OS_IPHONE
-    return new IOSUnityAdsProvider();
+    return (type == "YandexAds" || type == "UnityAds") ? new IOSUnityAdsProvider() : new IOSAdMobProvider();
 #endif
 
     return nullptr;
