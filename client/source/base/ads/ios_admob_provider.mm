@@ -227,6 +227,8 @@ void IOSAdMobProvider::initialize(const std::unordered_map<std::string, std::str
     auto it_rewardedAdId = properties.find("rewardedAdId");
     std::string rewardedAdId = it_rewardedAdId == properties.end() ? "" : it_rewardedAdId->second;
 
+    GP_LOG("IOSAdMobProvider::initialize %s %s", interstitialAdId.c_str(), rewardedAdId.c_str());
+
     IOSAdMobWrapper* wrapper = (__bridge IOSAdMobWrapper*)platformProvider;
     wrapper.rewardedAdId = [NSString stringWithUTF8String:rewardedAdId.c_str()];
     wrapper.interstitialAdId = [NSString stringWithUTF8String:interstitialAdId.c_str()];
