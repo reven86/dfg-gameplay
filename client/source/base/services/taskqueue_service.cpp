@@ -131,7 +131,7 @@ int TaskQueueService::addWorkItem(const char * queue, const std::function<void()
 #else
     auto it = _queues.find(queue);
     if (it == _queues.end())
-        return -1;
+        return runOnMainThread(func);
 
     return (*it).second->addWorkItem(func);
 #endif
@@ -162,6 +162,12 @@ void TaskQueueService::removeWorkItem(const char * queue, int itemHandle)
 
 int TaskQueueService::runOnMainThread(const std::function<void()>& func)
 {
+    if (getState() > Service::RUNNING)
+    {
+        func();
+        return -1;
+    }
+
     std::unique_lock<std::mutex> lock(_queueMutex);
 
     _itemCounter++;
