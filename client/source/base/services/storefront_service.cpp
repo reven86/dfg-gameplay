@@ -47,7 +47,7 @@ void StorefrontService::getProductsEvent(const std::vector< gameplay::StoreProdu
 #ifdef _DEBUG
     if (strcmp(gameplay::Game::getInstance()->getStoreController()->getStoreFront()->getName(), "Null"))
         for (unsigned int i = 0; i < invalidProducts.size(); i++)
-            GP_WARN("Invalid product: %s", invalidProducts[i].c_str());
+            GP_LOG("Invalid product: %s", invalidProducts[i].c_str());
 #endif
 
     _manager->signals.storefrontGetProductsSucceededEvent();
