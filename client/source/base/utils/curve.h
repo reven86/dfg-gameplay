@@ -86,7 +86,7 @@ public:
     /**
      * Initialize Curve from Properties.
      */
-    inline bool initialize(gameplay::Properties * properties);
+    inline bool initialize(gameplay::Properties* properties);
 
     /**
      * Access to keys.
@@ -95,7 +95,7 @@ public:
 
 private:
     KeysType _keys;
-    T _emptyKey;
+    T _emptyKey = {};
 };
 
 
