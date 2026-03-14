@@ -26,14 +26,22 @@ add_definitions(-DGP_USE_SOCIAL)
 add_definitions(-DGP_USE_STOREFRONT)
 add_definitions(-DCURL_STATICLIB)
 add_definitions(-DYAML_DECLARE_STATIC)
-IF(NOT WIN32)
+
+if(WIN32)
+    add_compile_options(/utf-8)
+    add_compile_options(/bigobj)
+    add_compile_options(/W4)
+    add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:/GR->")
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_NONSTDC_NO_WARNINGS)
+    add_definitions(-DZIP_STATIC)
+    add_definitions(-DWIN32)
+    add_definitions(-D_WINDOWS)
+else()
     add_compile_options(-Wno-comment)
     add_compile_options(-Wno-logical-op-parentheses)
-ENDIF(NOT WIN32)
-
-add_compile_options(
-    "$<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>"
-)
+    add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>")
+endif()
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR IOS)
     list(APPEND PROJECT_SRC
@@ -70,11 +78,17 @@ add_library(dfg-gameplay STATIC
     ${PROJECT_SRC}
 )
 
+target_compile_definitions(dfg-gameplay PRIVATE
+    $<$<CONFIG:Debug>:_CRTDBG_MAP_ALLOC>
+)
+
 IF(ANDROID)
     target_include_directories(dfg-gameplay PRIVATE "${ANDROID_NDK}/sources/android/native_app_glue/")
 ENDIF(ANDROID)
 
-#target_precompile_headers(dfg-gameplay PRIVATE pch.h)
+IF(NOT APPLE)
+    target_precompile_headers(dfg-gameplay PRIVATE pch.h)
+ENDIF(NOT APPLE)
 
 set_target_properties(dfg-gameplay PROPERTIES
     OUTPUT_NAME "dfg-gameplay"
