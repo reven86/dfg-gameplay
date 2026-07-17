@@ -3,6 +3,11 @@
 #include "zip_stream.h"
 #include <zip.h>
 
+#ifdef __ANDROID__
+#include <android/asset_manager.h>
+extern AAssetManager* __assetManager;
+#endif
+
 
 
 
@@ -26,6 +31,185 @@ static void getFullPath(const char* path, std::string& fullPath)
         fullPath += gameplay::FileSystem::resolvePath(path);
     }
 }
+
+
+
+#ifdef __ANDROID__
+
+struct AAssetZipContext
+{
+    AAsset* asset = nullptr;
+    zip_uint64_t size = 0;
+    zip_uint64_t position = 0;
+    zip_error_t error;
+};
+
+static zip_int64_t aassetZipSourceCallback(void* userdata, void* data, zip_uint64_t length, zip_source_cmd_t command)
+{
+    AAssetZipContext* ctx = static_cast<AAssetZipContext*>(userdata);
+
+    switch (command)
+    {
+    case ZIP_SOURCE_OPEN:
+        ctx->position = 0;
+        if (AAsset_seek(ctx->asset, 0, SEEK_SET) < 0)
+        {
+            zip_error_set(&ctx->error, ZIP_ER_SEEK, 0);
+            return -1;
+        }
+        return 0;
+
+    case ZIP_SOURCE_CLOSE:
+        return 0;
+
+    case ZIP_SOURCE_READ:
+    {
+        if (length > ZIP_INT64_MAX)
+        {
+            zip_error_set(&ctx->error, ZIP_ER_INVAL, 0);
+            return -1;
+        }
+
+        zip_int64_t n = AAsset_read(ctx->asset, data, static_cast<size_t>(length));
+        if (n < 0)
+        {
+            zip_error_set(&ctx->error, ZIP_ER_READ, 0);
+            return -1;
+        }
+        ctx->position += static_cast<zip_uint64_t>(n);
+        return n;
+    }
+
+    case ZIP_SOURCE_SEEK:
+    {
+        zip_source_args_seek_t* args = ZIP_SOURCE_GET_ARGS(zip_source_args_seek_t, data, length, &ctx->error);
+        if (args == nullptr)
+            return -1;
+
+        zip_int64_t newPos = 0;
+        switch (args->whence)
+        {
+        case SEEK_SET:
+            newPos = args->offset;
+            break;
+        case SEEK_CUR:
+            newPos = static_cast<zip_int64_t>(ctx->position) + args->offset;
+            break;
+        case SEEK_END:
+            newPos = static_cast<zip_int64_t>(ctx->size) + args->offset;
+            break;
+        default:
+            zip_error_set(&ctx->error, ZIP_ER_INVAL, 0);
+            return -1;
+        }
+
+        if (newPos < 0 || static_cast<zip_uint64_t>(newPos) > ctx->size)
+        {
+            zip_error_set(&ctx->error, ZIP_ER_INVAL, 0);
+            return -1;
+        }
+
+        if (AAsset_seek(ctx->asset, newPos, SEEK_SET) < 0)
+        {
+            zip_error_set(&ctx->error, ZIP_ER_SEEK, 0);
+            return -1;
+        }
+
+        ctx->position = static_cast<zip_uint64_t>(newPos);
+        return 0;
+    }
+
+    case ZIP_SOURCE_TELL:
+        return static_cast<zip_int64_t>(ctx->position);
+
+    case ZIP_SOURCE_STAT:
+    {
+        zip_stat_t* st = ZIP_SOURCE_GET_ARGS(zip_stat_t, data, length, &ctx->error);
+        if (st == nullptr)
+            return -1;
+
+        zip_stat_init(st);
+        st->valid = ZIP_STAT_SIZE;
+        st->size = ctx->size;
+        return 0;
+    }
+
+    case ZIP_SOURCE_SUPPORTS:
+        return zip_source_make_command_bitmap(
+            ZIP_SOURCE_OPEN, ZIP_SOURCE_CLOSE, ZIP_SOURCE_READ,
+            ZIP_SOURCE_SEEK, ZIP_SOURCE_TELL, ZIP_SOURCE_STAT,
+            ZIP_SOURCE_ERROR, ZIP_SOURCE_FREE, -1);
+
+    case ZIP_SOURCE_ERROR:
+        return zip_error_to_data(&ctx->error, data, length);
+
+    case ZIP_SOURCE_FREE:
+        if (ctx->asset)
+        {
+            AAsset_close(ctx->asset);
+            ctx->asset = nullptr;
+        }
+        zip_error_fini(&ctx->error);
+        delete ctx;
+        return 0;
+
+    default:
+        zip_error_set(&ctx->error, ZIP_ER_OPNOTSUPP, 0);
+        return -1;
+    }
+}
+
+static zip* openZipFromAsset(const char* zipFile)
+{
+    if (!__assetManager)
+        return nullptr;
+
+    std::string assetPath = gameplay::FileSystem::getAssetPath();
+    assetPath += gameplay::FileSystem::resolvePath(zipFile);
+
+    AAsset* asset = AAssetManager_open(__assetManager, assetPath.c_str(), AASSET_MODE_RANDOM);
+    if (!asset)
+        return nullptr;
+
+    off_t length = AAsset_getLength(asset);
+    if (length <= 0)
+    {
+        AAsset_close(asset);
+        return nullptr;
+    }
+
+    AAssetZipContext* ctx = new AAssetZipContext();
+    zip_error_init(&ctx->error);
+    ctx->asset = asset;
+    ctx->size = static_cast<zip_uint64_t>(length);
+    ctx->position = 0;
+
+    zip_error_t error;
+    zip_error_init(&error);
+    zip_source_t* source = zip_source_function_create(aassetZipSourceCallback, ctx, &error);
+    if (!source)
+    {
+        AAsset_close(asset);
+        zip_error_fini(&ctx->error);
+        delete ctx;
+        zip_error_fini(&error);
+        return nullptr;
+    }
+
+    zip* archive = zip_open_from_source(source, ZIP_RDONLY, &error);
+    if (!archive)
+    {
+        // Frees source and invokes ZIP_SOURCE_FREE (closes asset, deletes ctx)
+        zip_source_free(source);
+        zip_error_fini(&error);
+        return nullptr;
+    }
+
+    zip_error_fini(&error);
+    return archive;
+}
+
+#endif // __ANDROID__
 
 
 
@@ -73,15 +257,16 @@ ZipPackage * ZipPackage::create(const char * zipFile)
     if (!gameplay::FileSystem::fileExists(zipFile))
         return NULL;
 
-#ifndef __ANDROID__
     std::string fullPath;
     getFullPath(zipFile, fullPath);
-#else
-    std::string fullPath(zipFile);
-#endif
 
     int err = 0;
     zip * res = zip_open(fullPath.c_str(), 0, &err);
+
+#ifdef __ANDROID__
+    if (!res)
+        res = openZipFromAsset(zipFile);
+#endif
 
     if (!res)
     {
