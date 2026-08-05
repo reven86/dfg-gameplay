@@ -569,10 +569,10 @@ void debugPrintVariant(const VariantType& v, int ident)
         v.getArchive()->debugPrint(ident + 2);
         break;
     case VariantType::TYPE_INT64:
-        gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(int64) %ld\n", v.get<int64_t>());
+        gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(int64) %lld\n", v.get<int64_t>());
         break;
     case VariantType::TYPE_UINT64:
-        gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(uint64) %lu\n", v.get<uint64_t>());
+        gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(uint64) %llu\n", v.get<uint64_t>());
         break;
     case VariantType::TYPE_VECTOR2:
         gameplay::Logger::log(gameplay::Logger::LEVEL_INFO, "(vec2) %f %f\n", v.get<gameplay::Vector2>().x, v.get<gameplay::Vector2>().y);

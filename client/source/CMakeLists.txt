@@ -80,6 +80,7 @@ add_library(dfg-gameplay STATIC
 
 target_compile_definitions(dfg-gameplay PRIVATE
     $<$<CONFIG:Debug>:_CRTDBG_MAP_ALLOC>
+    _DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR
 )
 
 IF(ANDROID)
