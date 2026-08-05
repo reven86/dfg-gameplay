@@ -22,17 +22,35 @@ void ServiceManager::cleanup()
         delete (*it);
 
     _services.clear();
+    _servicesById.clear();
+}
+
+void ServiceManager::insertService(ServiceData * data, ServicesType::iterator insertBefore)
+{
+    auto existing = _servicesById.find(data->typeId);
+    if (existing != _servicesById.end())
+    {
+        if (strcmp(existing->second->name, data->name) == 0)
+            GP_ERROR("Service %s is already registered", data->name);
+        else
+            GP_ERROR("Service type id collision between %s and %s", existing->second->name, data->name);
+        return;
+    }
+
+    _services.insert(insertBefore, data);
+    _servicesById[data->typeId] = data;
 }
 
 void ServiceManager::registerService(const char * name, Service * service, Service ** dependencies)
 {
     ServiceData * newData = new ServiceData();
     newData->name = name;
+    newData->typeId = serviceTypeId(name);
     newData->service.reset(service);
 
     if (!dependencies)
     {
-        _services.push_front(newData);
+        insertService(newData, _services.begin());
         return;
     }
 
@@ -71,15 +89,13 @@ void ServiceManager::registerService(const char * name, Service * service, Servi
         return;
     }
 
-    _services.insert(it, newData);
+    insertService(newData, it);
 }
 
-Service * ServiceManager::findService(const char * name) const
+Service * ServiceManager::findServiceById(uint32_t typeId) const
 {
-    for (ServicesType::const_iterator it = _services.begin(), end_it = _services.end(); it != end_it; it++)
-        if ((*it)->name == name)
-            return (*it)->service.get();
-    return NULL;
+    auto it = _servicesById.find(typeId);
+    return it != _servicesById.end() ? it->second->service.get() : NULL;
 }
 
 void ServiceManager::shutdown()
