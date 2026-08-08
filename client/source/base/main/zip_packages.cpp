@@ -334,17 +334,20 @@ void ZipPackage::setPassword(const char * password)
 
 static bool __finilized = false;
 std::unordered_map<std::string, std::unique_ptr<ZipPackage>> ZipPackagesCache::__packages;
+std::unordered_set<std::string> ZipPackagesCache::__registeredPackages;
 
 
 
 
 void ZipPackagesCache::finalize()
 {
-    GP_ASSERT(__packages.empty());
-
     for (auto& it : __packages)
-        gameplay::FileSystem::unregisterPackage(it.second.get());
+    {
+        if (__registeredPackages.count(it.first))
+            gameplay::FileSystem::unregisterPackage(it.second.get());
+    }
 
+    __registeredPackages.clear();
     __packages.clear();
 
     __finilized = true;
@@ -357,13 +360,19 @@ ZipPackage * ZipPackagesCache::findOrOpenPackage(const char * packageName)
     
     auto package = __packages.find(packageName);
     if (package != __packages.end())
+    {
+        // Soft-cached: re-register with FileSystem without reopening the zip.
+        if (__registeredPackages.insert(packageName).second)
+            gameplay::FileSystem::registerPackage((*package).second.get());
         return (*package).second.get();
+    }
 
     ZipPackage * res = ZipPackage::create(packageName);
     if (!res)
         return NULL;
 
     __packages.emplace(packageName, res);
+    __registeredPackages.insert(packageName);
     gameplay::FileSystem::registerPackage(res);
     return res;
 }
@@ -376,8 +385,9 @@ void ZipPackagesCache::closePackage(const char * packageName)
     auto package = __packages.find(packageName);
     if (package != __packages.end())
     {
-        gameplay::FileSystem::unregisterPackage((*package).second.get());
-        __packages.erase(package);
+        // Keep ZipPackage (zip handle + file index) warm; only unregister from FileSystem.
+        if (__registeredPackages.erase(packageName))
+            gameplay::FileSystem::unregisterPackage((*package).second.get());
     }
 }
 

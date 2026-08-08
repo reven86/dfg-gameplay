@@ -1,6 +1,7 @@
 #pragma once
 
 #include <zip.h>
+#include <unordered_set>
 
 
 
@@ -77,4 +78,6 @@ protected:
 
 private:
     static std::unordered_map<std::string, std::unique_ptr<class ZipPackage>> __packages;
+    // Soft-closed packages stay in __packages but are not registered with FileSystem.
+    static std::unordered_set<std::string> __registeredPackages;
 };
