@@ -5,6 +5,8 @@
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
 #include <iomanip>
+#include <ctime>
+#include <clocale>
 
 
 
@@ -102,5 +104,28 @@ std::string calculateHMAC_SHA256(const std::string& key, const std::string& data
 
     return ss.str();
 }
+
+
+int64_t parseIso8601ToUnix(const std::string& dateTime)
+{
+    std::tm t = {};
+    std::string oldLocale = setlocale(LC_NUMERIC, nullptr);
+    setlocale(LC_NUMERIC, "C");
+    int success = sscanf(dateTime.c_str(), "%d-%d-%dT%d:%d:%d", &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &t.tm_sec);
+    setlocale(LC_NUMERIC, oldLocale.c_str());
+    if (success != 6)
+        return 0;
+
+    t.tm_year -= 1900;
+    t.tm_mon -= 1;
+    t.tm_isdst = 0;
+
+#ifdef WIN32
+    return static_cast<int64_t>(_mkgmtime(&t));
+#else
+    return static_cast<int64_t>(timegm(&t));
+#endif
+}
+
 
 }

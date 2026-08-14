@@ -159,6 +159,13 @@ inline gameplay::Vector4 RGBToHSL(const gameplay::Vector4& rgb);
 
 
 /**
+ * Parse an ISO-8601 UTC datetime (YYYY-MM-DDTHH:MM:SS[...]) to a unix timestamp.
+ * Fractional seconds and a trailing Z are ignored. Returns 0 on parse failure.
+ */
+int64_t parseIso8601ToUnix(const std::string& dateTime);
+
+
+/**
  * Computes MD5 hash for data.
  *
  * @param data Input data buffer.
