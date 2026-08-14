@@ -377,7 +377,7 @@ ZipPackage * ZipPackagesCache::findOrOpenPackage(const char * packageName)
     return res;
 }
 
-void ZipPackagesCache::closePackage(const char * packageName)
+void ZipPackagesCache::unmountPackage(const char * packageName)
 {
     if (packageName == NULL || *packageName == '\0')
         return;
@@ -385,10 +385,18 @@ void ZipPackagesCache::closePackage(const char * packageName)
     auto package = __packages.find(packageName);
     if (package != __packages.end())
     {
-        // Keep ZipPackage (zip handle + file index) warm; only unregister from FileSystem.
         if (__registeredPackages.erase(packageName))
             gameplay::FileSystem::unregisterPackage((*package).second.get());
     }
+}
+
+void ZipPackagesCache::closePackage(const char * packageName)
+{
+    if (packageName == NULL || *packageName == '\0')
+        return;
+
+    unmountPackage(packageName);
+    __packages.erase(packageName);
 }
 
 void ZipPackagesCache::setPassword(const char * packageName, const char * password)

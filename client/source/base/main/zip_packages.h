@@ -57,6 +57,17 @@ class ZipPackagesCache : Noncopyable
 {
 public:
     static ZipPackage* findOrOpenPackage(const char * packageName);
+
+    /**
+     * Unregister the package from FileSystem but keep the open zip and file index.
+     * Use for immutable archives that will be remounted (e.g. vehicles.zip).
+     */
+    static void unmountPackage(const char * packageName);
+
+    /**
+     * Unregister and destroy the ZipPackage (closes the zip handle).
+     * Use when the file on disk may be replaced or is no longer needed.
+     */
     static void closePackage(const char * packageName);
 
     /**
@@ -78,6 +89,6 @@ protected:
 
 private:
     static std::unordered_map<std::string, std::unique_ptr<class ZipPackage>> __packages;
-    // Soft-closed packages stay in __packages but are not registered with FileSystem.
+    // Packages currently registered with FileSystem. Unmounted packages stay in __packages.
     static std::unordered_set<std::string> __registeredPackages;
 };
