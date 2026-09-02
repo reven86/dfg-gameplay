@@ -247,8 +247,6 @@ jobs:
         include:
         - emscripten: latest
           gp_no_ui: 1
-        - emscripten: 3.1.50
-          gp_no_ui: 1
         - emscripten: latest
           gp_no_ui: 0
     
