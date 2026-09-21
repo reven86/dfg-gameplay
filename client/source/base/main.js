@@ -19,21 +19,23 @@ mergeInto(LibraryManager.library, {
 
     // LOAD
     http.onload = function http_onload(e) {
+        var statusText = stringToNewUTF8(http.statusText || '');
         if (_request === "HEAD") {
             let allHeaders = http.getAllResponseHeaders();
             let buffer = stringToNewUTF8(allHeaders);
-            if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, allHeaders.length, http.status, http.statusText);
-            _free(buffer)
+            if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, allHeaders.length, http.status, statusText);
+            _free(buffer);
         }
         else {
           var byteArray = new Uint8Array(http.response);
           var buffer = _malloc(byteArray.length);
           HEAPU8.set(byteArray, buffer);
 
-          if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, byteArray.length, http.status, http.statusText);
+          if (onload) {{{ makeDynCall('viiiiii', 'onload') }}}(handle, arg, buffer, byteArray.length, http.status, statusText);
 
           if (free) _free(buffer);
         }
+        _free(statusText);
       delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
     };
@@ -41,7 +43,9 @@ mergeInto(LibraryManager.library, {
     // ERROR
     http.onerror = function http_onerror(e) {
       if (onerror) {
-        {{{ makeDynCall('viiii', 'onerror') }}}(handle, arg, http.status, http.statusText);
+        var statusText = stringToNewUTF8(http.statusText || '');
+        {{{ makeDynCall('viiii', 'onerror') }}}(handle, arg, http.status, statusText);
+        _free(statusText);
       }
       delete wget.wgetRequests[handle];
       Module._free(_param.byteOffset);
@@ -82,7 +86,7 @@ mergeInto(LibraryManager.library, {
 
     return handle;
   },
-  emscripten_async_wget3_data__deps: ['$wget'],
+  emscripten_async_wget3_data__deps: ['$wget', '$stringToNewUTF8'],
 });
 
 
