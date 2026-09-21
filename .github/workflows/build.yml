@@ -104,7 +104,7 @@ jobs:
         unzip -o external-deps-include.zip -d GamePlay/external-deps
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v4
 
     - name: Configure Android build
       run: |
