@@ -491,10 +491,23 @@ bool Archive::deserializeVariant(gameplay::Stream * stream, VariantType * out, c
         return true;
     case VariantType::TYPE_TRANSFORM:
         {
-            //gameplay::Vector3 translation;
-            //gameplay::Vector3 scale;
-            //gameplay::Quaternion rotation;
-            stream->seek(40, SEEK_CUR);
+            gameplay::Vector3 translation;
+            gameplay::Vector3 scale;
+            gameplay::Quaternion rotation;
+            if (stream->read(&translation, sizeof(translation), 1) != 1)
+                return false;
+            if (stream->read(&scale, sizeof(scale), 1) != 1)
+                return false;
+            if (stream->read(&rotation, sizeof(rotation), 1) != 1)
+                return false;
+
+            // Compose the same way TransformComponent is applied in loadBlitzHierarchy.
+            gameplay::Matrix m;
+            m.setIdentity();
+            m.rotate(rotation);
+            m.scale(scale);
+            m.translate(translation);
+            out->set(m);
         }
         return true;
     default:
